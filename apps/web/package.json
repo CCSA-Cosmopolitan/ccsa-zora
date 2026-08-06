@@ -1,0 +1,40 @@
+{
+  "name": "@ccsa-zora/web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "clean": "Remove-Item -Recurse -Force .next -ErrorAction SilentlyContinue"
+  },
+  "dependencies": {
+    "@ccsa-zora/api-client": "workspace:*",
+    "@ccsa-zora/db": "workspace:*",
+    "@ccsa-zora/ui": "workspace:*",
+    "@ccsa-zora/utils": "workspace:*",
+    "@deck.gl/core": "9.1.14",
+    "@deck.gl/layers": "9.1.14",
+    "@supabase/supabase-js": "2.99.0",
+    "@tanstack/react-query": "5.101.4",
+    "drizzle-orm": "0.45.2",
+    "lucide-react": "1.25.0",
+    "maplibre-gl": "^5.24.0",
+    "next": "16.2.12",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "recharts": "^3.7.0",
+    "zod": "^4.3.6",
+    "zustand": "5.0.14"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "4.3.3",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "postcss": "^8.5.6",
+    "tailwindcss": "4.3.3",
+    "typescript": "catalog:"
+  }
+}

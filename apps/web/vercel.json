@@ -1,0 +1,13 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "buildCommand": "cd ../.. && pnpm turbo run build --filter=@ccsa-zora/web",
+  "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
+  "regions": ["fra1"],
+  "functions": {
+    "src/app/api/**/*.ts": {
+      "maxDuration": 60,
+      "supportsCancellation": true
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "name": "ccsa-zora-platform",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.11.1",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "dev:web": "pnpm --filter @ccsa-zora/web dev",
+    "dev:mobile": "pnpm --filter @ccsa-zora/mobile start",
+    "dev:api": "uv --directory apps/kgml-api run uvicorn app.main:app --reload --port 8000",
+    "test:api": "uv --directory apps/kgml-api run --frozen python -m pytest",
+    "typecheck": "turbo run typecheck",
+    "validate:structure": "node scripts/validate-structure.mjs",
+    "validate:production-env": "node scripts/validate-production-env.mjs",
+    "smoke:production": "node scripts/smoke-production.mjs",
+    "iot:derive-secret": "node scripts/derive-iot-secret.mjs",
+    "clean": "turbo run clean",
+    "db:prepare": "pnpm --filter @ccsa-zora/db db:prepare",
+    "db:generate": "pnpm --filter @ccsa-zora/db db:generate",
+    "db:migrate": "pnpm --filter @ccsa-zora/db db:migrate",
+    "db:harden": "pnpm --filter @ccsa-zora/db db:harden",
+    "db:security": "pnpm --filter @ccsa-zora/db db:security",
+    "db:rls:supabase": "pnpm --filter @ccsa-zora/db db:rls:supabase",
+    "db:api": "pnpm --filter @ccsa-zora/db db:api",
+    "db:seed:demo": "pnpm --filter @ccsa-zora/db db:seed:demo",
+    "db:storage:supabase": "pnpm --filter @ccsa-zora/db db:storage:supabase",
+    "db:verify": "pnpm --filter @ccsa-zora/db db:verify",
+    "db:deploy": "pnpm db:prepare && pnpm db:migrate && pnpm db:harden && pnpm db:security && pnpm db:api && pnpm db:verify",
+    "db:studio": "pnpm --filter @ccsa-zora/db db:studio"
+  },
+  "devDependencies": {
+    "turbo": "2.10.6",
+    "typescript": "6.0.3"
+  }
+}

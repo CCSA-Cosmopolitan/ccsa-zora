@@ -1,0 +1,56 @@
+{
+  "expo": {
+    "name": "CCSA Zora",
+    "slug": "ccsa-zora",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "zora",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "org.ccsa.zora"
+    },
+    "android": {
+      "package": "org.ccsa.zora",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ]
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "Allow CCSA Zora to listen to your farming question.",
+          "recordAudioAndroid": true
+        }
+      ],
+      [
+        "expo-sqlite",
+        {
+          "enableFTS": true
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Allow CCSA Zora to attach a precise field location to scouting evidence."
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow CCSA Zora to capture crop, livestock, and field evidence photos.",
+          "recordAudioAndroid": false
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

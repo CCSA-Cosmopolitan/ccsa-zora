@@ -1,0 +1,32 @@
+[project]
+name = "ccsa-zora-intelligence-api"
+version = "0.1.0"
+description = "FastAPI boundary for CCSA Zora KGML-Ag and climate-smart advisory workloads."
+requires-python = ">=3.12"
+dependencies = [
+  "fastapi>=0.116,<1.0",
+  "pydantic>=2.11,<3.0",
+  "uvicorn[standard]>=0.35,<1.0",
+]
+
+[dependency-groups]
+dev = [
+  "httpx2>=2.9,<3.0",
+  "mypy>=1.17,<2.0",
+  "pytest>=8.4,<9.0",
+  "ruff>=0.12,<1.0",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

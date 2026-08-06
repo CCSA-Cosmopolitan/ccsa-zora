@@ -1,0 +1,22 @@
+{
+  "name": "@ccsa-zora/utils",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts",
+    "./api": "./src/api.ts",
+    "./csa": "./src/csa.ts",
+    "./geojson": "./src/geojson.ts",
+    "./sync": "./src/sync.ts"
+  },
+  "scripts": {
+    "build": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
+    "clean": "Remove-Item -Recurse -Force dist -ErrorAction SilentlyContinue"
+  },
+  "devDependencies": {
+    "typescript": "catalog:"
+  }
+}

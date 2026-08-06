@@ -1,0 +1,169 @@
+@import "tailwindcss";
+
+@source "../../../../apps/web/src/**/*.{ts,tsx}";
+@source "../**/*.{ts,tsx}";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: #f3f7f2;
+  --foreground: #123126;
+  --card: #ffffff;
+  --card-foreground: #123126;
+  --popover: #ffffff;
+  --popover-foreground: #123126;
+  --primary: #076a3d;
+  --primary-foreground: #ffffff;
+  --secondary: #e4f0e6;
+  --secondary-foreground: #16452f;
+  --muted: #e9f0ea;
+  --muted-foreground: #607168;
+  --accent: #e7a91a;
+  --accent-foreground: #362704;
+  --destructive: #a13d31;
+  --destructive-foreground: #ffffff;
+  --border: #d6e1d8;
+  --input: #c8d6cc;
+  --ring: #0d7a49;
+  --ochre: #e5aa20;
+  --ochre-foreground: #4e3705;
+  --terra: #a45130;
+  --field: #158449;
+  --slate: #52675c;
+  --soil: #75533d;
+  --zora-deep: #063d2a;
+  --zora-forest: #075d37;
+  --zora-leaf: #49a33b;
+  --zora-mist: #edf5ee;
+  --zora-sun: #edaf1d;
+  --radius: 0.9rem;
+}
+
+.dark {
+  --background: #071f17;
+  --foreground: #f4f0e4;
+  --card: #0d3023;
+  --card-foreground: #f4f0e4;
+  --popover: #27342d;
+  --popover-foreground: #f4f0e4;
+  --primary: #6fc26a;
+  --primary-foreground: #061d14;
+  --secondary: #6e6244;
+  --secondary-foreground: #fff8e8;
+  --muted: #34423a;
+  --muted-foreground: #b9c1b8;
+  --accent: #eab438;
+  --accent-foreground: #231a04;
+  --destructive: #d87666;
+  --destructive-foreground: #25120f;
+  --border: #2a5341;
+  --input: #365e4b;
+  --ring: #7dce79;
+  --ochre: #d3a34e;
+  --ochre-foreground: #21190b;
+  --terra: #df8461;
+  --field: #94b27f;
+  --slate: #a9b5ad;
+  --soil: #c19778;
+  --zora-deep: #051a13;
+  --zora-forest: #0d5a3a;
+  --zora-leaf: #75c56b;
+  --zora-mist: #173a2c;
+  --zora-sun: #eab438;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ochre: var(--ochre);
+  --color-ochre-foreground: var(--ochre-foreground);
+  --color-terra: var(--terra);
+  --color-field: var(--field);
+  --color-slate: var(--slate);
+  --color-soil: var(--soil);
+  --color-zora-deep: var(--zora-deep);
+  --color-zora-forest: var(--zora-forest);
+  --color-zora-leaf: var(--zora-leaf);
+  --color-zora-mist: var(--zora-mist);
+  --color-zora-sun: var(--zora-sun);
+  --font-sans: "Aptos", "Inter", "Geist", "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono", "SFMono-Regular", Consolas, monospace;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    color-scheme: light;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(circle at 92% 2%, rgb(229 170 32 / 9%), transparent 24rem),
+      linear-gradient(180deg, #f8fbf7 0%, var(--background) 42rem);
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--ochre) 35%, transparent);
+  }
+}
+
+@layer utilities {
+  .zora-grid {
+    background-image:
+      linear-gradient(rgb(7 106 61 / 4%) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(7 106 61 / 4%) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+
+  .zora-panel-glow {
+    box-shadow: 0 24px 70px -38px rgb(6 61 42 / 55%);
+  }
+
+  .zora-contours {
+    background-image:
+      repeating-radial-gradient(ellipse at 88% 18%, transparent 0 24px, rgb(237 175 29 / 10%) 25px 26px, transparent 27px 43px),
+      repeating-radial-gradient(ellipse at 5% 88%, transparent 0 30px, rgb(117 197 107 / 8%) 31px 32px, transparent 33px 52px);
+  }
+
+  .zora-hero-landscape::after {
+    content: "";
+    position: absolute;
+    inset: auto -8% -1px;
+    height: 74px;
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+    background: #f7faf5;
+  }
+
+  .zora-field-plot {
+    background-image:
+      linear-gradient(112deg, transparent 0 42%, rgb(255 255 255 / 38%) 42.5% 44%, transparent 44.5%),
+      repeating-linear-gradient(18deg, rgb(6 61 42 / 7%) 0 2px, transparent 2px 18px),
+      radial-gradient(circle at 80% 15%, rgb(237 175 29 / 45%), transparent 20rem);
+  }
+}

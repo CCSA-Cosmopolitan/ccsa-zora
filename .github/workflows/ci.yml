@@ -1,0 +1,42 @@
+name: CCSA Zora validation
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  javascript:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.11.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.14.0
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm audit --prod --audit-level moderate
+      - run: pnpm validate:structure
+      - run: pnpm typecheck
+      - run: pnpm --filter @ccsa-zora/mobile exec expo install --check
+      - run: pnpm --filter @ccsa-zora/mobile exec expo export --platform android --output-dir dist-android
+      - run: pnpm --filter @ccsa-zora/mobile exec expo export --platform ios --output-dir dist-ios
+      - run: pnpm --filter @ccsa-zora/web build
+
+  kgml-api:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/kgml-api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --dev --frozen
+      - run: uv run --frozen ruff check .
+      - run: uv run --frozen mypy app
+      - run: uv run --frozen python -m pytest
