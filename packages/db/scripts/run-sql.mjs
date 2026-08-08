@@ -1,5 +1,6 @@
-import { spawnSync } from "node:child_process";
+import fs from "node:fs";
 import { resolve } from "node:path";
+import postgres from "postgres";
 
 const [, , relativeSqlPath] = process.argv;
 const databaseUrl = process.env.DATABASE_URL_UNPOOLED ?? process.env.DATABASE_URL;
@@ -12,24 +13,20 @@ if (!databaseUrl) {
   throw new Error("DATABASE_URL_UNPOOLED or DATABASE_URL is required.");
 }
 
-const result = spawnSync(
-  "psql",
-  [
-    "--dbname",
-    databaseUrl,
-    "--set",
-    "ON_ERROR_STOP=1",
-    "--file",
-    resolve(process.cwd(), relativeSqlPath),
-  ],
-  {
-    stdio: "inherit",
-    shell: false,
-  },
-);
+const sqlPath = resolve(process.cwd(), relativeSqlPath);
+console.log(`Running SQL script: ${relativeSqlPath}`);
 
-if (result.error) {
-  throw result.error;
+try {
+  const sqlContent = fs.readFileSync(sqlPath, "utf8");
+  const sql = postgres(databaseUrl);
+
+  // Execute the multi-statement raw SQL string directly in PostgreSQL
+  await sql.unsafe(sqlContent);
+  await sql.end();
+
+  console.log(`SQL script ${relativeSqlPath} executed successfully.`);
+  process.exit(0);
+} catch (error) {
+  console.error(`Error executing SQL script ${relativeSqlPath}:`, error);
+  process.exit(1);
 }
-
-process.exit(result.status ?? 1);

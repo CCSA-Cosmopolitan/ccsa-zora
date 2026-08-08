@@ -25,10 +25,7 @@ export default function RootLayout() {
   );
 
   return (
-    <SQLiteProvider
-      databaseName="zora-field.db"
-      onInit={initializeLocalDatabase}
-    >
+    <SQLiteProvider databaseName="zora-field.db" onInit={initializeLocalDatabase}>
       <QueryClientProvider client={queryClient}>
         <FieldSyncCoordinator />
         <StatusBar style="dark" />
@@ -42,10 +39,7 @@ export default function RootLayout() {
         >
           <Stack.Screen name="index" options={{ headerShown: false }} />
           <Stack.Screen name="assistant" options={{ title: "Ask Zora" }} />
-          <Stack.Screen
-            name="scouting/new"
-            options={{ title: "New scouting log" }}
-          />
+          <Stack.Screen name="scouting/new" options={{ title: "New scouting log" }} />
           <Stack.Screen name="login" options={{ title: "Sign in" }} />
         </Stack>
       </QueryClientProvider>

@@ -118,9 +118,7 @@ export async function initializeLocalDatabase(db: SQLiteDatabase) {
   await db.execAsync("PRAGMA foreign_keys = ON;");
   await db.execAsync("PRAGMA busy_timeout = 5000;");
 
-  const current = await db.getFirstAsync<{ user_version: number }>(
-    "PRAGMA user_version;",
-  );
+  const current = await db.getFirstAsync<{ user_version: number }>("PRAGMA user_version;");
   const currentVersion = current?.user_version ?? 0;
 
   for (const migration of migrations) {

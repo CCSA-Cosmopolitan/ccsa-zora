@@ -1,11 +1,7 @@
 import { sql, type AnyColumn, type SQL } from "drizzle-orm";
 import { customType } from "drizzle-orm/pg-core";
 
-import type {
-  GeoJsonMultiPolygon,
-  GeoJsonPoint,
-  FieldBoundary,
-} from "@ccsa-zora/utils/geojson";
+import type { GeoJsonMultiPolygon, GeoJsonPoint, FieldBoundary } from "@ccsa-zora/utils/geojson";
 
 export const postgisPoint = customType<{
   data: string;

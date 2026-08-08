@@ -159,13 +159,7 @@ export interface KgmlInferenceResult {
   generatedAt: string;
 }
 
-export const ZORA_LANGUAGES = [
-  "en",
-  "ha",
-  "yo",
-  "ig",
-  "ff",
-] as const;
+export const ZORA_LANGUAGES = ["en", "ha", "yo", "ig", "ff"] as const;
 
 export type ZoraLanguage = (typeof ZORA_LANGUAGES)[number];
 

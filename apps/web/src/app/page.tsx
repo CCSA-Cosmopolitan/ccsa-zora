@@ -80,7 +80,10 @@ const audiences = [
   ["Farmers", "Timely, understandable guidance grounded in the reality of each field."],
   ["Extension teams", "Prioritized field visits, shared evidence, and continuity across seasons."],
   ["Researchers", "Structured observations, spatial context, provenance, and model traceability."],
-  ["Institutions", "Portfolio intelligence, climate-risk visibility, and defensible impact reporting."],
+  [
+    "Institutions",
+    "Portfolio intelligence, climate-risk visibility, and defensible impact reporting.",
+  ],
 ] as const;
 
 export default function LandingPage() {
@@ -90,33 +93,72 @@ export default function LandingPage() {
 
   return (
     <main className="min-h-screen overflow-hidden bg-[#f7faf5] text-zora-deep">
-      <a className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-white focus:px-4 focus:py-2" href="#main-content">
+      <a
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-white focus:px-4 focus:py-2"
+        href="#main-content"
+      >
         Skip to content
       </a>
 
       <header className="absolute inset-x-0 top-0 z-30 border-b border-white/10">
         <div className="mx-auto flex h-20 max-w-[1440px] items-center gap-6 px-5 lg:px-8">
-          <Link aria-label="CCSA Zora home" className="flex h-11 items-center rounded-xl bg-white px-3 shadow-sm" href="/">
-            <Image alt="Zora" className="h-auto w-[158px]" height={432} priority src="/brand/zora-wordmark.jpeg" width={1080} />
+          <Link
+            aria-label="CCSA Zora home"
+            className="flex h-11 items-center rounded-xl bg-white px-3 shadow-sm"
+            href="/"
+          >
+            <Image
+              alt="Zora"
+              className="h-auto w-[158px]"
+              height={432}
+              priority
+              src="/brand/zora-wordmark.jpeg"
+              width={1080}
+            />
           </Link>
-          <nav aria-label="Landing page" className="ml-auto hidden items-center gap-6 text-sm font-semibold text-emerald-50/72 xl:flex">
-            <a className="transition hover:text-white" href="#capabilities">Capabilities</a>
-            <a className="transition hover:text-white" href="#how-it-works">How it works</a>
-            <a className="transition hover:text-white" href="#trust">Trust fabric</a>
-            <a className="transition hover:text-white" href="#who-it-serves">Who it serves</a>
+          <nav
+            aria-label="Landing page"
+            className="ml-auto hidden items-center gap-6 text-sm font-semibold text-emerald-50/72 xl:flex"
+          >
+            <a className="transition hover:text-white" href="#capabilities">
+              Capabilities
+            </a>
+            <a className="transition hover:text-white" href="#how-it-works">
+              How it works
+            </a>
+            <a className="transition hover:text-white" href="#trust">
+              Trust fabric
+            </a>
+            <a className="transition hover:text-white" href="#who-it-serves">
+              Who it serves
+            </a>
           </nav>
           <div className="ml-auto flex items-center gap-2 xl:ml-0">
-            <Button asChild className="hidden border-white/20 bg-white/6 text-white hover:bg-white/12 sm:inline-flex" size="lg" variant="outline">
+            <Button
+              asChild
+              className="hidden border-white/20 bg-white/6 text-white hover:bg-white/12 sm:inline-flex"
+              size="lg"
+              variant="outline"
+            >
               <Link href="/request-access">Request access</Link>
             </Button>
-            <Button asChild className="border border-white/15 bg-white text-zora-deep hover:bg-zora-mist" size="lg">
-              <Link href={workspaceHref}>{workspaceLabel} <ArrowRight /></Link>
+            <Button
+              asChild
+              className="border border-white/15 bg-white text-zora-deep hover:bg-zora-mist"
+              size="lg"
+            >
+              <Link href={workspaceHref}>
+                {workspaceLabel} <ArrowRight />
+              </Link>
             </Button>
           </div>
         </div>
       </header>
 
-      <section className="zora-hero-landscape relative overflow-hidden bg-zora-deep pb-20 pt-36 text-white lg:min-h-[820px] lg:pb-28 lg:pt-44" id="main-content">
+      <section
+        className="zora-hero-landscape relative overflow-hidden bg-zora-deep pb-20 pt-36 text-white lg:min-h-[820px] lg:pb-28 lg:pt-44"
+        id="main-content"
+      >
         <div className="absolute inset-0 zora-contours opacity-30" />
         <div className="absolute -right-32 top-12 size-[34rem] rounded-full bg-zora-sun/12 blur-3xl" />
         <div className="absolute -left-36 bottom-0 size-[30rem] rounded-full bg-zora-leaf/12 blur-3xl" />
@@ -129,13 +171,25 @@ export default function LandingPage() {
               Every field has a story. <span className="text-zora-sun">Zora helps it speak.</span>
             </h1>
             <p className="mt-7 max-w-2xl text-base leading-7 text-emerald-50/68 sm:text-lg sm:leading-8">
-              One trusted agricultural companion connecting farmers, extension teams, climate intelligence, field evidence, GIS, sensors, and knowledge-guided models.
+              One trusted agricultural companion connecting farmers, extension teams, climate
+              intelligence, field evidence, GIS, sensors, and knowledge-guided models.
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <Button asChild className="h-12 rounded-xl bg-zora-sun px-6 text-zora-deep shadow-xl shadow-black/15 hover:bg-[#f5bf3f]" size="lg">
-                <Link href={workspaceHref}>{workspaceLabel} <ArrowRight /></Link>
+              <Button
+                asChild
+                className="h-12 rounded-xl bg-zora-sun px-6 text-zora-deep shadow-xl shadow-black/15 hover:bg-[#f5bf3f]"
+                size="lg"
+              >
+                <Link href={workspaceHref}>
+                  {workspaceLabel} <ArrowRight />
+                </Link>
               </Button>
-              <Button asChild className="h-12 rounded-xl border-white/20 bg-white/6 px-6 text-white hover:bg-white/12" size="lg" variant="outline">
+              <Button
+                asChild
+                className="h-12 rounded-xl border-white/20 bg-white/6 px-6 text-white hover:bg-white/12"
+                size="lg"
+                variant="outline"
+              >
                 <Link href="/request-access">Request workspace access</Link>
               </Button>
             </div>
@@ -150,9 +204,21 @@ export default function LandingPage() {
         </div>
 
         <div className="relative mx-auto mt-16 grid max-w-[1440px] gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 px-0 sm:grid-cols-3 lg:mt-24 lg:rounded-3xl">
-          <Pillar number="01" title="Productivity" copy="Improve decisions, yields, and operational efficiency without losing field context." />
-          <Pillar number="02" title="Adaptation" copy="Anticipate climate pressure and turn risk signals into practical action." />
-          <Pillar number="03" title="Mitigation" copy="Measure practices and evidence with traceability fit for climate programmes." />
+          <Pillar
+            number="01"
+            title="Productivity"
+            copy="Improve decisions, yields, and operational efficiency without losing field context."
+          />
+          <Pillar
+            number="02"
+            title="Adaptation"
+            copy="Anticipate climate pressure and turn risk signals into practical action."
+          />
+          <Pillar
+            number="03"
+            title="Mitigation"
+            copy="Measure practices and evidence with traceability fit for climate programmes."
+          />
         </div>
       </section>
 
@@ -165,13 +231,22 @@ export default function LandingPage() {
           />
           <div className="mt-12 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {capabilities.map((capability, index) => (
-              <article className={`group rounded-[1.4rem] border p-6 transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-zora-deep/8 ${index === 0 || index === 4 ? "border-zora-forest/18 bg-zora-mist/75" : "border-zora-forest/10 bg-white"}`} key={capability.title}>
+              <article
+                className={`group rounded-[1.4rem] border p-6 transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-zora-deep/8 ${index === 0 || index === 4 ? "border-zora-forest/18 bg-zora-mist/75" : "border-zora-forest/10 bg-white"}`}
+                key={capability.title}
+              >
                 <span className="flex size-11 items-center justify-center rounded-2xl bg-zora-deep text-zora-sun transition group-hover:bg-zora-forest">
                   <capability.icon className="size-5" />
                 </span>
-                <p className="mt-7 text-[10px] font-black uppercase tracking-[0.18em] text-zora-forest">{capability.eyebrow}</p>
-                <h3 className="mt-2 text-xl font-semibold tracking-[-0.025em] text-zora-deep">{capability.title}</h3>
-                <p className="mt-3 text-sm leading-6 text-muted-foreground">{capability.description}</p>
+                <p className="mt-7 text-[10px] font-black uppercase tracking-[0.18em] text-zora-forest">
+                  {capability.eyebrow}
+                </p>
+                <h3 className="mt-2 text-xl font-semibold tracking-[-0.025em] text-zora-deep">
+                  {capability.title}
+                </h3>
+                <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                  {capability.description}
+                </p>
               </article>
             ))}
           </div>
@@ -188,13 +263,30 @@ export default function LandingPage() {
               narrow
             />
             <Button asChild className="mt-8 h-11 rounded-xl" size="lg">
-              <Link href={workspaceHref}>{workspaceLabel} <ArrowRight /></Link>
+              <Link href={workspaceHref}>
+                {workspaceLabel} <ArrowRight />
+              </Link>
             </Button>
           </div>
           <div className="space-y-3">
-            <WorkflowStep icon={Globe2} number="01" title="Understand the field" copy="Combine farm records, boundaries, scouting notes, images, climate conditions, and sensor measurements." />
-            <WorkflowStep icon={BrainCircuit} number="02" title="Reason with knowledge" copy="Apply agricultural knowledge, explicit constraints, model versions, uncertainty, and local operating context." />
-            <WorkflowStep icon={Leaf} number="03" title="Guide, learn, and verify" copy="Deliver a practical recommendation, capture what happened next, and preserve the evidence for learning and reporting." />
+            <WorkflowStep
+              icon={Globe2}
+              number="01"
+              title="Understand the field"
+              copy="Combine farm records, boundaries, scouting notes, images, climate conditions, and sensor measurements."
+            />
+            <WorkflowStep
+              icon={BrainCircuit}
+              number="02"
+              title="Reason with knowledge"
+              copy="Apply agricultural knowledge, explicit constraints, model versions, uncertainty, and local operating context."
+            />
+            <WorkflowStep
+              icon={Leaf}
+              number="03"
+              title="Guide, learn, and verify"
+              copy="Deliver a practical recommendation, capture what happened next, and preserve the evidence for learning and reporting."
+            />
           </div>
         </div>
       </section>
@@ -206,9 +298,13 @@ export default function LandingPage() {
             <div className="relative">
               <div className="flex items-center gap-2 text-zora-sun">
                 <ShieldCheck className="size-5" />
-                <span className="text-[10px] font-black uppercase tracking-[0.2em]">Zora trust fabric</span>
+                <span className="text-[10px] font-black uppercase tracking-[0.2em]">
+                  Zora trust fabric
+                </span>
               </div>
-              <p className="mt-5 max-w-md text-3xl font-semibold tracking-[-0.035em]">Evidence should remain trustworthy long after the field visit.</p>
+              <p className="mt-5 max-w-md text-3xl font-semibold tracking-[-0.035em]">
+                Evidence should remain trustworthy long after the field visit.
+              </p>
               <div className="mt-9 space-y-3">
                 <TrustRow label="Field observation" value="Location + media SHA-256" />
                 <TrustRow label="Sensor measurement" value="Signed tenant gateway" />
@@ -217,7 +313,10 @@ export default function LandingPage() {
               </div>
               <div className="mt-8 flex items-center gap-3 rounded-2xl border border-zora-sun/25 bg-zora-sun/10 p-4">
                 <BadgeCheck className="size-6 shrink-0 text-zora-sun" />
-                <p className="text-xs leading-5 text-emerald-50/75">Tenant isolation, idempotent synchronization, provenance, and immutable lifecycle events are part of the architecture—not an afterthought.</p>
+                <p className="text-xs leading-5 text-emerald-50/75">
+                  Tenant isolation, idempotent synchronization, provenance, and immutable lifecycle
+                  events are part of the architecture—not an afterthought.
+                </p>
               </div>
             </div>
           </div>
@@ -237,8 +336,13 @@ export default function LandingPage() {
                 "Human verification states",
                 "Explicit tenant boundaries",
               ].map((item) => (
-                <li className="flex items-center gap-3 text-sm font-semibold text-zora-deep" key={item}>
-                  <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-zora-mist text-zora-forest"><Check className="size-3.5" /></span>
+                <li
+                  className="flex items-center gap-3 text-sm font-semibold text-zora-deep"
+                  key={item}
+                >
+                  <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-zora-mist text-zora-forest">
+                    <Check className="size-3.5" />
+                  </span>
                   {item}
                 </li>
               ))}
@@ -247,13 +351,25 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="border-y border-zora-forest/10 bg-[#f4f0e5] py-24 sm:py-28" id="who-it-serves">
+      <section
+        className="border-y border-zora-forest/10 bg-[#f4f0e5] py-24 sm:py-28"
+        id="who-it-serves"
+      >
         <div className="mx-auto max-w-[1440px] px-5 lg:px-8">
-          <SectionIntro eyebrow="Designed for the whole agricultural system" title="One shared picture. Different views for every role." copy="Zora connects the people who grow, advise, study, finance, and verify—without flattening their different responsibilities." />
+          <SectionIntro
+            eyebrow="Designed for the whole agricultural system"
+            title="One shared picture. Different views for every role."
+            copy="Zora connects the people who grow, advise, study, finance, and verify—without flattening their different responsibilities."
+          />
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {audiences.map(([title, copy], index) => (
-              <article className="relative overflow-hidden rounded-2xl border border-soil/12 bg-white p-5" key={title}>
-                <span className="text-5xl font-semibold tracking-[-0.06em] text-zora-sun/35">0{index + 1}</span>
+              <article
+                className="relative overflow-hidden rounded-2xl border border-soil/12 bg-white p-5"
+                key={title}
+              >
+                <span className="text-5xl font-semibold tracking-[-0.06em] text-zora-sun/35">
+                  0{index + 1}
+                </span>
                 <h3 className="mt-5 text-lg font-semibold text-zora-deep">{title}</h3>
                 <p className="mt-2 text-sm leading-6 text-muted-foreground">{copy}</p>
               </article>
@@ -267,13 +383,29 @@ export default function LandingPage() {
           <div className="absolute left-1/2 top-0 size-80 -translate-x-1/2 rounded-full bg-zora-sun/12 blur-3xl" />
           <div className="relative mx-auto max-w-3xl">
             <Sprout className="mx-auto size-8 text-zora-sun" />
-            <h2 className="mt-6 text-4xl font-semibold tracking-[-0.045em] sm:text-5xl">Bring every field into focus.</h2>
-            <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-emerald-50/65 sm:text-base">Enter the Zora workspace to coordinate climate-smart operations, field intelligence, advisory, and trusted evidence.</p>
+            <h2 className="mt-6 text-4xl font-semibold tracking-[-0.045em] sm:text-5xl">
+              Bring every field into focus.
+            </h2>
+            <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-emerald-50/65 sm:text-base">
+              Enter the Zora workspace to coordinate climate-smart operations, field intelligence,
+              advisory, and trusted evidence.
+            </p>
             <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-              <Button asChild className="h-12 rounded-xl bg-zora-sun px-7 text-zora-deep hover:bg-[#f5bf3f]" size="lg">
-                <Link href={workspaceHref}>{workspaceLabel} <ArrowRight /></Link>
+              <Button
+                asChild
+                className="h-12 rounded-xl bg-zora-sun px-7 text-zora-deep hover:bg-[#f5bf3f]"
+                size="lg"
+              >
+                <Link href={workspaceHref}>
+                  {workspaceLabel} <ArrowRight />
+                </Link>
               </Button>
-              <Button asChild className="h-12 rounded-xl border-white/20 bg-white/6 px-7 text-white hover:bg-white/12" size="lg" variant="outline">
+              <Button
+                asChild
+                className="h-12 rounded-xl border-white/20 bg-white/6 px-7 text-white hover:bg-white/12"
+                size="lg"
+                variant="outline"
+              >
                 <Link href="/request-access">Request access</Link>
               </Button>
             </div>
@@ -285,13 +417,23 @@ export default function LandingPage() {
         <div className="mx-auto flex max-w-[1440px] flex-col gap-5 px-5 py-8 sm:flex-row sm:items-center sm:justify-between lg:px-8">
           <div>
             <p className="font-semibold text-white">CCSA Zora</p>
-            <p className="mt-1 text-xs">Centre for Climate-Smart Agriculture · Cosmopolitan University Abuja</p>
+            <p className="mt-1 text-xs">
+              Centre for Climate-Smart Agriculture · Cosmopolitan University Abuja
+            </p>
           </div>
           <div className="flex flex-wrap gap-5 text-xs font-semibold">
-            <a className="hover:text-white" href="#capabilities">Capabilities</a>
-            <a className="hover:text-white" href="#trust">Trust</a>
-            <Link className="hover:text-white" href="/request-access">Request access</Link>
-            <Link className="hover:text-white" href="/login">Sign in</Link>
+            <a className="hover:text-white" href="#capabilities">
+              Capabilities
+            </a>
+            <a className="hover:text-white" href="#trust">
+              Trust
+            </a>
+            <Link className="hover:text-white" href="/request-access">
+              Request access
+            </Link>
+            <Link className="hover:text-white" href="/login">
+              Sign in
+            </Link>
           </div>
           <p className="text-xs">© {new Date().getFullYear()} CCSA. All rights reserved.</p>
         </div>
@@ -301,7 +443,12 @@ export default function LandingPage() {
 }
 
 function HeroProof({ icon: Icon, label }: { icon: LucideIcon; label: string }) {
-  return <span className="flex items-center gap-2"><Icon className="size-4 text-zora-sun" />{label}</span>;
+  return (
+    <span className="flex items-center gap-2">
+      <Icon className="size-4 text-zora-sun" />
+      {label}
+    </span>
+  );
 }
 
 function HeroIntelligencePanel() {
@@ -311,7 +458,9 @@ function HeroIntelligencePanel() {
       <div className="relative overflow-hidden rounded-[1.8rem] border border-white/15 bg-[#f7faf5] p-3 text-zora-deep shadow-2xl shadow-black/30 sm:p-4">
         <div className="flex items-center justify-between px-2 pb-3 pt-1">
           <div>
-            <p className="text-[9px] font-black uppercase tracking-[0.2em] text-zora-forest">Illustrative field intelligence</p>
+            <p className="text-[9px] font-black uppercase tracking-[0.2em] text-zora-forest">
+              Illustrative field intelligence
+            </p>
             <p className="mt-1 text-sm font-semibold">North demonstration field</p>
           </div>
           <span className="flex items-center gap-2 rounded-full bg-zora-mist px-3 py-1.5 text-[10px] font-bold text-zora-forest">
@@ -322,8 +471,12 @@ function HeroIntelligencePanel() {
           <div className="absolute inset-x-[16%] inset-y-[12%] rotate-[-5deg] rounded-[38%_62%_46%_54%/48%_40%_60%_52%] border-[3px] border-white/90 bg-zora-leaf/55 shadow-xl">
             <div className="absolute inset-[12%] rounded-[inherit] border border-dashed border-white/70" />
           </div>
-          <span className="absolute left-[23%] top-[30%] flex size-9 items-center justify-center rounded-full border-4 border-white bg-zora-sun text-zora-deep shadow-lg"><Leaf className="size-4" /></span>
-          <span className="absolute bottom-[21%] right-[26%] flex size-9 items-center justify-center rounded-full border-4 border-white bg-terra text-white shadow-lg"><CloudSun className="size-4" /></span>
+          <span className="absolute left-[23%] top-[30%] flex size-9 items-center justify-center rounded-full border-4 border-white bg-zora-sun text-zora-deep shadow-lg">
+            <Leaf className="size-4" />
+          </span>
+          <span className="absolute bottom-[21%] right-[26%] flex size-9 items-center justify-center rounded-full border-4 border-white bg-terra text-white shadow-lg">
+            <CloudSun className="size-4" />
+          </span>
           <div className="absolute bottom-3 left-3 rounded-xl border border-white/60 bg-white/88 px-3 py-2 shadow-lg backdrop-blur">
             <p className="text-[9px] uppercase tracking-wider text-muted-foreground">Field pulse</p>
             <p className="mt-0.5 text-xs font-bold text-zora-deep">Inspect western moisture zone</p>
@@ -336,14 +489,27 @@ function HeroIntelligencePanel() {
         </div>
       </div>
       <div className="absolute -bottom-7 -left-5 hidden w-64 rounded-2xl border border-zora-forest/10 bg-white p-4 text-zora-deep shadow-2xl sm:block">
-        <div className="flex items-center gap-2 text-zora-forest"><Sparkles className="size-4" /><span className="text-[9px] font-black uppercase tracking-[0.16em]">Zora priority</span></div>
-        <p className="mt-2 text-xs font-semibold leading-5">Validate irrigation coverage before the next input application.</p>
+        <div className="flex items-center gap-2 text-zora-forest">
+          <Sparkles className="size-4" />
+          <span className="text-[9px] font-black uppercase tracking-[0.16em]">Zora priority</span>
+        </div>
+        <p className="mt-2 text-xs font-semibold leading-5">
+          Validate irrigation coverage before the next input application.
+        </p>
       </div>
     </div>
   );
 }
 
-function IntelligenceMetric({ icon: Icon, label, value }: { icon: LucideIcon; label: string; value: string }) {
+function IntelligenceMetric({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: LucideIcon;
+  label: string;
+  value: string;
+}) {
   return (
     <div className="rounded-xl border border-zora-forest/10 bg-white p-3">
       <Icon className="size-4 text-zora-forest" />
@@ -356,28 +522,59 @@ function IntelligenceMetric({ icon: Icon, label, value }: { icon: LucideIcon; la
 function Pillar({ number, title, copy }: { number: string; title: string; copy: string }) {
   return (
     <article className="bg-[#0a4934]/92 p-6 sm:p-7">
-      <div className="flex items-center gap-3"><span className="font-mono text-xs font-bold text-zora-sun">{number}</span><h2 className="text-lg font-semibold text-white">{title}</h2></div>
+      <div className="flex items-center gap-3">
+        <span className="font-mono text-xs font-bold text-zora-sun">{number}</span>
+        <h2 className="text-lg font-semibold text-white">{title}</h2>
+      </div>
       <p className="mt-3 text-xs leading-5 text-emerald-50/58">{copy}</p>
     </article>
   );
 }
 
-function SectionIntro({ eyebrow, title, copy, narrow = false }: { eyebrow: string; title: string; copy: string; narrow?: boolean }) {
+function SectionIntro({
+  eyebrow,
+  title,
+  copy,
+  narrow = false,
+}: {
+  eyebrow: string;
+  title: string;
+  copy: string;
+  narrow?: boolean;
+}) {
   return (
     <div className={narrow ? "max-w-xl" : "max-w-3xl"}>
-      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-zora-forest">{eyebrow}</p>
-      <h2 className="mt-4 text-4xl font-semibold leading-[1.04] tracking-[-0.045em] text-zora-deep sm:text-5xl">{title}</h2>
+      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-zora-forest">
+        {eyebrow}
+      </p>
+      <h2 className="mt-4 text-4xl font-semibold leading-[1.04] tracking-[-0.045em] text-zora-deep sm:text-5xl">
+        {title}
+      </h2>
       <p className="mt-5 text-sm leading-7 text-muted-foreground sm:text-base">{copy}</p>
     </div>
   );
 }
 
-function WorkflowStep({ icon: Icon, number, title, copy }: { icon: LucideIcon; number: string; title: string; copy: string }) {
+function WorkflowStep({
+  icon: Icon,
+  number,
+  title,
+  copy,
+}: {
+  icon: LucideIcon;
+  number: string;
+  title: string;
+  copy: string;
+}) {
   return (
     <article className="grid gap-5 rounded-[1.4rem] border border-zora-forest/10 bg-white p-6 shadow-sm sm:grid-cols-[64px_1fr] sm:p-7">
-      <span className="flex size-14 items-center justify-center rounded-2xl bg-zora-deep text-zora-sun"><Icon className="size-6" /></span>
+      <span className="flex size-14 items-center justify-center rounded-2xl bg-zora-deep text-zora-sun">
+        <Icon className="size-6" />
+      </span>
       <div>
-        <p className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-zora-forest">Step {number}</p>
+        <p className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-zora-forest">
+          Step {number}
+        </p>
         <h3 className="mt-2 text-xl font-semibold tracking-[-0.02em] text-zora-deep">{title}</h3>
         <p className="mt-2 text-sm leading-6 text-muted-foreground">{copy}</p>
       </div>
@@ -389,7 +586,9 @@ function TrustRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-white/6 p-4">
       <span className="text-xs font-semibold text-emerald-50/70">{label}</span>
-      <span className="text-right font-mono text-[10px] font-bold uppercase tracking-wider text-zora-sun">{value}</span>
+      <span className="text-right font-mono text-[10px] font-bold uppercase tracking-wider text-zora-sun">
+        {value}
+      </span>
     </div>
   );
 }

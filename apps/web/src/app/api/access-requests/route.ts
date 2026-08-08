@@ -51,9 +51,7 @@ export async function POST(request: NextRequest) {
     }
     const forwardedFor = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
     const address = forwardedFor || request.headers.get("x-real-ip")?.trim() || "unknown";
-    const fingerprint = createHash("sha256")
-      .update(`${fingerprintSalt}:${address}`)
-      .digest("hex");
+    const fingerprint = createHash("sha256").update(`${fingerprintSalt}:${address}`).digest("hex");
 
     const { client } = getDatabase();
     try {

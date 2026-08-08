@@ -205,12 +205,8 @@
           "name": "audit_events_organization_id_organizations_id_fk",
           "tableFrom": "audit_events",
           "tableTo": "organizations",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "no action"
         }
@@ -382,12 +378,8 @@
           "name": "carbon_certificate_events_certificate_id_carbon_certificates_id_fk",
           "tableFrom": "carbon_certificate_events",
           "tableTo": "carbon_certificates",
-          "columnsFrom": [
-            "certificate_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["certificate_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "no action"
         }
@@ -576,12 +568,8 @@
           "name": "carbon_certificates_organization_id_organizations_id_fk",
           "tableFrom": "carbon_certificates",
           "tableTo": "organizations",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "no action"
         },
@@ -589,12 +577,8 @@
           "name": "carbon_certificates_field_id_fields_id_fk",
           "tableFrom": "carbon_certificates",
           "tableTo": "fields",
-          "columnsFrom": [
-            "field_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["field_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "no action"
         }
@@ -755,12 +739,8 @@
           "name": "field_indices_organization_id_organizations_id_fk",
           "tableFrom": "field_indices",
           "tableTo": "organizations",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -768,12 +748,8 @@
           "name": "field_indices_field_id_fields_id_fk",
           "tableFrom": "field_indices",
           "tableTo": "fields",
-          "columnsFrom": [
-            "field_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["field_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -957,12 +933,8 @@
           "name": "fields_organization_id_organizations_id_fk",
           "tableFrom": "fields",
           "tableTo": "organizations",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1161,12 +1133,8 @@
           "name": "model_runs_organization_id_organizations_id_fk",
           "tableFrom": "model_runs",
           "tableTo": "organizations",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "no action"
         },
@@ -1174,12 +1142,8 @@
           "name": "model_runs_field_id_fields_id_fk",
           "tableFrom": "model_runs",
           "tableTo": "fields",
-          "columnsFrom": [
-            "field_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["field_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "no action"
         }
@@ -1331,12 +1295,8 @@
           "name": "mrv_evidence_organization_id_organizations_id_fk",
           "tableFrom": "mrv_evidence",
           "tableTo": "organizations",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "no action"
         },
@@ -1344,12 +1304,8 @@
           "name": "mrv_evidence_certificate_id_carbon_certificates_id_fk",
           "tableFrom": "mrv_evidence",
           "tableTo": "carbon_certificates",
-          "columnsFrom": [
-            "certificate_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["certificate_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "no action"
         },
@@ -1357,12 +1313,8 @@
           "name": "mrv_evidence_field_id_fields_id_fk",
           "tableFrom": "mrv_evidence",
           "tableTo": "fields",
-          "columnsFrom": [
-            "field_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["field_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "no action"
         }
@@ -1510,12 +1462,8 @@
           "name": "observation_media_organization_id_organizations_id_fk",
           "tableFrom": "observation_media",
           "tableTo": "organizations",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1523,12 +1471,8 @@
           "name": "observation_media_observation_id_observations_id_fk",
           "tableFrom": "observation_media",
           "tableTo": "observations",
-          "columnsFrom": [
-            "observation_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["observation_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1757,12 +1701,8 @@
           "name": "observations_organization_id_organizations_id_fk",
           "tableFrom": "observations",
           "tableTo": "organizations",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1770,12 +1710,8 @@
           "name": "observations_field_id_fields_id_fk",
           "tableFrom": "observations",
           "tableTo": "fields",
-          "columnsFrom": [
-            "field_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["field_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1858,12 +1794,8 @@
           "name": "organization_members_organization_id_organizations_id_fk",
           "tableFrom": "organization_members",
           "tableTo": "organizations",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1871,10 +1803,7 @@
       "compositePrimaryKeys": {
         "organization_members_pk": {
           "name": "organization_members_pk",
-          "columns": [
-            "organization_id",
-            "user_id"
-          ]
+          "columns": ["organization_id", "user_id"]
         }
       },
       "uniqueConstraints": {},
@@ -2158,12 +2087,8 @@
           "name": "sensor_nodes_organization_id_organizations_id_fk",
           "tableFrom": "sensor_nodes",
           "tableTo": "organizations",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -2171,12 +2096,8 @@
           "name": "sensor_nodes_field_id_fields_id_fk",
           "tableFrom": "sensor_nodes",
           "tableTo": "fields",
-          "columnsFrom": [
-            "field_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["field_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -2348,12 +2269,8 @@
           "name": "sensor_readings_organization_id_organizations_id_fk",
           "tableFrom": "sensor_readings",
           "tableTo": "organizations",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -2361,12 +2278,8 @@
           "name": "sensor_readings_sensor_node_id_sensor_nodes_id_fk",
           "tableFrom": "sensor_readings",
           "tableTo": "sensor_nodes",
-          "columnsFrom": [
-            "sensor_node_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["sensor_node_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -2481,12 +2394,8 @@
           "name": "sync_receipts_organization_id_organizations_id_fk",
           "tableFrom": "sync_receipts",
           "tableTo": "organizations",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -2507,37 +2416,17 @@
     "public.audit_action": {
       "name": "audit_action",
       "schema": "public",
-      "values": [
-        "create",
-        "update",
-        "archive",
-        "submit",
-        "verify",
-        "reject",
-        "sync"
-      ]
+      "values": ["create", "update", "archive", "submit", "verify", "reject", "sync"]
     },
     "public.carbon_event_type": {
       "name": "carbon_event_type",
       "schema": "public",
-      "values": [
-        "issued",
-        "transferred",
-        "retired",
-        "revoked",
-        "corrective_note"
-      ]
+      "values": ["issued", "transferred", "retired", "revoked", "corrective_note"]
     },
     "public.carbon_standard": {
       "name": "carbon_standard",
       "schema": "public",
-      "values": [
-        "verra_vcs",
-        "gold_standard",
-        "art_trees",
-        "internal_scope3",
-        "other"
-      ]
+      "values": ["verra_vcs", "gold_standard", "art_trees", "internal_scope3", "other"]
     },
     "public.mrv_evidence_type": {
       "name": "mrv_evidence_type",
@@ -2554,31 +2443,17 @@
     "public.field_status": {
       "name": "field_status",
       "schema": "public",
-      "values": [
-        "active",
-        "fallow",
-        "retired"
-      ]
+      "values": ["active", "fallow", "retired"]
     },
     "public.media_upload_status": {
       "name": "media_upload_status",
       "schema": "public",
-      "values": [
-        "local",
-        "queued",
-        "uploaded",
-        "failed"
-      ]
+      "values": ["local", "queued", "uploaded", "failed"]
     },
     "public.model_run_status": {
       "name": "model_run_status",
       "schema": "public",
-      "values": [
-        "started",
-        "completed",
-        "failed",
-        "superseded"
-      ]
+      "values": ["started", "completed", "failed", "superseded"]
     },
     "public.observation_kind": {
       "name": "observation_kind",
@@ -2597,12 +2472,7 @@
     "public.observation_status": {
       "name": "observation_status",
       "schema": "public",
-      "values": [
-        "draft",
-        "submitted",
-        "verified",
-        "rejected"
-      ]
+      "values": ["draft", "submitted", "verified", "rejected"]
     },
     "public.organization_role": {
       "name": "organization_role",
@@ -2620,25 +2490,12 @@
     "public.sensor_connectivity": {
       "name": "sensor_connectivity",
       "schema": "public",
-      "values": [
-        "lorawan",
-        "nb_iot",
-        "cellular",
-        "wifi",
-        "bluetooth",
-        "manual"
-      ]
+      "values": ["lorawan", "nb_iot", "cellular", "wifi", "bluetooth", "manual"]
     },
     "public.sensor_status": {
       "name": "sensor_status",
       "schema": "public",
-      "values": [
-        "provisioning",
-        "active",
-        "degraded",
-        "offline",
-        "retired"
-      ]
+      "values": ["provisioning", "active", "degraded", "offline", "retired"]
     }
   },
   "schemas": {},

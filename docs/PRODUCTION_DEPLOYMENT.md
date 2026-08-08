@@ -3,14 +3,14 @@
 This runbook is the owner handoff for the production stack. Complete the steps
 in order. The intended production topology is:
 
-| Surface | Provider | Purpose |
-| --- | --- | --- |
-| `apps/web` | Vercel | Next.js command centre and trusted API boundary |
-| `apps/kgml-api` | Vercel | Private FastAPI KGML/advisory service |
-| PostgreSQL/PostGIS | Neon | Authoritative application, GIS, IoT, sync, audit, and dMRV data |
-| Authentication | Supabase Auth | Password sessions, JWT validation, and TOTP MFA |
-| Evidence objects | Supabase Storage | Private, hash-verified scouting and MRV images |
-| `apps/mobile` | Expo EAS | Signed Android/iOS field application and production environment |
+| Surface            | Provider         | Purpose                                                         |
+| ------------------ | ---------------- | --------------------------------------------------------------- |
+| `apps/web`         | Vercel           | Next.js command centre and trusted API boundary                 |
+| `apps/kgml-api`    | Vercel           | Private FastAPI KGML/advisory service                           |
+| PostgreSQL/PostGIS | Neon             | Authoritative application, GIS, IoT, sync, audit, and dMRV data |
+| Authentication     | Supabase Auth    | Password sessions, JWT validation, and TOTP MFA                 |
+| Evidence objects   | Supabase Storage | Private, hash-verified scouting and MRV images                  |
+| `apps/mobile`      | Expo EAS         | Signed Android/iOS field application and production environment |
 
 Supabase is **not** the application database. Its database is used only to
 configure Supabase Storage. Neon is the sole source of truth for Zora records.
@@ -276,9 +276,9 @@ Deploy this service first because the web readiness check depends on it.
    `apps/kgml-api/vercel.json` configures the function and `fra1` region.
 5. Add these **Production** environment variables:
 
-| Variable | Value |
-| --- | --- |
-| `ZORA_ENV` | `production` |
+| Variable           | Value                                      |
+| ------------------ | ------------------------------------------ |
+| `ZORA_ENV`         | `production`                               |
 | `KGML_SERVICE_KEY` | The generated 32+ character service secret |
 
 6. Deploy and copy the HTTPS deployment URL.
@@ -300,23 +300,23 @@ endpoints accept only the matching `x-zora-service-key` sent by the web server.
    monorepo install/build commands, the `fra1` region, and function duration.
 6. Add the following **Production** environment variables exactly:
 
-| Variable | Production value |
-| --- | --- |
-| `ZORA_ENV` | `production` |
-| `ZORA_DEMO_MODE` | `false` |
-| `NEXT_PUBLIC_ZORA_DEMO_MODE` | `false` |
-| `DATABASE_URL` | Neon pooled URL using `zora_app` |
-| `DATABASE_POOL_MAX` | `3` initially |
-| `NEXT_PUBLIC_ZORA_ORGANIZATION_ID` | First organization UUID |
-| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anonymous/publishable key |
-| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service-role key |
-| `SUPABASE_EVIDENCE_BUCKET` | `mrv-evidence` |
-| `KGML_API_URL` | HTTPS URL from step 5 |
-| `KGML_SERVICE_KEY` | Same value used by the FastAPI project |
-| `IOT_INGEST_SECRET` | Independent 32+ character HMAC secret |
-| `ACCESS_REQUEST_HASH_SALT` | Independent 32+ character server-only random salt |
-| `NEXT_PUBLIC_MAP_STYLE_URL` | Licensed production MapLibre style URL |
+| Variable                           | Production value                                  |
+| ---------------------------------- | ------------------------------------------------- |
+| `ZORA_ENV`                         | `production`                                      |
+| `ZORA_DEMO_MODE`                   | `false`                                           |
+| `NEXT_PUBLIC_ZORA_DEMO_MODE`       | `false`                                           |
+| `DATABASE_URL`                     | Neon pooled URL using `zora_app`                  |
+| `DATABASE_POOL_MAX`                | `3` initially                                     |
+| `NEXT_PUBLIC_ZORA_ORGANIZATION_ID` | First organization UUID                           |
+| `NEXT_PUBLIC_SUPABASE_URL`         | Supabase project URL                              |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY`    | Supabase anonymous/publishable key                |
+| `SUPABASE_SERVICE_ROLE_KEY`        | Supabase service-role key                         |
+| `SUPABASE_EVIDENCE_BUCKET`         | `mrv-evidence`                                    |
+| `KGML_API_URL`                     | HTTPS URL from step 5                             |
+| `KGML_SERVICE_KEY`                 | Same value used by the FastAPI project            |
+| `IOT_INGEST_SECRET`                | Independent 32+ character HMAC secret             |
+| `ACCESS_REQUEST_HASH_SALT`         | Independent 32+ character server-only random salt |
+| `NEXT_PUBLIC_MAP_STYLE_URL`        | Licensed production MapLibre style URL            |
 
 Do **not** add `DATABASE_URL_UNPOOLED`, `SUPABASE_DATABASE_URL`, demo user IDs,
 or any `EXPO_PUBLIC_*` variable to the web Vercel project.

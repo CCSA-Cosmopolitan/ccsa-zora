@@ -39,11 +39,31 @@ export function FarmPulseChart() {
           <XAxis axisLine={false} dataKey="day" fontSize={11} tickLine={false} />
           <YAxis axisLine={false} domain={[0, 100]} fontSize={10} tickLine={false} />
           <Tooltip
-            contentStyle={{ background: "#063d2a", border: 0, borderRadius: 12, color: "#fff", fontSize: 12 }}
+            contentStyle={{
+              background: "#063d2a",
+              border: 0,
+              borderRadius: 12,
+              color: "#fff",
+              fontSize: 12,
+            }}
             cursor={{ stroke: "#9eb7a5", strokeDasharray: "4 4" }}
           />
-          <Area dataKey="vegetation" fill="url(#vegetationFill)" name="Vegetation index" stroke="#158449" strokeWidth={2.5} type="monotone" />
-          <Area dataKey="moisture" fill="url(#moistureFill)" name="Soil moisture" stroke="#d49a16" strokeWidth={2} type="monotone" />
+          <Area
+            dataKey="vegetation"
+            fill="url(#vegetationFill)"
+            name="Vegetation index"
+            stroke="#158449"
+            strokeWidth={2.5}
+            type="monotone"
+          />
+          <Area
+            dataKey="moisture"
+            fill="url(#moistureFill)"
+            name="Soil moisture"
+            stroke="#d49a16"
+            strokeWidth={2}
+            type="monotone"
+          />
         </AreaChart>
       </ResponsiveContainer>
     </div>

@@ -15,7 +15,9 @@ export const runtime = "nodejs";
 export async function POST(request: NextRequest) {
   try {
     const principal = await authenticateRequest(request);
-    const envelope = outboxEnvelopeSchema.parse(await request.json()) as OutboxEnvelope<ObservationPayload>;
+    const envelope = outboxEnvelopeSchema.parse(
+      await request.json(),
+    ) as OutboxEnvelope<ObservationPayload>;
     const headerKey = request.headers.get("idempotency-key");
     if (headerKey !== envelope.idempotencyKey) {
       return NextResponse.json(
@@ -27,11 +29,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "entityId must match payload.id" }, { status: 422 });
     }
     const repository = getRepository();
-    await assertOrganizationAccess(
-      repository,
-      envelope.payload.organizationId,
-      principal.userId,
-    );
+    await assertOrganizationAccess(repository, envelope.payload.organizationId, principal.userId);
     const result = await repository.pushObservation(
       envelope.payload.organizationId,
       principal.userId,

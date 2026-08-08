@@ -106,7 +106,9 @@ try {
   `;
   if (functions.length !== 2) throw new Error("Trusted sync functions are missing.");
 
-  console.log(`Neon production verification passed (PostGIS ${postgis.extversion}, runtime role ${role.name}).`);
+  console.log(
+    `Neon production verification passed (PostGIS ${postgis.extversion}, runtime role ${role.name}).`,
+  );
 } finally {
   await Promise.all([runtime.end({ timeout: 5 }), admin.end({ timeout: 5 })]);
 }

@@ -68,7 +68,10 @@ export async function authenticateRequest(
 }
 
 export class ApiAuthError extends Error {
-  constructor(readonly status: number, message: string) {
+  constructor(
+    readonly status: number,
+    message: string,
+  ) {
     super(message);
   }
 }

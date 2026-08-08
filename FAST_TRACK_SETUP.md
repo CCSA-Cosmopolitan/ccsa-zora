@@ -1,4 +1,5 @@
 # CCSA Zora - FAST TRACK EXECUTION PLAN
+
 ## Get Everything Running TODAY 🚀
 
 **Date Created:** August 5, 2025  
@@ -11,6 +12,7 @@
 ## 🎯 TODAY'S MISSION
 
 By end of today:
+
 - ✅ Local development environment working
 - ✅ All three dev servers running
 - ✅ Database schema applied
@@ -19,6 +21,7 @@ By end of today:
 - ✅ Mobile app boots without errors
 
 **What WE'RE NOT doing today:**
+
 - ❌ Complete feature implementation (features are 60% complete, that's OK)
 - ❌ Comprehensive testing (we'll add later)
 - ❌ GitHub Actions CI/CD (deploy manually for now)
@@ -31,6 +34,7 @@ By end of today:
 ### Phase 0: Setup Environment (30 minutes)
 
 **STEP 0.1: Create `.env.local` Files**
+
 ```powershell
 # This file already exists in editor, just needs values
 # Check: apps/web/.env.local
@@ -38,17 +42,19 @@ By end of today:
 ```
 
 **STEP 0.2: Generate Random Secrets (5 minutes)**
+
 ```powershell
 # Run 3 times to get 3 different 48-char secrets
 node -e "console.log(require('node:crypto').randomBytes(48).toString('base64url'))"
 
 # Store results as:
 # Secret 1 → KGML_SERVICE_KEY
-# Secret 2 → IOT_INGEST_SECRET  
+# Secret 2 → IOT_INGEST_SECRET
 # Secret 3 → ACCESS_REQUEST_HASH_SALT
 ```
 
 **STEP 0.3: Install All Dependencies (15 minutes)**
+
 ```powershell
 cd c:\projects\ccsa-aiv2
 corepack enable
@@ -60,6 +66,7 @@ uv --directory apps/kgml-api sync --dev --frozen
 ```
 
 ✅ **Status Check:**
+
 ```powershell
 pnpm validate:structure    # Should pass
 pnpm typecheck            # Should have 0 errors
@@ -72,16 +79,19 @@ pnpm typecheck            # Should have 0 errors
 **STEP 1.1: Neon Quick Setup (15 minutes)**
 
 **What you need:**
+
 1. Neon account (https://console.neon.tech/sign_up)
 2. Create project: `ccsa-zora-dev` in **Frankfurt (eu-central-1)**
 3. Copy connection strings
 
 **From Neon dashboard:**
+
 - Go to "Connection strings"
 - Copy **POOLED** connection string → `DATABASE_URL` in `apps/web/.env.local`
 - Copy **DIRECT** connection string → `DATABASE_URL_UNPOOLED` in root `.env.example`
 
 **Example format:**
+
 ```
 DATABASE_URL=postgresql://zora_app:PASSWORD@ep-XXX-pooler.eu-central-1.aws.neon.tech/neondb?sslmode=require
 DATABASE_URL_UNPOOLED=postgresql://neondb_owner:PASSWORD@ep-XXX.eu-central-1.aws.neon.tech/neondb?sslmode=require
@@ -92,21 +102,25 @@ DATABASE_URL_UNPOOLED=postgresql://neondb_owner:PASSWORD@ep-XXX.eu-central-1.aws
 **STEP 1.2: Supabase Quick Setup (20 minutes)**
 
 **What you need:**
+
 1. Supabase account (https://supabase.com/sign_up)
 2. Create new project
 
 **From Supabase dashboard:**
+
 - Settings → API
 - Copy **Project URL** → `NEXT_PUBLIC_SUPABASE_URL`
 - Copy **anon public** → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - Copy **service_role secret** → `SUPABASE_SERVICE_ROLE_KEY`
 
 **Storage Bucket:**
+
 - Go to Storage → Create new bucket
 - Name: `mrv-evidence`
 - Set to **Private**
 
 **Add to both files:**
+
 ```
 # apps/web/.env.local
 NEXT_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
@@ -156,6 +170,7 @@ pnpm db:verify
 ```
 
 ✅ **Verification:**
+
 ```powershell
 # Open database studio
 pnpm db:studio
@@ -169,6 +184,7 @@ pnpm db:studio
 Now that database is running, start all 3 servers in parallel.
 
 ### Terminal 1: FastAPI Service
+
 ```powershell
 pnpm dev:api
 # Expected output:
@@ -178,6 +194,7 @@ pnpm dev:api
 ```
 
 **If it fails:**
+
 ```powershell
 # Check if port is in use
 netstat -ano | findstr :8000
@@ -190,6 +207,7 @@ uv run uvicorn app.main:app --reload --port 8000 --log-level debug
 ---
 
 ### Terminal 2: Next.js Web App
+
 ```powershell
 pnpm dev:web
 # Expected output:
@@ -203,6 +221,7 @@ pnpm dev:web
 ```
 
 **If it fails with prisma error:**
+
 ```powershell
 # This is expected - we use Drizzle, not Prisma
 # The error about "npx prisma generate" is from left-over config
@@ -217,6 +236,7 @@ pnpm dev
 ---
 
 ### Terminal 3: Expo Mobile App
+
 ```powershell
 pnpm dev:mobile
 # Expected output:
@@ -227,6 +247,7 @@ pnpm dev:mobile
 ```
 
 **If it fails:**
+
 ```powershell
 # Make sure Expo cache is clear
 pnpm --filter @ccsa-zora/mobile exec expo start --clear
@@ -242,12 +263,14 @@ pnpm --filter @ccsa-zora/mobile exec expo start --clear
 After starting all 3 servers, verify:
 
 - [ ] **API Health**
+
   ```powershell
   curl http://localhost:8000/health
   # Response: {"status": "ok", ...}
   ```
 
 - [ ] **API Readiness**
+
   ```powershell
   curl http://localhost:8000/ready
   # Response: {"ready": true, ...}
@@ -288,13 +311,10 @@ pnpm add -D eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin pr
 ```
 
 **Create file:** `.eslintrc.json`
+
 ```json
 {
-  "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "prettier"
-  ],
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": "latest",
@@ -308,6 +328,7 @@ pnpm add -D eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin pr
 ```
 
 **Create file:** `.prettierrc`
+
 ```json
 {
   "semi": true,
@@ -319,6 +340,7 @@ pnpm add -D eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin pr
 ```
 
 **Add to root `package.json`:**
+
 ```json
 {
   "scripts": {
@@ -346,6 +368,7 @@ npx husky add .husky/pre-commit "pnpm lint-staged"
 ```
 
 **Add to root `package.json`:**
+
 ```json
 {
   "lint-staged": {
@@ -360,19 +383,23 @@ npx husky add .husky/pre-commit "pnpm lint-staged"
 ### Win #3: Document Critical Paths (15 minutes)
 
 Create [API_QUICK_REFERENCE.md](http://API_QUICK_REFERENCE.md):
+
 ```markdown
 # API Quick Reference
 
 ## Health Check
+
 GET /health
 → {"status": "ok", ...}
 
 ## Advisory
+
 POST /api/advisory
 Body: { question: "...", context: {...} }
 → { answer: "...", confidence: 0.85, ... }
 
 ## Test Data
+
 GET /api/demo/farm
 → Returns demo farm records
 ```
@@ -382,6 +409,7 @@ GET /api/demo/farm
 ### Win #4: Setup GitHub Branch Protection (10 minutes)
 
 **In GitHub Settings → Branches:**
+
 - Require status checks to pass (once we add CI)
 - Require code reviews
 - Protect main branch
@@ -391,29 +419,36 @@ GET /api/demo/farm
 ## ⚠️ KNOWN ISSUES & QUICK FIXES
 
 ### Issue: Prisma Error on Next.js Start
+
 **Error:** `npx prisma generate`
 **Fix:** We use Drizzle, not Prisma. This is safe to ignore. The app still works.
 **Resolution:** Remove Prisma reference (optional, not urgent)
 
 ### Issue: Supabase Auth Not Working
+
 **Error:** 401/403 on API calls
 **Fix:** Make sure `NEXT_PUBLIC_SUPABASE_ANON_KEY` is correct (check Supabase dashboard)
 
 ### Issue: Mobile Camera Permission Denied
+
 **Error:** "Camera permission not granted"
 **Fix:** Go to phone settings → Apps → CCSA Zora → Permissions → Camera → Allow
 
 ### Issue: Database Connection Timeout
+
 **Error:** "timeout connecting to database"
-**Fix:** 
+**Fix:**
+
 1. Check internet connection
 2. Verify Neon project is active (not suspended)
 3. Verify DATABASE_URL in .env.local is correct
 4. Try: `psql <DATABASE_URL>` to test connection
 
 ### Issue: Port Already in Use
+
 **Error:** "Port 3000/8000/8081 is already in use"
 **Fix:**
+
 ```powershell
 # Find process using port
 netstat -ano | findstr :3000
@@ -430,18 +465,21 @@ PORT=3001 pnpm dev:web
 ## 📋 DEFERRED (Not Today, But Important)
 
 ### This Week:
+
 - [ ] Complete authentication flow (currently scaffolded)
 - [ ] Implement advisory chat properly
 - [ ] Add field scouting form
 - [ ] Offline sync mechanism
 
 ### Next Week:
+
 - [ ] Comprehensive test coverage
 - [ ] GitHub Actions CI/CD
 - [ ] Mobile build & signing
 - [ ] Production deployment prep
 
 ### Later (Phase 2):
+
 - [ ] Weather integration
 - [ ] Sensor data ingestion
 - [ ] Export/reporting features
@@ -498,14 +536,14 @@ Write-Host "  Terminal 3: pnpm dev:mobile" -ForegroundColor Yellow
 
 ## ⏱️ TIME BREAKDOWN
 
-| Phase | Duration | What |
-|-------|----------|------|
-| 0: Setup | 30 min | Dependencies + secrets |
-| 1: Database | 1 hour 30 min | Neon + Supabase + migrations |
-| 2: Validation | 10 min | Type checks + structure |
-| 3: Dev Servers | 5-10 min | Start all 3 in parallel |
-| 4: Quick Wins | 60 min | ESLint, pre-commit, docs |
-| **TOTAL** | **~3.5 hours** | **Environment ready** |
+| Phase          | Duration       | What                         |
+| -------------- | -------------- | ---------------------------- |
+| 0: Setup       | 30 min         | Dependencies + secrets       |
+| 1: Database    | 1 hour 30 min  | Neon + Supabase + migrations |
+| 2: Validation  | 10 min         | Type checks + structure      |
+| 3: Dev Servers | 5-10 min       | Start all 3 in parallel      |
+| 4: Quick Wins  | 60 min         | ESLint, pre-commit, docs     |
+| **TOTAL**      | **~3.5 hours** | **Environment ready**        |
 
 ---
 
@@ -528,18 +566,19 @@ By 2 PM today, you should have:
 ## 🆘 GETTING STUCK?
 
 **Problem:** Something doesn't work
-**Solution:** 
+**Solution:**
+
 1. Check the KNOWN ISSUES section above
 2. Run the service directly with verbose logging:
    ```powershell
    # For API
    cd apps/kgml-api
    uv run uvicorn app.main:app --reload --log-level debug
-   
+
    # For Web
    cd apps/web
    pnpm dev --debug
-   
+
    # For Mobile
    pnpm --filter @ccsa-zora/mobile exec expo start --clear
    ```
@@ -558,17 +597,17 @@ By 2 PM today, you should have:
 
 ## 📊 CURRENT PROJECT STATE
 
-| Component | Ready? | Notes |
-|-----------|--------|-------|
-| Project Structure | ✅ | Excellent |
-| Dependencies | ✅ | All specified |
-| Database Schema | ✅ | Ready to apply |
-| API Service | 🟡 | Scaffolded, needs polish |
-| Web App | 🟡 | Routes ready, features incomplete |
-| Mobile App | 🟡 | Navigation ready, features incomplete |
-| Authentication | 🟡 | SDK ready, UI incomplete |
-| Testing | ❌ | Will add later |
-| CI/CD | ❌ | Will add later |
+| Component         | Ready? | Notes                                 |
+| ----------------- | ------ | ------------------------------------- |
+| Project Structure | ✅     | Excellent                             |
+| Dependencies      | ✅     | All specified                         |
+| Database Schema   | ✅     | Ready to apply                        |
+| API Service       | 🟡     | Scaffolded, needs polish              |
+| Web App           | 🟡     | Routes ready, features incomplete     |
+| Mobile App        | 🟡     | Navigation ready, features incomplete |
+| Authentication    | 🟡     | SDK ready, UI incomplete              |
+| Testing           | ❌     | Will add later                        |
+| CI/CD             | ❌     | Will add later                        |
 
 ---
 
@@ -578,7 +617,7 @@ By 2 PM today, you should have:
 # Terminal 1 - Root directory
 pnpm dev:api                    # Watch for: "Uvicorn running"
 
-# Terminal 2 - Root directory  
+# Terminal 2 - Root directory
 pnpm dev:web                    # Watch for: "Ready in"
 
 # Terminal 3 - Root directory
@@ -598,4 +637,3 @@ pnpm dev:mobile                 # Watch for: "Metro waiting"
 **Team:** You + AI working together
 
 Good luck! 🚀
-

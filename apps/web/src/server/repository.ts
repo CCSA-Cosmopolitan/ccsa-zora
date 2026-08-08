@@ -17,11 +17,7 @@ import type {
 } from "@ccsa-zora/utils/api";
 import type { OutboxEnvelope, PushResult } from "@ccsa-zora/utils/sync";
 
-import {
-  createDemoDashboard,
-  demoFields,
-  getDemoState,
-} from "./demo-data";
+import { createDemoDashboard, demoFields, getDemoState } from "./demo-data";
 import { getDatabase } from "./database";
 import { assertProductionConfiguration } from "./env";
 
@@ -141,12 +137,7 @@ class DemoRepository implements ZoraRepository {
 }
 
 type JsonValue =
-  | null
-  | string
-  | number
-  | boolean
-  | JsonValue[]
-  | { [key: string]: JsonValue | undefined };
+  null | string | number | boolean | JsonValue[] | { [key: string]: JsonValue | undefined };
 
 function toJsonValue(value: unknown): JsonValue {
   const serialized = JSON.stringify(value);
@@ -207,9 +198,7 @@ function mapField(row: DbFieldRow): FieldSummary {
     ndvi,
     soilMoisturePercent: moisture,
     condition: conditionFor(ndvi, moisture),
-    lastEvidenceAt: row.last_evidence_at
-      ? new Date(row.last_evidence_at).toISOString()
-      : null,
+    lastEvidenceAt: row.last_evidence_at ? new Date(row.last_evidence_at).toISOString() : null,
   };
 }
 
@@ -229,7 +218,10 @@ class PostgresRepository implements ZoraRepository {
     });
   }
 
-  private async fields(transaction: DatabaseTransaction, organizationId: string): Promise<FieldSummary[]> {
+  private async fields(
+    transaction: DatabaseTransaction,
+    organizationId: string,
+  ): Promise<FieldSummary[]> {
     const rows = await transaction`
       select
         f.id,
@@ -271,9 +263,9 @@ class PostgresRepository implements ZoraRepository {
   async getDashboard(organizationId: string, userId: string): Promise<DashboardSnapshot> {
     return withDatabaseContext(organizationId, userId, "web", async (transaction) => {
       const [organizationRows, fields, sensorRows, certificateRows, auditRows] = await Promise.all([
-      transaction`select id, name from public.organizations where id = ${organizationId}::uuid`,
-      this.fields(transaction, organizationId),
-      transaction`
+        transaction`select id, name from public.organizations where id = ${organizationId}::uuid`,
+        this.fields(transaction, organizationId),
+        transaction`
         select
           count(*)::integer as total,
           count(*) filter (where last_seen_at >= now() - interval '24 hours')::integer as reporting,
@@ -281,53 +273,65 @@ class PostgresRepository implements ZoraRepository {
           count(*) filter (where status = 'offline')::integer as offline
         from public.sensor_nodes where organization_id = ${organizationId}::uuid
       `,
-      transaction`
+        transaction`
         select coalesce(sum(c.quantity_tco2e) filter (where s.current_state in ('issued', 'transferred')), 0) as verified,
                count(*) filter (where s.current_state = 'issued')::integer as pending
           from public.carbon_certificates c
           left join public.current_carbon_certificate_state s on s.certificate_id = c.id
          where c.organization_id = ${organizationId}::uuid
       `,
-      transaction`select count(*)::integer as count from public.audit_events where organization_id = ${organizationId}::uuid`,
-    ]);
-    const organization = organizationRows[0] as { id: string; name: string } | undefined;
-    if (!organization) throw new Error("Organization not found");
-    const sensors = sensorRows[0] as { total: number; reporting: number; degraded: number; offline: number };
-    const certificates = certificateRows[0] as { verified: string; pending: number };
-    const audit = auditRows[0] as { count: number };
-    const ndviValues = fields.flatMap((field) => (field.ndvi === null ? [] : [field.ndvi]));
-    const sensorAvailability = sensors.total === 0 ? 0 : (sensors.reporting / sensors.total) * 100;
+        transaction`select count(*)::integer as count from public.audit_events where organization_id = ${organizationId}::uuid`,
+      ]);
+      const organization = organizationRows[0] as { id: string; name: string } | undefined;
+      if (!organization) throw new Error("Organization not found");
+      const sensors = sensorRows[0] as {
+        total: number;
+        reporting: number;
+        degraded: number;
+        offline: number;
+      };
+      const certificates = certificateRows[0] as { verified: string; pending: number };
+      const audit = auditRows[0] as { count: number };
+      const ndviValues = fields.flatMap((field) => (field.ndvi === null ? [] : [field.ndvi]));
+      const sensorAvailability =
+        sensors.total === 0 ? 0 : (sensors.reporting / sensors.total) * 100;
       return {
-      organization,
-      generatedAt: new Date().toISOString(),
-      source: "database",
-      metrics: {
-        meanNdvi: ndviValues.length ? ndviValues.reduce((a, b) => a + b, 0) / ndviValues.length : null,
-        sensorAvailabilityPercent: sensorAvailability,
-        verifiedRemovalsTco2e: Number(certificates.verified),
-        heatRiskDays: 0,
-        signedRecordCount: audit.count,
-        pendingVerificationCount: certificates.pending,
-      },
-      sensors,
-      mrv: {
-        boundaryValidationPercent: fields.length ? 100 : 0,
-        practiceEvidenceComplete: 0,
-        practiceEvidenceRequired: fields.length,
-        sensorContinuityPercent: sensorAvailability,
-        verifierStatus: certificates.pending ? "in_review" : "not_started",
-      },
-      fields,
+        organization,
+        generatedAt: new Date().toISOString(),
+        source: "database",
+        metrics: {
+          meanNdvi: ndviValues.length
+            ? ndviValues.reduce((a, b) => a + b, 0) / ndviValues.length
+            : null,
+          sensorAvailabilityPercent: sensorAvailability,
+          verifiedRemovalsTco2e: Number(certificates.verified),
+          heatRiskDays: 0,
+          signedRecordCount: audit.count,
+          pendingVerificationCount: certificates.pending,
+        },
+        sensors,
+        mrv: {
+          boundaryValidationPercent: fields.length ? 100 : 0,
+          practiceEvidenceComplete: 0,
+          practiceEvidenceRequired: fields.length,
+          sensorContinuityPercent: sensorAvailability,
+          verifierStatus: certificates.pending ? "in_review" : "not_started",
+        },
+        fields,
       };
     });
   }
 
-  async pull(organizationId: string, userId: string, cursor: string | null): Promise<SyncPullResponse> {
+  async pull(
+    organizationId: string,
+    userId: string,
+    cursor: string | null,
+  ): Promise<SyncPullResponse> {
     return withDatabaseContext(organizationId, userId, "web", async (transaction) => {
       const serverTime = new Date().toISOString();
       const [fields, rows] = await Promise.all([
-      this.fields(transaction, organizationId),
-      transaction`
+        this.fields(transaction, organizationId),
+        transaction`
         select id, organization_id, field_id, kind, status, title, notes, severity,
                observed_at,
                extensions.ST_AsGeoJSON(location)::jsonb as location,
@@ -338,28 +342,28 @@ class PostgresRepository implements ZoraRepository {
          order by updated_at
          limit 500
       `,
-    ]);
-    const observations = rows.map((row) => {
-      const item = row as unknown as Record<string, unknown>;
-      return {
-        id: String(item.id),
-        organizationId: String(item.organization_id),
-        fieldId: String(item.field_id),
-        kind: item.kind,
-        status: item.status === "draft" ? "draft" : "submitted",
-        title: String(item.title),
-        notes: item.notes === null ? null : String(item.notes),
-        severity: item.severity === null ? null : Number(item.severity),
-        observedAt: new Date(item.observed_at as string).toISOString(),
-        location: item.location,
-        accuracyMeters: item.accuracy_meters === null ? null : Number(item.accuracy_meters),
-        deviceId: String(item.device_id),
-        payload: item.payload as Record<string, unknown>,
-        version: Number(item.version),
-        updatedAt: new Date(item.updated_at as string).toISOString(),
-        syncStatus: "synced",
-      } as ObservationRecord;
-    });
+      ]);
+      const observations = rows.map((row) => {
+        const item = row as unknown as Record<string, unknown>;
+        return {
+          id: String(item.id),
+          organizationId: String(item.organization_id),
+          fieldId: String(item.field_id),
+          kind: item.kind,
+          status: item.status === "draft" ? "draft" : "submitted",
+          title: String(item.title),
+          notes: item.notes === null ? null : String(item.notes),
+          severity: item.severity === null ? null : Number(item.severity),
+          observedAt: new Date(item.observed_at as string).toISOString(),
+          location: item.location,
+          accuracyMeters: item.accuracy_meters === null ? null : Number(item.accuracy_meters),
+          deviceId: String(item.device_id),
+          payload: item.payload as Record<string, unknown>,
+          version: Number(item.version),
+          updatedAt: new Date(item.updated_at as string).toISOString(),
+          syncStatus: "synced",
+        } as ObservationRecord;
+      });
       return { cursor: serverTime, hasMore: rows.length === 500, fields, observations, serverTime };
     });
   }
@@ -380,7 +384,11 @@ class PostgresRepository implements ZoraRepository {
           ${transaction.json(toJsonValue(envelope.payload))}::jsonb
         )
       `;
-      const receipt = rows[0] as { idempotency_key: string; server_version: number; accepted_at: Date };
+      const receipt = rows[0] as {
+        idempotency_key: string;
+        server_version: number;
+        accepted_at: Date;
+      };
       return {
         idempotencyKey: receipt.idempotency_key,
         serverVersion: receipt.server_version,
@@ -470,9 +478,7 @@ class PostgresRepository implements ZoraRepository {
   ) {
     const sessionId = randomUUID();
     const farmerMessageId = randomUUID();
-    const reasoningTraceHash = createHash("sha256")
-      .update(JSON.stringify(result))
-      .digest("hex");
+    const reasoningTraceHash = createHash("sha256").update(JSON.stringify(result)).digest("hex");
     await withDatabaseContext(organizationId, userId, "web", async (transaction) => {
       await transaction`
         insert into public.advisory_sessions (
@@ -526,7 +532,11 @@ class PostgresRepository implements ZoraRepository {
           ${transaction.json(toJsonValue(payload))}::jsonb
         )
       `;
-      const receipt = rows[0] as { idempotency_key: string; server_version: number; accepted_at: Date };
+      const receipt = rows[0] as {
+        idempotency_key: string;
+        server_version: number;
+        accepted_at: Date;
+      };
       return {
         idempotencyKey: receipt.idempotency_key,
         serverVersion: receipt.server_version,
@@ -541,9 +551,7 @@ let repository: ZoraRepository | undefined;
 export function getRepository(): ZoraRepository {
   assertProductionConfiguration();
   repository ??=
-    process.env.ZORA_DEMO_MODE === "true"
-      ? new DemoRepository()
-      : new PostgresRepository();
+    process.env.ZORA_DEMO_MODE === "true" ? new DemoRepository() : new PostgresRepository();
   return repository;
 }
 
@@ -559,7 +567,11 @@ export async function assertOrganizationAccess(
   }
 }
 
-export async function checkDatabaseReadiness(): Promise<{ ok: boolean; latencyMs: number; code: string }> {
+export async function checkDatabaseReadiness(): Promise<{
+  ok: boolean;
+  latencyMs: number;
+  code: string;
+}> {
   if (process.env.ZORA_DEMO_MODE === "true") return { ok: true, latencyMs: 0, code: "demo" };
   const startedAt = Date.now();
   try {
@@ -570,7 +582,9 @@ export async function checkDatabaseReadiness(): Promise<{ ok: boolean; latencyMs
     `;
     const rows = await Promise.race([
       query,
-      new Promise<never>((_, reject) => setTimeout(() => reject(new Error("database_timeout")), 4_000)),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("database_timeout")), 4_000),
+      ),
     ]);
     const status = rows[0] as { postgis: boolean; sync_api: boolean } | undefined;
     const ok = Boolean(status?.postgis && status.sync_api);
@@ -579,7 +593,8 @@ export async function checkDatabaseReadiness(): Promise<{ ok: boolean; latencyMs
     return {
       ok: false,
       latencyMs: Date.now() - startedAt,
-      code: error instanceof Error && error.message === "database_timeout" ? "timeout" : "unreachable",
+      code:
+        error instanceof Error && error.message === "database_timeout" ? "timeout" : "unreachable",
     };
   }
 }

@@ -18,12 +18,17 @@ export function apiError(error: unknown) {
     return NextResponse.json({ error: error.message }, { status: 403 });
   }
   const requestId = randomUUID();
-  console.error(JSON.stringify({
-    level: "error",
-    service: "ccsa-zora-web-api",
-    requestId,
-    error: error instanceof Error ? { name: error.name, message: error.message, stack: error.stack } : String(error),
-  }));
+  console.error(
+    JSON.stringify({
+      level: "error",
+      service: "ccsa-zora-web-api",
+      requestId,
+      error:
+        error instanceof Error
+          ? { name: error.name, message: error.message, stack: error.stack }
+          : String(error),
+    }),
+  );
   return NextResponse.json(
     { error: "Internal server error", requestId },
     { status: 500, headers: { "cache-control": "no-store" } },

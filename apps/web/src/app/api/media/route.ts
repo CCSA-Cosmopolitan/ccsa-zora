@@ -60,19 +60,33 @@ export async function POST(request: NextRequest) {
     const file = form.get("file");
     const metadata = form.get("metadata");
     if (!(file instanceof File) || typeof metadata !== "string") {
-      return NextResponse.json({ error: "file and metadata form fields are required" }, { status: 422 });
+      return NextResponse.json(
+        { error: "file and metadata form fields are required" },
+        { status: 422 },
+      );
     }
-    const envelope = mediaEnvelopeSchema.parse(JSON.parse(metadata)) as OutboxEnvelope<ObservationMediaPayload>;
+    const envelope = mediaEnvelopeSchema.parse(
+      JSON.parse(metadata),
+    ) as OutboxEnvelope<ObservationMediaPayload>;
     if (request.headers.get("idempotency-key") !== envelope.idempotencyKey) {
-      return NextResponse.json({ error: "Idempotency-Key header must match metadata" }, { status: 422 });
+      return NextResponse.json(
+        { error: "Idempotency-Key header must match metadata" },
+        { status: 422 },
+      );
     }
     if (file.size !== envelope.payload.byteSize || file.type !== envelope.payload.mimeType) {
-      return NextResponse.json({ error: "Media size or type does not match metadata" }, { status: 422 });
+      return NextResponse.json(
+        { error: "Media size or type does not match metadata" },
+        { status: 422 },
+      );
     }
     const bytes = Buffer.from(await file.arrayBuffer());
     const hash = createHash("sha256").update(bytes).digest("hex");
     if (hash !== envelope.payload.sha256.toLowerCase()) {
-      return NextResponse.json({ error: "Media SHA-256 does not match the uploaded content" }, { status: 422 });
+      return NextResponse.json(
+        { error: "Media SHA-256 does not match the uploaded content" },
+        { status: 422 },
+      );
     }
     const repository = getRepository();
     await assertOrganizationAccess(repository, envelope.payload.organizationId, principal.userId);

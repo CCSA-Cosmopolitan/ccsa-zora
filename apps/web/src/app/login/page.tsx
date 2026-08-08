@@ -45,7 +45,11 @@ export default function LoginPage() {
     const assurance = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
     const factors = await supabase.auth.mfa.listFactors();
     if (assurance.error || !assurance.data || factors.error || !factors.data) {
-      setError(assurance.error?.message ?? factors.error?.message ?? "Unable to verify the session assurance level.");
+      setError(
+        assurance.error?.message ??
+          factors.error?.message ??
+          "Unable to verify the session assurance level.",
+      );
       return;
     }
     if (assurance.data.currentLevel === "aal2") {
@@ -100,18 +104,28 @@ export default function LoginPage() {
       <section className="zora-grid relative hidden overflow-hidden bg-zora-deep p-10 text-white lg:flex lg:flex-col lg:justify-between">
         <div className="absolute -right-28 top-10 size-96 rounded-full bg-zora-sun/15 blur-3xl" />
         <div className="relative w-fit rounded-2xl bg-white px-4 py-3 shadow-2xl">
-          <Image alt="Zora - Your AI farming companion" className="h-auto w-[380px]" height={432} priority src="/brand/zora-wordmark.jpeg" width={1080} />
+          <Image
+            alt="Zora - Your AI farming companion"
+            className="h-auto w-[380px]"
+            height={432}
+            priority
+            src="/brand/zora-wordmark.jpeg"
+            width={1080}
+          />
         </div>
         <div className="relative max-w-xl">
           <div className="flex items-center gap-2 text-zora-sun">
             <Sparkles className="size-5" />
-            <span className="text-xs font-bold uppercase tracking-[0.2em]">Agricultural Super Intelligence</span>
+            <span className="text-xs font-bold uppercase tracking-[0.2em]">
+              Agricultural Super Intelligence
+            </span>
           </div>
           <h1 className="mt-4 text-5xl font-semibold leading-[1.04] tracking-[-0.04em]">
             Expert farm knowledge, in every farmer&apos;s language.
           </h1>
           <p className="mt-5 max-w-lg text-base leading-7 text-emerald-50/65">
-            CCSA Zora connects farmers, extension teams, researchers, climate intelligence, GIS, and KGML-Ag in one trusted companion.
+            CCSA Zora connects farmers, extension teams, researchers, climate intelligence, GIS, and
+            KGML-Ag in one trusted companion.
           </p>
           <div className="mt-8 grid grid-cols-2 gap-3">
             <LoginFeature icon={Languages} text="Five Nigerian language experiences" />
@@ -126,9 +140,23 @@ export default function LoginPage() {
       <section className="flex items-center justify-center p-5 md:p-10">
         <Card className="w-full max-w-md border-zora-forest/15 shadow-2xl shadow-zora-deep/10">
           <CardHeader>
-            <Image alt="Zora" className="mb-3 h-auto w-16 rounded-xl lg:hidden" height={806} src="/brand/zora-square.jpeg" width={827} />
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-zora-forest">CCSA Zora Intelligence</p>
-            <CardTitle className="text-2xl">{factorId ? "Secure verification" : demoMode ? "Explore the Zora workspace" : "Welcome back"}</CardTitle>
+            <Image
+              alt="Zora"
+              className="mb-3 h-auto w-16 rounded-xl lg:hidden"
+              height={806}
+              src="/brand/zora-square.jpeg"
+              width={827}
+            />
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-zora-forest">
+              CCSA Zora Intelligence
+            </p>
+            <CardTitle className="text-2xl">
+              {factorId
+                ? "Secure verification"
+                : demoMode
+                  ? "Explore the Zora workspace"
+                  : "Welcome back"}
+            </CardTitle>
             <p className="text-sm leading-6 text-muted-foreground">
               {enrollmentQrCode
                 ? "Scan this QR code in your authenticator app, then enter the six-digit code."
@@ -148,76 +176,100 @@ export default function LoginPage() {
                   </span>
                   <div>
                     <p className="font-semibold text-zora-deep">Demonstration access</p>
-                    <p className="mt-1 text-xs leading-5 text-muted-foreground">Explore representative field, advisory, sensor, and digital MRV workflows. No email or password is required.</p>
+                    <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                      Explore representative field, advisory, sensor, and digital MRV workflows. No
+                      email or password is required.
+                    </p>
                   </div>
                 </div>
                 <Button asChild className="mt-5 h-11 w-full rounded-xl">
-                  <Link href="/dashboard">Open demo workspace <ArrowRight /></Link>
+                  <Link href="/dashboard">
+                    Open demo workspace <ArrowRight />
+                  </Link>
                 </Button>
               </div>
             ) : (
               <form className="space-y-4" onSubmit={factorId ? verifyMfa : signIn}>
-              {factorId ? (
-                <>
-                  {enrollmentQrCode ? (
-                    <div className="rounded-xl border border-zora-forest/15 bg-white p-3 text-center">
-                      {/* Supabase returns a self-contained data URI for this user-specific TOTP QR code. */}
-                      <img alt="Authenticator enrollment QR code" className="mx-auto size-44" src={enrollmentQrCode} />
-                      <p className="mt-2 text-xs text-muted-foreground">Manual setup key</p>
-                      <code className="mt-1 block break-all text-xs font-semibold text-zora-deep">{enrollmentSecret}</code>
-                    </div>
-                  ) : null}
-                  <label className="block text-sm font-semibold">
-                    Authenticator code
-                    <input
-                      autoComplete="one-time-code"
-                      className="mt-1.5 h-11 w-full rounded-xl border border-input bg-card px-3 font-mono font-normal tracking-[0.3em] outline-none focus:ring-2 focus:ring-ring"
-                      inputMode="numeric"
-                      maxLength={6}
-                      onChange={(event) => setVerificationCode(event.target.value.replace(/\D/g, ""))}
-                      required
-                      value={verificationCode}
-                    />
-                  </label>
-                </>
-              ) : (
-                <>
-                  <label className="block text-sm font-semibold">
-                    Email
-                    <input
-                      autoComplete="email"
-                      className="mt-1.5 h-11 w-full rounded-xl border border-input bg-card px-3 font-normal outline-none focus:ring-2 focus:ring-ring"
-                      onChange={(event) => setEmail(event.target.value)}
-                      required
-                      type="email"
-                      value={email}
-                    />
-                  </label>
-                  <label className="block text-sm font-semibold">
-                    Password
-                    <input
-                      autoComplete="current-password"
-                      className="mt-1.5 h-11 w-full rounded-xl border border-input bg-card px-3 font-normal outline-none focus:ring-2 focus:ring-ring"
-                      minLength={8}
-                      onChange={(event) => setPassword(event.target.value)}
-                      required
-                      type="password"
-                      value={password}
-                    />
-                  </label>
-                </>
-              )}
-              {error ? <p className="rounded-xl bg-destructive/10 p-3 text-sm text-destructive">{error}</p> : null}
-              <Button className="h-11 w-full rounded-xl" disabled={submitting} type="submit">
-                {submitting ? "Verifying…" : factorId ? "Verify and continue" : "Enter Zora workspace"}
-              </Button>
+                {factorId ? (
+                  <>
+                    {enrollmentQrCode ? (
+                      <div className="rounded-xl border border-zora-forest/15 bg-white p-3 text-center">
+                        {/* Supabase returns a self-contained data URI for this user-specific TOTP QR code. */}
+                        <img
+                          alt="Authenticator enrollment QR code"
+                          className="mx-auto size-44"
+                          src={enrollmentQrCode}
+                        />
+                        <p className="mt-2 text-xs text-muted-foreground">Manual setup key</p>
+                        <code className="mt-1 block break-all text-xs font-semibold text-zora-deep">
+                          {enrollmentSecret}
+                        </code>
+                      </div>
+                    ) : null}
+                    <label className="block text-sm font-semibold">
+                      Authenticator code
+                      <input
+                        autoComplete="one-time-code"
+                        className="mt-1.5 h-11 w-full rounded-xl border border-input bg-card px-3 font-mono font-normal tracking-[0.3em] outline-none focus:ring-2 focus:ring-ring"
+                        inputMode="numeric"
+                        maxLength={6}
+                        onChange={(event) =>
+                          setVerificationCode(event.target.value.replace(/\D/g, ""))
+                        }
+                        required
+                        value={verificationCode}
+                      />
+                    </label>
+                  </>
+                ) : (
+                  <>
+                    <label className="block text-sm font-semibold">
+                      Email
+                      <input
+                        autoComplete="email"
+                        className="mt-1.5 h-11 w-full rounded-xl border border-input bg-card px-3 font-normal outline-none focus:ring-2 focus:ring-ring"
+                        onChange={(event) => setEmail(event.target.value)}
+                        required
+                        type="email"
+                        value={email}
+                      />
+                    </label>
+                    <label className="block text-sm font-semibold">
+                      Password
+                      <input
+                        autoComplete="current-password"
+                        className="mt-1.5 h-11 w-full rounded-xl border border-input bg-card px-3 font-normal outline-none focus:ring-2 focus:ring-ring"
+                        minLength={8}
+                        onChange={(event) => setPassword(event.target.value)}
+                        required
+                        type="password"
+                        value={password}
+                      />
+                    </label>
+                  </>
+                )}
+                {error ? (
+                  <p className="rounded-xl bg-destructive/10 p-3 text-sm text-destructive">
+                    {error}
+                  </p>
+                ) : null}
+                <Button className="h-11 w-full rounded-xl" disabled={submitting} type="submit">
+                  {submitting
+                    ? "Verifying…"
+                    : factorId
+                      ? "Verify and continue"
+                      : "Enter Zora workspace"}
+                </Button>
               </form>
             )}
 
             {!factorId ? (
               <div className="mt-5 border-t border-zora-forest/10 pt-5 text-center">
                 <p className="text-xs text-muted-foreground">Need an organization account?</p>
-                <Link className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-zora-forest underline-offset-4 hover:underline" href="/request-access">
+                <Link
+                  className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-zora-forest underline-offset-4 hover:underline"
+                  href="/request-access"
+                >
                   <UserPlus className="size-4" /> Request workspace access
                 </Link>
               </div>
@@ -232,7 +284,9 @@ export default function LoginPage() {
 function LoginFeature({ icon: Icon, text }: { icon: typeof Languages; text: string }) {
   return (
     <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/7 p-3.5">
-      <span className="flex size-9 items-center justify-center rounded-xl bg-white/10 text-zora-sun"><Icon className="size-4" /></span>
+      <span className="flex size-9 items-center justify-center rounded-xl bg-white/10 text-zora-sun">
+        <Icon className="size-4" />
+      </span>
       <span className="text-xs leading-5 text-emerald-50/75">{text}</span>
     </div>
   );

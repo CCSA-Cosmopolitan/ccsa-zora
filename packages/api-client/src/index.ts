@@ -82,10 +82,7 @@ export function createZoraClient(options: ZoraClientOptions = {}) {
         body: JSON.stringify(envelope),
       });
     },
-    uploadObservationMedia(
-      envelope: OutboxEnvelope<ObservationMediaPayload>,
-      file: Blob,
-    ) {
+    uploadObservationMedia(envelope: OutboxEnvelope<ObservationMediaPayload>, file: Blob) {
       const form = new FormData();
       form.append("metadata", JSON.stringify(envelope));
       form.append("file", file);

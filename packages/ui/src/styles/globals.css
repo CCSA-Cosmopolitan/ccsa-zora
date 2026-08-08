@@ -147,8 +147,18 @@
 
   .zora-contours {
     background-image:
-      repeating-radial-gradient(ellipse at 88% 18%, transparent 0 24px, rgb(237 175 29 / 10%) 25px 26px, transparent 27px 43px),
-      repeating-radial-gradient(ellipse at 5% 88%, transparent 0 30px, rgb(117 197 107 / 8%) 31px 32px, transparent 33px 52px);
+      repeating-radial-gradient(
+        ellipse at 88% 18%,
+        transparent 0 24px,
+        rgb(237 175 29 / 10%) 25px 26px,
+        transparent 27px 43px
+      ),
+      repeating-radial-gradient(
+        ellipse at 5% 88%,
+        transparent 0 30px,
+        rgb(117 197 107 / 8%) 31px 32px,
+        transparent 33px 52px
+      );
   }
 
   .zora-hero-landscape::after {
@@ -162,7 +172,12 @@
 
   .zora-field-plot {
     background-image:
-      linear-gradient(112deg, transparent 0 42%, rgb(255 255 255 / 38%) 42.5% 44%, transparent 44.5%),
+      linear-gradient(
+        112deg,
+        transparent 0 42%,
+        rgb(255 255 255 / 38%) 42.5% 44%,
+        transparent 44.5%
+      ),
       repeating-linear-gradient(18deg, rgb(6 61 42 / 7%) 0 2px, transparent 2px 18px),
       radial-gradient(circle at 80% 15%, rgb(237 175 29 / 45%), transparent 20rem);
   }

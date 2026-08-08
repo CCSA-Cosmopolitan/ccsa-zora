@@ -75,18 +75,13 @@ export class FieldScoutingSyncEngine {
               row.entity_id,
             );
           }
-          await transaction.runAsync(
-            "DELETE FROM sync_outbox WHERE id = ?;",
-            row.id,
-          );
+          await transaction.runAsync("DELETE FROM sync_outbox WHERE id = ?;", row.id);
         });
         pushed += 1;
       } catch (error) {
         const attempts = row.attempt_count + 1;
         const backoffSeconds = Math.min(900, 2 ** attempts);
-        const nextAttempt = new Date(
-          Date.now() + backoffSeconds * 1_000,
-        ).toISOString();
+        const nextAttempt = new Date(Date.now() + backoffSeconds * 1_000).toISOString();
 
         await this.db.runAsync(
           `UPDATE sync_outbox

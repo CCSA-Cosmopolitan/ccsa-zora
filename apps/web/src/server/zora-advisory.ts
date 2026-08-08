@@ -1,10 +1,6 @@
 import { createHash, randomUUID } from "node:crypto";
 
-import type {
-  ZoraAdvisoryInput,
-  ZoraAdvisoryResult,
-  ZoraLanguage,
-} from "@ccsa-zora/utils/api";
+import type { ZoraAdvisoryInput, ZoraAdvisoryResult, ZoraLanguage } from "@ccsa-zora/utils/api";
 
 const localizedLead: Record<ZoraLanguage, string> = {
   en: "Based on the field context, this needs a focused inspection before treatment.",
@@ -35,7 +31,11 @@ const patterns: AdvisoryPattern[] = [
       "Capture a close, well-lit image of affected and healthy plants.",
       "Check recent rainfall and soil moisture before applying nitrogen.",
     ],
-    knowledgeBasis: ["KGML-Ag: maize nutrition", "Field moisture context", "CCSA crop health protocol"],
+    knowledgeBasis: [
+      "KGML-Ag: maize nutrition",
+      "Field moisture context",
+      "CCSA crop health protocol",
+    ],
     followUp: "Recheck the affected zone in 48 hours and escalate if symptoms spread.",
   },
   {
@@ -75,7 +75,8 @@ const patterns: AdvisoryPattern[] = [
       "Contact a veterinary professional for diagnosis and treatment.",
     ],
     knowledgeBasis: ["KGML-Ag: livestock health", "Biosecurity protocol", "Farmer observation"],
-    followUp: "Seek urgent veterinary help for breathing difficulty, collapse, or rapid deterioration.",
+    followUp:
+      "Seek urgent veterinary help for breathing difficulty, collapse, or rapid deterioration.",
   },
 ];
 

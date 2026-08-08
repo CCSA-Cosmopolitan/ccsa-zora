@@ -17,11 +17,17 @@ export function getSupabaseClient() {
   if (client !== undefined) return client;
   const url = process.env.EXPO_PUBLIC_SUPABASE_URL;
   const anonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
-  client = url && anonKey
-    ? createClient(url, anonKey, {
-        auth: { storage, autoRefreshToken: true, persistSession: true, detectSessionInUrl: false },
-      })
-    : null;
+  client =
+    url && anonKey
+      ? createClient(url, anonKey, {
+          auth: {
+            storage,
+            autoRefreshToken: true,
+            persistSession: true,
+            detectSessionInUrl: false,
+          },
+        })
+      : null;
   return client;
 }
 

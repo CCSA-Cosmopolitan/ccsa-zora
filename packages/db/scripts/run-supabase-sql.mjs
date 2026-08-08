@@ -1,17 +1,32 @@
-import { spawnSync } from "node:child_process";
+import fs from "node:fs";
 import { resolve } from "node:path";
+import postgres from "postgres";
 
 const [, , relativeSqlPath] = process.argv;
 const databaseUrl = process.env.SUPABASE_DATABASE_URL;
 
-if (!relativeSqlPath) throw new Error("Usage: node scripts/run-supabase-sql.mjs <relative-sql-file>");
-if (!databaseUrl) throw new Error("SUPABASE_DATABASE_URL is required for Supabase Auth/Storage setup SQL.");
+if (!relativeSqlPath) {
+  throw new Error("Usage: node scripts/run-supabase-sql.mjs <relative-sql-file>");
+}
 
-const result = spawnSync(
-  "psql",
-  ["--dbname", databaseUrl, "--set", "ON_ERROR_STOP=1", "--file", resolve(process.cwd(), relativeSqlPath)],
-  { stdio: "inherit", shell: false },
-);
+if (!databaseUrl) {
+  throw new Error("SUPABASE_DATABASE_URL is required for Supabase Auth/Storage setup SQL.");
+}
 
-if (result.error) throw result.error;
-process.exit(result.status ?? 1);
+const sqlPath = resolve(process.cwd(), relativeSqlPath);
+console.log(`Running Supabase SQL script: ${relativeSqlPath}`);
+
+try {
+  const sqlContent = fs.readFileSync(sqlPath, "utf8");
+  const sql = postgres(databaseUrl);
+
+  // Execute the multi-statement raw SQL string directly in Supabase
+  await sql.unsafe(sqlContent);
+  await sql.end();
+
+  console.log(`Supabase SQL script ${relativeSqlPath} executed successfully.`);
+  process.exit(0);
+} catch (error) {
+  console.error(`Error executing Supabase SQL script ${relativeSqlPath}:`, error);
+  process.exit(1);
+}

@@ -20,9 +20,12 @@ jobs:
           node-version: 22.14.0
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm format:check
       - run: pnpm audit --prod --audit-level moderate
       - run: pnpm validate:structure
       - run: pnpm typecheck
+      - run: pnpm --filter @ccsa-zora/web test
       - run: pnpm --filter @ccsa-zora/mobile exec expo install --check
       - run: pnpm --filter @ccsa-zora/mobile exec expo export --platform android --output-dir dist-android
       - run: pnpm --filter @ccsa-zora/mobile exec expo export --platform ios --output-dir dist-ios

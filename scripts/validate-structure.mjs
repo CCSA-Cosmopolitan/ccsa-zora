@@ -21,7 +21,9 @@ function walk(directory) {
   for (const entry of readdirSync(directory, { withFileTypes: true })) {
     if (
       entry.isDirectory() &&
-      (ignoredDirectories.has(entry.name) || entry.name.startsWith(".next-") || entry.name.startsWith("dist-"))
+      (ignoredDirectories.has(entry.name) ||
+        entry.name.startsWith(".next-") ||
+        entry.name.startsWith("dist-"))
     ) {
       continue;
     }
@@ -44,9 +46,7 @@ for (const jsonPath of files.filter((path) => extname(path) === ".json")) {
 const unresolved = [];
 const importPattern = /from\s+["'](\.[^"']+)["']/g;
 
-for (const sourcePath of files.filter((path) =>
-  sourceExtensions.has(extname(path)),
-)) {
+for (const sourcePath of files.filter((path) => sourceExtensions.has(extname(path)))) {
   const source = readFileSync(sourcePath, "utf8");
 
   for (const match of source.matchAll(importPattern)) {

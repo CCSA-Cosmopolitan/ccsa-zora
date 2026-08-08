@@ -12,23 +12,22 @@ export const ACCESS_REQUEST_ROLES = [
   "other",
 ] as const;
 
-export const accessRequestInputSchema = z.object({
-  fullName: z.string().trim().min(2).max(120),
-  email: z.string().trim().toLowerCase().email().max(254),
-  organizationName: z.string().trim().min(2).max(180),
-  requestedRole: z.enum(ACCESS_REQUEST_ROLES),
-  country: z.string().trim().max(100).optional().default(""),
-  useCase: z.string().trim().min(20).max(1_200),
-  consent: z.literal(true),
-  website: z.string().max(0).optional().default(""),
-}).strict();
+export const accessRequestInputSchema = z
+  .object({
+    fullName: z.string().trim().min(2).max(120),
+    email: z.string().trim().toLowerCase().email().max(254),
+    organizationName: z.string().trim().min(2).max(180),
+    requestedRole: z.enum(ACCESS_REQUEST_ROLES),
+    country: z.string().trim().max(100).optional().default(""),
+    useCase: z.string().trim().min(20).max(1_200),
+    consent: z.literal(true),
+    website: z.string().max(0).optional().default(""),
+  })
+  .strict();
 
 const pointSchema = z.object({
   type: z.literal("Point"),
-  coordinates: z.tuple([
-    z.number().min(-180).max(180),
-    z.number().min(-90).max(90),
-  ]),
+  coordinates: z.tuple([z.number().min(-180).max(180), z.number().min(-90).max(90)]),
 });
 
 export const observationPayloadSchema = z.object({
@@ -59,18 +58,21 @@ export const outboxEnvelopeSchema = z.object({
 });
 
 export const sensorIngestionSchema = z.object({
-  readings: z.array(
-    z.object({
-      sensorHardwareId: z.string().trim().min(1).max(200),
-      observedAt: z.string().datetime({ offset: true }),
-      sequenceNumber: z.number().int().min(0).optional(),
-      metrics: z.record(
-        z.string().trim().min(1).max(100),
-        z.object({ value: z.number().finite(), unit: z.string().trim().min(1).max(50) }),
-      ),
-      rawPayload: z.record(z.string(), z.unknown()).optional(),
-    }),
-  ).min(1).max(500),
+  readings: z
+    .array(
+      z.object({
+        sensorHardwareId: z.string().trim().min(1).max(200),
+        observedAt: z.string().datetime({ offset: true }),
+        sequenceNumber: z.number().int().min(0).optional(),
+        metrics: z.record(
+          z.string().trim().min(1).max(100),
+          z.object({ value: z.number().finite(), unit: z.string().trim().min(1).max(50) }),
+        ),
+        rawPayload: z.record(z.string(), z.unknown()).optional(),
+      }),
+    )
+    .min(1)
+    .max(500),
 });
 
 export const kgmlInferenceSchema = z.object({
@@ -106,7 +108,11 @@ export const mediaEnvelopeSchema = z.object({
     fieldId: z.string().uuid(),
     localUri: z.string().min(1),
     mimeType: z.enum(["image/jpeg", "image/png", "image/heic", "image/webp"]),
-    byteSize: z.number().int().positive().max(4 * 1024 * 1024),
+    byteSize: z
+      .number()
+      .int()
+      .positive()
+      .max(4 * 1024 * 1024),
     sha256: z.string().regex(/^[a-f0-9]{64}$/i),
     capturedAt: z.string().datetime({ offset: true }),
     captureMetadata: z.record(z.string(), z.unknown()).optional(),

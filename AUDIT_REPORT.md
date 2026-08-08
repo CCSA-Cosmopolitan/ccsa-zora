@@ -1,4 +1,5 @@
 # CCSA Zora - Comprehensive Audit Report
+
 **Date:** August 5, 2025  
 **Project Version:** 0.1.0  
 **Audit Scope:** Full monorepo structure, configurations, dependencies, and feature completeness
@@ -10,6 +11,7 @@
 **Overall Status:** ⚠️ **IN DEVELOPMENT** - Core infrastructure is solid, but local environment setup is incomplete and several features are partially implemented.
 
 **Key Findings:**
+
 - ✅ Project structure and architecture are well-designed and documented
 - ✅ Monorepo setup with proper workspace configuration
 - ✅ Deployment configurations (Vercel, EAS) are in place
@@ -25,6 +27,7 @@
 ### Status: ✅ EXCELLENT
 
 **Strengths:**
+
 - Clean monorepo structure using pnpm workspaces
 - Well-organized package layout with proper separation of concerns
 - Clear app hierarchy: web (Next.js) → API (FastAPI) → mobile (Expo)
@@ -131,6 +134,7 @@
 ### Status: ✅ EXCELLENT
 
 **Strengths:**
+
 - TypeScript 6.0.3 with strict mode enabled
 - Turbo 2.10.6 for monorepo orchestration
 - Proper pnpm workspace configuration
@@ -138,23 +142,24 @@
 
 ### Version Tracking:
 
-| Component | Version | Status |
-|-----------|---------|--------|
-| Node.js | 22.13.0+ | ✅ |
-| pnpm | 10.11.1 | ✅ |
-| TypeScript | 6.0.3 | ✅ |
-| React | catalog | ✅ |
-| React DOM | catalog | ✅ |
-| Next.js | 16.2.12 | ✅ |
-| Expo | ~57.0.10 | ✅ |
-| FastAPI | >=0.116,<1.0 | ✅ |
-| Python | >=3.12 | ✅ |
-| Drizzle ORM | 0.45.2 | ✅ |
-| TanStack Query | 5.101.4 | ✅ |
-| Zustand | 5.0.14 | ✅ |
-| Tailwind CSS | 4.3.3 | ✅ |
+| Component      | Version      | Status |
+| -------------- | ------------ | ------ |
+| Node.js        | 22.13.0+     | ✅     |
+| pnpm           | 10.11.1      | ✅     |
+| TypeScript     | 6.0.3        | ✅     |
+| React          | catalog      | ✅     |
+| React DOM      | catalog      | ✅     |
+| Next.js        | 16.2.12      | ✅     |
+| Expo           | ~57.0.10     | ✅     |
+| FastAPI        | >=0.116,<1.0 | ✅     |
+| Python         | >=3.12       | ✅     |
+| Drizzle ORM    | 0.45.2       | ✅     |
+| TanStack Query | 5.101.4      | ✅     |
+| Zustand        | 5.0.14       | ✅     |
+| Tailwind CSS   | 4.3.3        | ✅     |
 
 **Key Dependencies Present:**
+
 - ✅ Geospatial: PostGIS, Deck.gl, MapLibre, React Native Maps
 - ✅ Authentication: Supabase Auth
 - ✅ Storage: Supabase Storage
@@ -173,13 +178,14 @@
 
 ### 3.1 Missing `.env.local` Files
 
-| File | Status | Impact |
-|------|--------|--------|
-| `apps/web/.env.local` | ❌ MISSING | Cannot start Next.js dev server |
-| `apps/mobile/.env.local` | ❌ MISSING | Cannot start Expo app |
-| `apps/kgml-api/.env` | ❌ MISSING | Cannot start FastAPI server |
+| File                     | Status     | Impact                          |
+| ------------------------ | ---------- | ------------------------------- |
+| `apps/web/.env.local`    | ❌ MISSING | Cannot start Next.js dev server |
+| `apps/mobile/.env.local` | ❌ MISSING | Cannot start Expo app           |
+| `apps/kgml-api/.env`     | ❌ MISSING | Cannot start FastAPI server     |
 
 **Action Required:**
+
 ```powershell
 # Copy environment templates
 Copy-Item apps/web/.env.example apps/web/.env.local
@@ -189,6 +195,7 @@ Copy-Item apps/mobile/.env.example apps/mobile/.env.local
 ### 3.2 Required Environment Variables
 
 **Web App (`apps/web/.env.local`) - REQUIRED:**
+
 - ❌ `DATABASE_URL` - Neon pooled connection string (placeholder exists)
 - ❌ `NEXT_PUBLIC_SUPABASE_URL` - Supabase URL (placeholder exists)
 - ❌ `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Supabase auth key (placeholder exists)
@@ -198,19 +205,20 @@ Copy-Item apps/mobile/.env.example apps/mobile/.env.local
 - ❌ `IOT_INGEST_SECRET` - 32+ random characters (placeholder exists)
 
 **Mobile App (`apps/mobile/.env.local`) - REQUIRED:**
+
 - ❌ `EXPO_PUBLIC_API_URL` - Web server address (default: http://192.168.1.10:3000)
 - ❌ `EXPO_PUBLIC_SUPABASE_URL` - Supabase URL
 - ❌ `EXPO_PUBLIC_SUPABASE_ANON_KEY` - Supabase key
 
 ### 3.3 Missing Service Configurations
 
-| Service | Status | Issue |
-|---------|--------|-------|
-| **Neon PostgreSQL** | ❌ | No DATABASE_URL configured |
-| **Supabase Project** | ❌ | No Supabase URL/keys configured |
-| **Supabase Storage Bucket** | ❌ | `mrv-evidence` bucket not created |
-| **KGML Service Key** | ❌ | Placeholder value only |
-| **IoT Ingest Secret** | ❌ | Placeholder value only |
+| Service                     | Status | Issue                             |
+| --------------------------- | ------ | --------------------------------- |
+| **Neon PostgreSQL**         | ❌     | No DATABASE_URL configured        |
+| **Supabase Project**        | ❌     | No Supabase URL/keys configured   |
+| **Supabase Storage Bucket** | ❌     | `mrv-evidence` bucket not created |
+| **KGML Service Key**        | ❌     | Placeholder value only            |
+| **IoT Ingest Secret**       | ❌     | Placeholder value only            |
 
 ---
 
@@ -220,16 +228,16 @@ Copy-Item apps/mobile/.env.example apps/mobile/.env.local
 
 **Database Schema Status:**
 
-| Component | Status | Details |
-|-----------|--------|---------|
-| Drizzle Configuration | ✅ | `drizzle.config.ts` configured |
-| Migration Files | ⚠️ | 3 migrations present but not applied |
-| SQL Extensions | ✅ | PostGIS + pgcrypto setup scripts ready |
-| Security Functions | ✅ | Immutable record triggers defined |
-| API Functions | ✅ | Helper functions scripted |
-| Demo Seed Data | ✅ | `0004_seed_demo.sql` available |
-| Supabase RLS | ✅ | RLS policies scripted |
-| Storage Config | ✅ | Evidence bucket setup scripted |
+| Component             | Status | Details                                |
+| --------------------- | ------ | -------------------------------------- |
+| Drizzle Configuration | ✅     | `drizzle.config.ts` configured         |
+| Migration Files       | ⚠️     | 3 migrations present but not applied   |
+| SQL Extensions        | ✅     | PostGIS + pgcrypto setup scripts ready |
+| Security Functions    | ✅     | Immutable record triggers defined      |
+| API Functions         | ✅     | Helper functions scripted              |
+| Demo Seed Data        | ✅     | `0004_seed_demo.sql` available         |
+| Supabase RLS          | ✅     | RLS policies scripted                  |
+| Storage Config        | ✅     | Evidence bucket setup scripted         |
 
 **Missing Actions:**
 
@@ -241,6 +249,7 @@ Copy-Item apps/mobile/.env.example apps/mobile/.env.local
 6. ❌ Demo data not seeded
 
 **DB Deployment Checklist:**
+
 ```powershell
 # Required commands (in order):
 pnpm db:prepare          # Enable PostGIS, pgcrypto
@@ -254,6 +263,7 @@ pnpm db:verify           # Verify production readiness
 ```
 
 **Schema Entities Defined:**
+
 - Core tables present in schema (see `packages/db/src/schema/core.ts`)
 - PostGIS spatial support configured
 - Append-only audit chains ready
@@ -267,17 +277,17 @@ pnpm db:verify           # Verify production readiness
 
 **Implementation Status:**
 
-| Component | File | Status | Details |
-|-----------|------|--------|---------|
-| FastAPI App | `main.py` | ✅ | Entry point, security headers, middleware configured |
-| Health Check | `main.py` | ✅ | `GET /health` endpoint |
-| Readiness Check | `main.py` | ✅ | `GET /ready` endpoint with dependencies |
-| Advisory Service | `advisory.py` | ⚠️ | Implementation present but incomplete |
-| ML Model | `model.py` | ⚠️ | `infer_soil_carbon` function present but untested |
-| Tests | `tests/test_api.py` | ❌ | Test file exists but coverage unknown |
-| Type Checking | `pyproject.toml` | ✅ | MyPy strict mode enabled |
-| Docker Support | `Dockerfile` | ✅ | Production Dockerfile included |
-| Vercel Deploy | `vercel.json` | ✅ | Configuration ready |
+| Component        | File                | Status | Details                                              |
+| ---------------- | ------------------- | ------ | ---------------------------------------------------- |
+| FastAPI App      | `main.py`           | ✅     | Entry point, security headers, middleware configured |
+| Health Check     | `main.py`           | ✅     | `GET /health` endpoint                               |
+| Readiness Check  | `main.py`           | ✅     | `GET /ready` endpoint with dependencies              |
+| Advisory Service | `advisory.py`       | ⚠️     | Implementation present but incomplete                |
+| ML Model         | `model.py`          | ⚠️     | `infer_soil_carbon` function present but untested    |
+| Tests            | `tests/test_api.py` | ❌     | Test file exists but coverage unknown                |
+| Type Checking    | `pyproject.toml`    | ✅     | MyPy strict mode enabled                             |
+| Docker Support   | `Dockerfile`        | ✅     | Production Dockerfile included                       |
+| Vercel Deploy    | `vercel.json`       | ✅     | Configuration ready                                  |
 
 **Issues:**
 
@@ -287,6 +297,7 @@ pnpm db:verify           # Verify production readiness
 4. ⚠️ No integration test with web app
 
 **Verification Needed:**
+
 ```powershell
 cd apps/kgml-api
 uv run python -m pytest                    # Run tests
@@ -303,34 +314,35 @@ uv run uvicorn app.main:app --reload      # Start server locally
 
 **Feature Modules:**
 
-| Module | Status | Components | Notes |
-|--------|--------|------------|-------|
-| `assistant/` | ⚠️ | AI advisory interface | Scaffolded, needs feature implementation |
-| `dashboard/` | ⚠️ | Command centre UI | Layout ready, features pending |
-| `maps/` | ⚠️ | Geospatial visualization | MapLibre + Deck.gl configured, needs features |
+| Module       | Status | Components               | Notes                                         |
+| ------------ | ------ | ------------------------ | --------------------------------------------- |
+| `assistant/` | ⚠️     | AI advisory interface    | Scaffolded, needs feature implementation      |
+| `dashboard/` | ⚠️     | Command centre UI        | Layout ready, features pending                |
+| `maps/`      | ⚠️     | Geospatial visualization | MapLibre + Deck.gl configured, needs features |
 
 **Page Routes:**
 
-| Route | File | Status | Details |
-|-------|------|--------|---------|
-| `/` | `page.tsx` | ✅ | Public landing page |
-| `/login` | `login/` | ✅ | Auth entry point |
-| `/dashboard` | `dashboard/` | ⚠️ | Authenticated workspace (scaffolded) |
-| `/request-access` | `request-access/` | ⚠️ | Onboarding flow (scaffolded) |
-| `/api/*` | `api/` | ✅ | API routes directory ready |
+| Route             | File              | Status | Details                              |
+| ----------------- | ----------------- | ------ | ------------------------------------ |
+| `/`               | `page.tsx`        | ✅     | Public landing page                  |
+| `/login`          | `login/`          | ✅     | Auth entry point                     |
+| `/dashboard`      | `dashboard/`      | ⚠️     | Authenticated workspace (scaffolded) |
+| `/request-access` | `request-access/` | ⚠️     | Onboarding flow (scaffolded)         |
+| `/api/*`          | `api/`            | ✅     | API routes directory ready           |
 
 **Integrations Configured:**
 
-| Integration | Status | Details |
-|-------------|--------|---------|
-| Supabase Auth | ✅ | Client configured |
-| Database (Drizzle) | ✅ | ORM ready |
-| API Client | ✅ | Custom client in `@ccsa-zora/api-client` |
-| State Management | ✅ | Zustand + TanStack Query |
-| Styling | ✅ | Tailwind CSS 4.3.3 |
-| UI Components | ✅ | shadcn/ui + custom components |
+| Integration        | Status | Details                                  |
+| ------------------ | ------ | ---------------------------------------- |
+| Supabase Auth      | ✅     | Client configured                        |
+| Database (Drizzle) | ✅     | ORM ready                                |
+| API Client         | ✅     | Custom client in `@ccsa-zora/api-client` |
+| State Management   | ✅     | Zustand + TanStack Query                 |
+| Styling            | ✅     | Tailwind CSS 4.3.3                       |
+| UI Components      | ✅     | shadcn/ui + custom components            |
 
 **Security Headers Configured:**
+
 ```typescript
 ✅ X-Content-Type-Options: nosniff
 ✅ X-Frame-Options: DENY
@@ -341,6 +353,7 @@ uv run uvicorn app.main:app --reload      # Start server locally
 ```
 
 **Deployment:**
+
 - ✅ Vercel configuration ready (`vercel.json`)
 - ✅ Build command configured for monorepo
 - ✅ Frankfurt region specified (`fra1`)
@@ -354,27 +367,27 @@ uv run uvicorn app.main:app --reload      # Start server locally
 
 **Routes Implemented:**
 
-| Route | File | Status | Purpose |
-|-------|------|--------|---------|
-| `/` | `index.tsx` | ✅ | Home/scouting dashboard |
-| `/login` | `login.tsx` | ✅ | Authentication screen |
-| `/assistant` | `assistant.tsx` | ✅ | Advisory conversation UI |
-| `/scouting/new` | `scouting/new.tsx` | ⚠️ | Field scouting form (scaffolded) |
-| `_layout` | `_layout.tsx` | ✅ | Root navigation |
+| Route           | File               | Status | Purpose                          |
+| --------------- | ------------------ | ------ | -------------------------------- |
+| `/`             | `index.tsx`        | ✅     | Home/scouting dashboard          |
+| `/login`        | `login.tsx`        | ✅     | Authentication screen            |
+| `/assistant`    | `assistant.tsx`    | ✅     | Advisory conversation UI         |
+| `/scouting/new` | `scouting/new.tsx` | ⚠️     | Field scouting form (scaffolded) |
+| `_layout`       | `_layout.tsx`      | ✅     | Root navigation                  |
 
 **Native Features Configured:**
 
-| Feature | Expo Package | Status | Use Case |
-|---------|--------------|--------|----------|
-| Camera | expo-camera | ✅ | Evidence photo capture |
-| Audio Recording | expo-audio | ✅ | Voice question input |
-| GPS/Location | expo-location | ✅ | Field mapping |
-| Speech Synthesis | expo-speech | ✅ | Advisory output |
-| Secure Storage | expo-secure-store | ✅ | Auth tokens |
-| Offline Database | expo-sqlite | ✅ | Observation outbox |
-| Maps | react-native-maps | ✅ | Farm visualization |
-| Network Status | expo-network | ✅ | Connectivity check |
-| Permissions | Built-in | ✅ | iOS/Android perms |
+| Feature          | Expo Package      | Status | Use Case               |
+| ---------------- | ----------------- | ------ | ---------------------- |
+| Camera           | expo-camera       | ✅     | Evidence photo capture |
+| Audio Recording  | expo-audio        | ✅     | Voice question input   |
+| GPS/Location     | expo-location     | ✅     | Field mapping          |
+| Speech Synthesis | expo-speech       | ✅     | Advisory output        |
+| Secure Storage   | expo-secure-store | ✅     | Auth tokens            |
+| Offline Database | expo-sqlite       | ✅     | Observation outbox     |
+| Maps             | react-native-maps | ✅     | Farm visualization     |
+| Network Status   | expo-network      | ✅     | Connectivity check     |
+| Permissions      | Built-in          | ✅     | iOS/Android perms      |
 
 **Platform Permissions:**
 
@@ -392,22 +405,23 @@ uv run uvicorn app.main:app --reload      # Start server locally
 
 **Build Configuration:**
 
-| Build Type | Status | Details |
-|------------|--------|---------|
-| Development | ⚠️ | EAS config ready, not built |
-| Preview | ⚠️ | EAS config ready, not built |
-| Production | ⚠️ | Auto-increment enabled, not built |
+| Build Type  | Status | Details                           |
+| ----------- | ------ | --------------------------------- |
+| Development | ⚠️     | EAS config ready, not built       |
+| Preview     | ⚠️     | EAS config ready, not built       |
+| Production  | ⚠️     | Auto-increment enabled, not built |
 
 **Output Directories:**
+
 - `dist-android/` - Android build output (incomplete)
 - `dist-ios/` - iOS build output (incomplete)
 
 **Feature Modules:**
 
-| Module | Status | Purpose |
-|--------|--------|---------|
-| `src/auth/` | ⚠️ | Authentication logic (scaffolded) |
-| `src/features/field-scouting/` | ⚠️ | Field operations (scaffolded) |
+| Module                         | Status | Purpose                           |
+| ------------------------------ | ------ | --------------------------------- |
+| `src/auth/`                    | ⚠️     | Authentication logic (scaffolded) |
+| `src/features/field-scouting/` | ⚠️     | Field operations (scaffolded)     |
 
 ---
 
@@ -416,23 +430,27 @@ uv run uvicorn app.main:app --reload      # Start server locally
 ### Status: ✅ EXCELLENT
 
 **`@ccsa-zora/api-client`**
+
 - ✅ Isomorphic API client with proper error handling
 - ✅ Bearer token authentication
 - ✅ Type-safe request/response
 - ✅ Supports both fetch and custom implementations
 
 **`@ccsa-zora/db`**
+
 - ✅ Drizzle ORM schema definitions
 - ✅ PostgreSQL connection management
 - ✅ Migration scripts
 - ✅ PostGIS helper functions
 
 **`@ccsa-zora/ui`**
+
 - ✅ shadcn/ui-based component library
 - ✅ Custom styling with Tailwind
 - ✅ Agriculture-focused design system (in progress)
 
 **`@ccsa-zora/utils`**
+
 - ✅ API contract types
 - ✅ CSA-specific utilities
 - ✅ GeoJSON helpers
@@ -446,14 +464,14 @@ uv run uvicorn app.main:app --reload      # Start server locally
 
 **Production Topology Configured:**
 
-| Service | Provider | Status | Config File |
-|---------|----------|--------|-------------|
-| Web App | Vercel | ✅ | `apps/web/vercel.json` |
-| API Service | Vercel | ✅ | `apps/kgml-api/vercel.json` |
-| Database | Neon PostgreSQL | ❌ | Not provisioned |
-| Auth | Supabase Auth | ❌ | Not configured |
-| Storage | Supabase Storage | ❌ | Not provisioned |
-| Mobile | Expo EAS | ✅ | `apps/mobile/eas.json` |
+| Service     | Provider         | Status | Config File                 |
+| ----------- | ---------------- | ------ | --------------------------- |
+| Web App     | Vercel           | ✅     | `apps/web/vercel.json`      |
+| API Service | Vercel           | ✅     | `apps/kgml-api/vercel.json` |
+| Database    | Neon PostgreSQL  | ❌     | Not provisioned             |
+| Auth        | Supabase Auth    | ❌     | Not configured              |
+| Storage     | Supabase Storage | ❌     | Not provisioned             |
+| Mobile      | Expo EAS         | ✅     | `apps/mobile/eas.json`      |
 
 **Deployment Checklist:**
 
@@ -469,6 +487,7 @@ uv run uvicorn app.main:app --reload      # Start server locally
 ```
 
 **GitHub Actions:**
+
 - ✅ Dependabot configuration (`dependabot.yml`)
 - ⚠️ Workflow scripts directory exists but empty (`workflows/`)
 
@@ -480,22 +499,23 @@ uv run uvicorn app.main:app --reload      # Start server locally
 
 **Test Coverage by App:**
 
-| App | Test File | Status | Framework | Issue |
-|-----|-----------|--------|-----------|-------|
-| Web | N/A | ❌ | N/A | No test suite yet |
-| Mobile | N/A | ❌ | N/A | No test suite yet |
-| KGML API | `tests/test_api.py` | ⚠️ | pytest | Present but untested |
+| App      | Test File           | Status | Framework | Issue                |
+| -------- | ------------------- | ------ | --------- | -------------------- |
+| Web      | N/A                 | ❌     | N/A       | No test suite yet    |
+| Mobile   | N/A                 | ❌     | N/A       | No test suite yet    |
+| KGML API | `tests/test_api.py` | ⚠️     | pytest    | Present but untested |
 
 **Code Quality Tools:**
 
-| Tool | Config | Status |
-|------|--------|--------|
-| TypeScript | `tsconfig.base.json`, app-level | ✅ |
-| MyPy (Python) | `pyproject.toml` | ✅ |
-| Ruff (Python linting) | `pyproject.toml` | ✅ |
-| Eslint/Prettier | Implicit (not found) | ❌ |
+| Tool                  | Config                          | Status |
+| --------------------- | ------------------------------- | ------ |
+| TypeScript            | `tsconfig.base.json`, app-level | ✅     |
+| MyPy (Python)         | `pyproject.toml`                | ✅     |
+| Ruff (Python linting) | `pyproject.toml`                | ✅     |
+| Eslint/Prettier       | Implicit (not found)            | ❌     |
 
 **Testing Commands:**
+
 ```powershell
 pnpm test:api                    # Run Python API tests
 pnpm typecheck                   # Run TypeScript checks
@@ -503,6 +523,7 @@ pnpm typecheck                   # Run TypeScript checks
 ```
 
 **Validation Scripts Available:**
+
 - ✅ `pnpm validate:structure` - Import resolution checks
 - ✅ `pnpm validate:production-env` - Production env validation
 - ✅ `pnpm smoke:production` - Post-deployment smoke tests
@@ -515,17 +536,18 @@ pnpm typecheck                   # Run TypeScript checks
 
 **Available Documentation:**
 
-| Document | Location | Status | Completeness |
-|----------|----------|--------|---------------|
-| Project Overview | `README.md` | ✅ | Comprehensive |
-| Operations Guide | `docs/OPERATIONS.md` | ✅ | Complete |
-| Deployment Runbook | `docs/PRODUCTION_DEPLOYMENT.md` | ✅ | Detailed |
-| Project Initiation | `docs/PROJECT_INITIATION.md` | ✅ | Complete |
-| Product Blueprint | `docs/ZORA_PRODUCT_BLUEPRINT.md` | ✅ | Detailed |
-| API README | `apps/kgml-api/README.md` | ✅ | Concise |
-| DB README | `packages/db/README.md` | ✅ | Present |
+| Document           | Location                         | Status | Completeness  |
+| ------------------ | -------------------------------- | ------ | ------------- |
+| Project Overview   | `README.md`                      | ✅     | Comprehensive |
+| Operations Guide   | `docs/OPERATIONS.md`             | ✅     | Complete      |
+| Deployment Runbook | `docs/PRODUCTION_DEPLOYMENT.md`  | ✅     | Detailed      |
+| Project Initiation | `docs/PROJECT_INITIATION.md`     | ✅     | Complete      |
+| Product Blueprint  | `docs/ZORA_PRODUCT_BLUEPRINT.md` | ✅     | Detailed      |
+| API README         | `apps/kgml-api/README.md`        | ✅     | Concise       |
+| DB README          | `packages/db/README.md`          | ✅     | Present       |
 
 **Documentation Gaps:**
+
 - ⚠️ No mobile development guide
 - ⚠️ No web feature documentation
 - ⚠️ No API endpoint documentation
@@ -573,6 +595,7 @@ pnpm test:api                    # Python API tests
 ```
 
 **Script Locations:**
+
 - ✅ `scripts/scaffold.ps1` - Automated setup
 - ✅ Utility scripts in `scripts/`
 - ✅ Package-level scripts in each `package.json`
@@ -586,10 +609,12 @@ pnpm test:api                    # Python API tests
 **Impact:** Cannot start development servers
 
 **Files Missing:**
+
 - `apps/web/.env.local`
 - `apps/mobile/.env.local`
 
 **Solution:**
+
 ```powershell
 Copy-Item apps/web/.env.example apps/web/.env.local
 Copy-Item apps/mobile/.env.example apps/mobile/.env.local
@@ -600,6 +625,7 @@ Copy-Item apps/mobile/.env.example apps/mobile/.env.local
 **Impact:** No application database; all data persistence broken
 
 **Required Setup:**
+
 1. Create Neon account
 2. Create project: `ccsa-zora-production`
 3. Obtain connection strings:
@@ -613,6 +639,7 @@ Copy-Item apps/mobile/.env.example apps/mobile/.env.local
 **Impact:** No authentication or evidence storage
 
 **Required Setup:**
+
 1. Create Supabase project
 2. Get API credentials
 3. Create `mrv-evidence` storage bucket
@@ -625,33 +652,33 @@ Copy-Item apps/mobile/.env.example apps/mobile/.env.local
 
 ### ⚠️ Level 1: Critical (Required for MVP)
 
-| Feature | Module | Status | Work Required |
-|---------|--------|--------|---------------|
-| User Authentication | Web + Mobile | 🟡 | Complete Supabase integration |
-| Farm Mapping | Web + Mobile | 🟡 | Implement map features |
-| Advisory Questions | Mobile | 🟡 | Complete Q&A flow |
-| Evidence Upload | Mobile | 🟡 | Complete camera/photo flow |
-| Offline Sync | Mobile | 🟡 | Implement SQLite outbox sync |
-| Dashboard Analytics | Web | 🟡 | Implement visualization components |
+| Feature             | Module       | Status | Work Required                      |
+| ------------------- | ------------ | ------ | ---------------------------------- |
+| User Authentication | Web + Mobile | 🟡     | Complete Supabase integration      |
+| Farm Mapping        | Web + Mobile | 🟡     | Implement map features             |
+| Advisory Questions  | Mobile       | 🟡     | Complete Q&A flow                  |
+| Evidence Upload     | Mobile       | 🟡     | Complete camera/photo flow         |
+| Offline Sync        | Mobile       | 🟡     | Implement SQLite outbox sync       |
+| Dashboard Analytics | Web          | 🟡     | Implement visualization components |
 
 ### ⚠️ Level 2: Important (Phase 2+)
 
-| Feature | Module | Status | Work Required |
-|---------|--------|--------|---------------|
-| Weather Integration | Web | 🟡 | Provider integration |
-| Field Packs | Mobile | 🟡 | Offline pack management |
-| Extension Workflows | Web | 🟡 | Workflow UI |
-| Sensor Integration | API | 🟡 | IoT ingestion pipeline |
-| Export/Reporting | Web | 🟡 | Report generation |
+| Feature             | Module | Status | Work Required           |
+| ------------------- | ------ | ------ | ----------------------- |
+| Weather Integration | Web    | 🟡     | Provider integration    |
+| Field Packs         | Mobile | 🟡     | Offline pack management |
+| Extension Workflows | Web    | 🟡     | Workflow UI             |
+| Sensor Integration  | API    | 🟡     | IoT ingestion pipeline  |
+| Export/Reporting    | Web    | 🟡     | Report generation       |
 
 ### ⚠️ Level 3: Advanced (Phase 3+)
 
-| Feature | Module | Status | Work Required |
-|---------|--------|--------|---------------|
-| Predictive Analytics | Web + API | 🟡 | ML model integration |
-| Drone Integration | API | 🟡 | Provider interfaces |
-| Satellite Data | API | 🟡 | Data integration |
-| Agent Autonomy | API | 🟡 | Agent framework |
+| Feature              | Module    | Status | Work Required        |
+| -------------------- | --------- | ------ | -------------------- |
+| Predictive Analytics | Web + API | 🟡     | ML model integration |
+| Drone Integration    | API       | 🟡     | Provider interfaces  |
+| Satellite Data       | API       | 🟡     | Data integration     |
+| Agent Autonomy       | API       | 🟡     | Agent framework      |
 
 ---
 
@@ -660,6 +687,7 @@ Copy-Item apps/mobile/.env.example apps/mobile/.env.local
 ### Status: ✅ GOOD - WITH NOTES
 
 **Implemented:**
+
 - ✅ HTTPS-only headers in Next.js
 - ✅ HSTS (2-year preload)
 - ✅ XSS protection (X-Content-Type-Options, X-Frame-Options)
@@ -672,12 +700,14 @@ Copy-Item apps/mobile/.env.example apps/mobile/.env.local
 - ✅ Supabase service role key kept server-only
 
 **Pending:**
+
 - ⚠️ Production Vercel environment variables not secured yet
 - ⚠️ No rate limiting configured
 - ⚠️ No WAF/DDoS protection mentioned
 - ⚠️ OWASP Top 10 audit not performed
 
 **Secrets Management:**
+
 - ❌ `.env.local` files not created (development only)
 - ❌ Production secrets not set in Vercel
 - ❌ IoT secret derivation script available but unused
@@ -687,18 +717,21 @@ Copy-Item apps/mobile/.env.example apps/mobile/.env.local
 ## BROWSER & PLATFORM COMPATIBILITY
 
 ### Web (Next.js)
+
 - ✅ Modern ES2022 target
 - ✅ React 19 support
 - ✅ SSR/SSG optimized
 - ✅ Mobile-responsive by default (Tailwind)
 
 ### Mobile (Expo)
+
 - ✅ iOS 14+ support (via Expo)
 - ✅ Android 6+ support (via Expo)
 - ✅ React Native 0.86.2
 - ✅ Physical device support via Expo Go
 
 ### API (FastAPI)
+
 - ✅ Python 3.12+
 - ✅ Cloud-ready (Vercel)
 - ✅ Container-ready (Dockerfile)
@@ -710,12 +743,14 @@ Copy-Item apps/mobile/.env.example apps/mobile/.env.local
 ### 🚀 IMMEDIATE (Next 1-2 hours)
 
 1. **Configure Local Environment**
+
    ```powershell
    Copy-Item apps/web/.env.example apps/web/.env.local
    Copy-Item apps/mobile/.env.example apps/mobile/.env.local
    ```
 
 2. **Verify Dependencies**
+
    ```powershell
    corepack enable
    pnpm install --frozen-lockfile
@@ -743,6 +778,7 @@ Copy-Item apps/mobile/.env.example apps/mobile/.env.local
    - Add to `.env.local` files
 
 3. **Run Database Setup**
+
    ```powershell
    pnpm db:prepare
    pnpm db:migrate
@@ -802,6 +838,7 @@ Copy-Item apps/mobile/.env.example apps/mobile/.env.local
 ## FILE STRUCTURE AUDIT RESULTS
 
 ### ✅ Well-Structured Directories
+
 - `apps/` - Proper app separation
 - `packages/` - Shared code isolation
 - `docs/` - Documentation centralized
@@ -809,6 +846,7 @@ Copy-Item apps/mobile/.env.example apps/mobile/.env.local
 - `public/` - Static assets ready
 
 ### ⚠️ Incomplete Directories
+
 - `apps/web/src/app/dashboard/` - Needs feature completion
 - `apps/web/src/features/` - Missing implementations
 - `apps/mobile/src/auth/` - Missing implementations
@@ -816,6 +854,7 @@ Copy-Item apps/mobile/.env.example apps/mobile/.env.local
 - `apps/kgml-api/app/` - Advisory.py incomplete
 
 ### ✅ Configuration Files
+
 - ✅ All `package.json` files present
 - ✅ All `tsconfig.json` files present
 - ✅ All `.env.example` files present
@@ -823,6 +862,7 @@ Copy-Item apps/mobile/.env.example apps/mobile/.env.local
 - ✅ Build configs present
 
 ### ⚠️ Missing Files
+
 - ❌ All `.env.local` files
 - ❌ GitHub Actions workflows (workflows/ empty)
 - ❌ ESLint configuration (implicit Prettier)
@@ -834,6 +874,7 @@ Copy-Item apps/mobile/.env.example apps/mobile/.env.local
 ## DEPENDENCY AUDIT
 
 ### ✅ Up-to-Date Dependencies
+
 - TypeScript 6.0.3 (latest)
 - Next.js 16.2.12 (latest v16)
 - Expo ~57.0.10 (latest)
@@ -841,11 +882,13 @@ Copy-Item apps/mobile/.env.example apps/mobile/.env.local
 - React 19 (via catalog)
 
 ### ⚠️ Dependencies to Monitor
+
 - `react-native` 0.86.2 - Active development
 - `maplibre-gl` ^5.24.0 - Check for updates
 - `drizzle-orm` 0.45.2 - Rapidly evolving
 
 ### ✅ Security Dependencies
+
 - No known high-severity vulnerabilities (run `pnpm audit`)
 - All packages from trusted sources
 - Native modules well-maintained
@@ -855,6 +898,7 @@ Copy-Item apps/mobile/.env.example apps/mobile/.env.local
 ## PERFORMANCE & OPTIMIZATION
 
 ### ✅ Good Practices Implemented
+
 - Monorepo structure (faster builds)
 - Turbo caching enabled
 - Code splitting ready (Next.js)
@@ -863,6 +907,7 @@ Copy-Item apps/mobile/.env.example apps/mobile/.env.local
 - Lazy loading support (Expo)
 
 ### ⚠️ Optimization Opportunities
+
 - Database indexes not yet verified
 - API response caching not configured
 - Mobile bundle size not analyzed
@@ -873,20 +918,20 @@ Copy-Item apps/mobile/.env.example apps/mobile/.env.local
 
 ## SUMMARY SCORECARD
 
-| Category | Score | Status | Priority |
-|----------|-------|--------|----------|
-| Architecture & Design | 9/10 | ✅ | Low |
-| Code Organization | 9/10 | ✅ | Low |
-| Configuration Management | 6/10 | ⚠️ | **CRITICAL** |
-| Database Setup | 3/10 | ❌ | **CRITICAL** |
-| API Implementation | 6/10 | ⚠️ | High |
-| Web App Completion | 5/10 | ⚠️ | High |
-| Mobile App Completion | 4/10 | ⚠️ | High |
-| Testing & QA | 3/10 | ⚠️ | High |
-| Deployment Ready | 5/10 | ⚠️ | High |
-| Documentation | 8/10 | ✅ | Low |
-| Security | 7/10 | ⚠️ | Medium |
-| **Overall** | **5.8/10** | ⚠️ | **CRITICAL** |
+| Category                 | Score      | Status | Priority     |
+| ------------------------ | ---------- | ------ | ------------ |
+| Architecture & Design    | 9/10       | ✅     | Low          |
+| Code Organization        | 9/10       | ✅     | Low          |
+| Configuration Management | 6/10       | ⚠️     | **CRITICAL** |
+| Database Setup           | 3/10       | ❌     | **CRITICAL** |
+| API Implementation       | 6/10       | ⚠️     | High         |
+| Web App Completion       | 5/10       | ⚠️     | High         |
+| Mobile App Completion    | 4/10       | ⚠️     | High         |
+| Testing & QA             | 3/10       | ⚠️     | High         |
+| Deployment Ready         | 5/10       | ⚠️     | High         |
+| Documentation            | 8/10       | ✅     | Low          |
+| Security                 | 7/10       | ⚠️     | Medium       |
+| **Overall**              | **5.8/10** | ⚠️     | **CRITICAL** |
 
 ---
 
@@ -895,6 +940,7 @@ Copy-Item apps/mobile/.env.example apps/mobile/.env.local
 **The CCSA Zora project has excellent architecture and planning, but is currently in early development stages with critical blockers preventing local and cloud deployment.**
 
 ### Key Strengths:
+
 - ✅ Well-designed monorepo structure
 - ✅ Comprehensive documentation
 - ✅ Secure by default configurations
@@ -902,6 +948,7 @@ Copy-Item apps/mobile/.env.example apps/mobile/.env.local
 - ✅ All core dependencies in place
 
 ### Key Weaknesses:
+
 - ❌ No local environment files
 - ❌ Database not provisioned
 - ❌ Supabase not configured
@@ -911,18 +958,21 @@ Copy-Item apps/mobile/.env.example apps/mobile/.env.local
 ### Action Items (Prioritized):
 
 **CRITICAL (Do First):**
+
 1. Create `.env.local` files from templates
 2. Setup Neon database project
 3. Setup Supabase project
 4. Run database migrations
 
 **HIGH (Do Next):**
+
 1. Complete feature implementations
 2. Add test coverage
 3. Setup GitHub Actions
 4. Create Vercel projects
 
 **MEDIUM (Do Later):**
+
 1. Mobile build & signing
 2. App store submissions
 3. Production monitoring
@@ -933,4 +983,3 @@ Copy-Item apps/mobile/.env.example apps/mobile/.env.local
 **Report Generated:** August 5, 2025  
 **Project Version:** 0.1.0  
 **Auditor:** Comprehensive Audit Script
-

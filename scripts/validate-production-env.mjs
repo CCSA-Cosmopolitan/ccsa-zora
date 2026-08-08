@@ -7,7 +7,9 @@ function value(name) {
 function requireValue(name, minimumLength = 1) {
   const current = value(name);
   if (current.length < minimumLength) {
-    errors.push(`${name} is required${minimumLength > 1 ? ` and must contain at least ${minimumLength} characters` : ""}.`);
+    errors.push(
+      `${name} is required${minimumLength > 1 ? ` and must contain at least ${minimumLength} characters` : ""}.`,
+    );
   }
   if (/replace-me|replace-with|example|password/i.test(current)) {
     errors.push(`${name} still contains a placeholder value.`);
@@ -39,13 +41,17 @@ if (value("NEXT_PUBLIC_ZORA_DEMO_MODE") !== "false") {
 
 const pooled = requireUrl("DATABASE_URL", { https: false });
 const direct = requireUrl("DATABASE_URL_UNPOOLED", { https: false });
-for (const [name, parsed] of [["DATABASE_URL", pooled], ["DATABASE_URL_UNPOOLED", direct]]) {
+for (const [name, parsed] of [
+  ["DATABASE_URL", pooled],
+  ["DATABASE_URL_UNPOOLED", direct],
+]) {
   if (!parsed) continue;
   if (!["postgres:", "postgresql:"].includes(parsed.protocol)) {
     errors.push(`${name} must use the PostgreSQL protocol.`);
   }
   if (!parsed.hostname.endsWith(".neon.tech")) errors.push(`${name} must target Neon.`);
-  if (parsed.searchParams.get("sslmode") !== "require") errors.push(`${name} must include sslmode=require.`);
+  if (parsed.searchParams.get("sslmode") !== "require")
+    errors.push(`${name} must include sslmode=require.`);
 }
 if (pooled && !pooled.hostname.includes("-pooler.")) {
   errors.push("DATABASE_URL must be Neon's pooled runtime connection string.");
@@ -62,9 +68,12 @@ if (direct && decodeURIComponent(direct.username) === "zora_app") {
 if (
   pooled &&
   direct &&
-  (pooled.hostname.replace("-pooler.", ".") !== direct.hostname || pooled.pathname !== direct.pathname)
+  (pooled.hostname.replace("-pooler.", ".") !== direct.hostname ||
+    pooled.pathname !== direct.pathname)
 ) {
-  errors.push("DATABASE_URL and DATABASE_URL_UNPOOLED must target the same Neon branch and database.");
+  errors.push(
+    "DATABASE_URL and DATABASE_URL_UNPOOLED must target the same Neon branch and database.",
+  );
 }
 
 requireUrl("NEXT_PUBLIC_SUPABASE_URL");
@@ -76,13 +85,21 @@ requireValue("KGML_SERVICE_KEY", 32);
 requireValue("IOT_INGEST_SECRET", 32);
 requireValue("ACCESS_REQUEST_HASH_SALT", 32);
 const organizationId = requireValue("NEXT_PUBLIC_ZORA_ORGANIZATION_ID", 36);
-if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(organizationId)) {
+if (
+  !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(organizationId)
+) {
   errors.push("NEXT_PUBLIC_ZORA_ORGANIZATION_ID must be a valid UUID.");
 }
 requireUrl("NEXT_PUBLIC_MAP_STYLE_URL");
 
-if (pooled && direct && decodeURIComponent(pooled.username) === decodeURIComponent(direct.username)) {
-  errors.push("DATABASE_URL and DATABASE_URL_UNPOOLED must use different runtime and migration roles.");
+if (
+  pooled &&
+  direct &&
+  decodeURIComponent(pooled.username) === decodeURIComponent(direct.username)
+) {
+  errors.push(
+    "DATABASE_URL and DATABASE_URL_UNPOOLED must use different runtime and migration roles.",
+  );
 }
 
 const poolMax = Number(value("DATABASE_POOL_MAX") || "3");

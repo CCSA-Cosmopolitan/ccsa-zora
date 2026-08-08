@@ -40,11 +40,7 @@ export const accessRequestStatus = pgEnum("access_request_status", [
   "withdrawn",
 ]);
 
-export const fieldStatus = pgEnum("field_status", [
-  "active",
-  "fallow",
-  "retired",
-]);
+export const fieldStatus = pgEnum("field_status", ["active", "fallow", "retired"]);
 
 export const sensorConnectivity = pgEnum("sensor_connectivity", [
   "lorawan",
@@ -172,7 +168,10 @@ export const organizations = pgTable(
   },
   (table) => [
     uniqueIndex("organizations_slug_uidx").on(table.slug),
-    check("organizations_country_code_chk", sql`${table.countryCode} IS NULL OR char_length(${table.countryCode}) = 2`),
+    check(
+      "organizations_country_code_chk",
+      sql`${table.countryCode} IS NULL OR char_length(${table.countryCode}) = 2`,
+    ),
   ],
 );
 
@@ -202,13 +201,16 @@ export const accessRequests = pgTable(
       .on(table.email)
       .where(sql`${table.status} = 'pending'::access_request_status`),
     index("access_requests_status_created_idx").on(table.status, table.createdAt),
-    index("access_requests_fingerprint_created_idx").on(
-      table.requestFingerprint,
-      table.createdAt,
-    ),
+    index("access_requests_fingerprint_created_idx").on(table.requestFingerprint, table.createdAt),
     check("access_requests_email_normalized_chk", sql`${table.email} = lower(${table.email})`),
-    check("access_requests_full_name_length_chk", sql`char_length(${table.fullName}) between 2 and 120`),
-    check("access_requests_use_case_length_chk", sql`char_length(${table.useCase}) between 20 and 1200`),
+    check(
+      "access_requests_full_name_length_chk",
+      sql`char_length(${table.fullName}) between 2 and 120`,
+    ),
+    check(
+      "access_requests_use_case_length_chk",
+      sql`char_length(${table.useCase}) between 20 and 1200`,
+    ),
   ],
 );
 
@@ -422,10 +424,7 @@ export const sensorNodes = pgTable(
     ...auditColumns(),
   },
   (table) => [
-    uniqueIndex("sensor_nodes_org_hardware_uidx").on(
-      table.organizationId,
-      table.hardwareId,
-    ),
+    uniqueIndex("sensor_nodes_org_hardware_uidx").on(table.organizationId, table.hardwareId),
     index("sensor_nodes_field_idx").on(table.fieldId),
     index("sensor_nodes_location_gist_idx").using("gist", table.location),
     check(
@@ -456,19 +455,13 @@ export const sensorReadings = pgTable(
     rawPayload: jsonb("raw_payload").$type<Record<string, unknown>>().notNull(),
   },
   (table) => [
-    index("sensor_readings_node_time_idx").on(
-      table.sensorNodeId,
-      table.observedAt,
-    ),
+    index("sensor_readings_node_time_idx").on(table.sensorNodeId, table.observedAt),
     index("sensor_readings_org_metric_time_idx").on(
       table.organizationId,
       table.metric,
       table.observedAt,
     ),
-    uniqueIndex("sensor_readings_payload_hash_uidx").on(
-      table.sensorNodeId,
-      table.payloadHash,
-    ),
+    uniqueIndex("sensor_readings_payload_hash_uidx").on(table.sensorNodeId, table.payloadHash),
   ],
 );
 
@@ -499,7 +492,10 @@ export const fieldIndices = pgTable(
       table.observedAt,
     ),
     index("field_indices_org_time_idx").on(table.organizationId, table.observedAt),
-    check("field_indices_cloud_cover_chk", sql`${table.cloudCoverPercent} IS NULL OR ${table.cloudCoverPercent} BETWEEN 0 AND 100`),
+    check(
+      "field_indices_cloud_cover_chk",
+      sql`${table.cloudCoverPercent} IS NULL OR ${table.cloudCoverPercent} BETWEEN 0 AND 100`,
+    ),
   ],
 );
 
@@ -533,10 +529,7 @@ export const observations = pgTable(
     ...auditColumns(),
   },
   (table) => [
-    uniqueIndex("observations_org_idempotency_uidx").on(
-      table.organizationId,
-      table.idempotencyKey,
-    ),
+    uniqueIndex("observations_org_idempotency_uidx").on(table.organizationId, table.idempotencyKey),
     index("observations_field_time_idx").on(table.fieldId, table.observedAt),
     index("observations_location_gist_idx").using("gist", table.location),
     check(
@@ -576,10 +569,7 @@ export const observationMedia = pgTable(
     ...auditColumns(),
   },
   (table) => [
-    uniqueIndex("observation_media_sha_uidx").on(
-      table.observationId,
-      table.sha256,
-    ),
+    uniqueIndex("observation_media_sha_uidx").on(table.observationId, table.sha256),
     index("observation_media_observation_idx").on(table.observationId),
     check("observation_media_byte_size_chk", sql`${table.byteSize} > 0`),
     check(
@@ -615,19 +605,10 @@ export const carbonCertificates = pgTable(
       table.standard,
       table.registrySerial,
     ),
-    index("carbon_certificates_org_vintage_idx").on(
-      table.organizationId,
-      table.vintageStart,
-    ),
+    index("carbon_certificates_org_vintage_idx").on(table.organizationId, table.vintageStart),
     index("carbon_certificates_field_idx").on(table.fieldId),
-    check(
-      "carbon_certificates_vintage_chk",
-      sql`${table.vintageEnd} >= ${table.vintageStart}`,
-    ),
-    check(
-      "carbon_certificates_quantity_chk",
-      sql`${table.quantityTco2e} > 0`,
-    ),
+    check("carbon_certificates_vintage_chk", sql`${table.vintageEnd} >= ${table.vintageStart}`),
+    check("carbon_certificates_quantity_chk", sql`${table.quantityTco2e} > 0`),
   ],
 );
 
@@ -652,15 +633,9 @@ export const carbonCertificateEvents = pgTable(
     recordedAt: timestamp("recorded_at", { withTimezone: true }).defaultNow().notNull(),
   },
   (table) => [
-    uniqueIndex("carbon_certificate_events_sequence_uidx").on(
-      table.certificateId,
-      table.sequence,
-    ),
+    uniqueIndex("carbon_certificate_events_sequence_uidx").on(table.certificateId, table.sequence),
     uniqueIndex("carbon_certificate_events_hash_uidx").on(table.eventHash),
-    index("carbon_certificate_events_timeline_idx").on(
-      table.certificateId,
-      table.eventAt,
-    ),
+    index("carbon_certificate_events_timeline_idx").on(table.certificateId, table.eventAt),
     check("carbon_certificate_events_sequence_chk", sql`${table.sequence} > 0`),
     check(
       "carbon_certificate_events_hash_chain_chk",
@@ -691,10 +666,7 @@ export const mrvEvidence = pgTable(
     ...auditColumns(),
   },
   (table) => [
-    uniqueIndex("mrv_evidence_certificate_hash_uidx").on(
-      table.certificateId,
-      table.contentHash,
-    ),
+    uniqueIndex("mrv_evidence_certificate_hash_uidx").on(table.certificateId, table.contentHash),
     index("mrv_evidence_field_time_idx").on(table.fieldId, table.capturedAt),
   ],
 );

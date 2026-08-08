@@ -9,8 +9,7 @@ import { FieldScoutingSyncEngine } from "./sync-engine";
 import { useSyncStore } from "../state/sync-store";
 
 export const activeOrganizationId =
-  process.env.EXPO_PUBLIC_ZORA_ORGANIZATION_ID ??
-  "00000000-0000-4000-8000-000000000001";
+  process.env.EXPO_PUBLIC_ZORA_ORGANIZATION_ID ?? "00000000-0000-4000-8000-000000000001";
 
 export async function runFieldSync(db: SQLiteDatabase) {
   const store = useSyncStore.getState();
@@ -23,9 +22,9 @@ export async function runFieldSync(db: SQLiteDatabase) {
     useSyncStore.getState().succeed(new Date().toISOString());
     return result;
   } catch (error) {
-    useSyncStore.getState().fail(
-      error instanceof Error ? error.message : "Field synchronization failed",
-    );
+    useSyncStore
+      .getState()
+      .fail(error instanceof Error ? error.message : "Field synchronization failed");
     throw error;
   }
 }

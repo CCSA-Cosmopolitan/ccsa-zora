@@ -1,11 +1,14 @@
 function configured(name: string, minimumLength = 1) {
   const current = process.env[name]?.trim() ?? "";
-  return current.length >= minimumLength && !/replace-me|replace-with|example|password/i.test(current);
+  return (
+    current.length >= minimumLength && !/replace-me|replace-with|example|password/i.test(current)
+  );
 }
 
 export function productionConfigurationIssues() {
   const issues: string[] = [];
-  const isProduction = process.env.VERCEL_ENV === "production" || process.env.ZORA_ENV === "production";
+  const isProduction =
+    process.env.VERCEL_ENV === "production" || process.env.ZORA_ENV === "production";
   if (!isProduction) return issues;
 
   if (process.env.ZORA_DEMO_MODE !== "false") issues.push("demo_mode_enabled");
@@ -41,16 +44,22 @@ export function productionConfigurationIssues() {
     issues.push("invalid_database_url");
   }
 
-  for (const name of ["NEXT_PUBLIC_SUPABASE_URL", "KGML_API_URL", "NEXT_PUBLIC_MAP_STYLE_URL"] as const) {
+  for (const name of [
+    "NEXT_PUBLIC_SUPABASE_URL",
+    "KGML_API_URL",
+    "NEXT_PUBLIC_MAP_STYLE_URL",
+  ] as const) {
     try {
-      if (new URL(process.env[name] ?? "").protocol !== "https:") issues.push(`unsafe_${name.toLowerCase()}`);
+      if (new URL(process.env[name] ?? "").protocol !== "https:")
+        issues.push(`unsafe_${name.toLowerCase()}`);
     } catch {
       issues.push(`invalid_${name.toLowerCase()}`);
     }
   }
 
   const poolMax = Number(process.env.DATABASE_POOL_MAX ?? "3");
-  if (!Number.isInteger(poolMax) || poolMax < 1 || poolMax > 10) issues.push("invalid_database_pool_max");
+  if (!Number.isInteger(poolMax) || poolMax < 1 || poolMax > 10)
+    issues.push("invalid_database_pool_max");
   return issues;
 }
 

@@ -3,6 +3,7 @@
 ## 🚨 CRITICAL BLOCKERS (Do These First)
 
 - [ ] **Environment Files**
+
   ```powershell
   Copy-Item apps/web/.env.example apps/web/.env.local
   Copy-Item apps/mobile/.env.example apps/mobile/.env.local
@@ -66,6 +67,7 @@ pnpm db:verify           # Verify production readiness
 ## 🚀 Local Development
 
 **Terminal 1 - FastAPI:**
+
 ```powershell
 pnpm dev:api
 # API runs on http://localhost:8000
@@ -73,6 +75,7 @@ pnpm dev:api
 ```
 
 **Terminal 2 - Next.js Web:**
+
 ```powershell
 pnpm dev:web
 # Web runs on http://localhost:3000
@@ -80,6 +83,7 @@ pnpm dev:web
 ```
 
 **Terminal 3 - Expo Mobile:**
+
 ```powershell
 pnpm dev:mobile
 # Starts Expo dev server
@@ -109,11 +113,13 @@ pnpm smoke:production
 ## 📊 Environment Variables Status
 
 ### ✅ CONFIGURED
+
 - `ZORA_ENV` = development (in .env.example)
 - `ZORA_DEMO_MODE` = true (in .env.example)
 - `KGML_API_URL` = http://127.0.0.1:8000 (default)
 
 ### ❌ NEEDS CONFIGURATION
+
 - `DATABASE_URL` (Neon pooled)
 - `NEXT_PUBLIC_SUPABASE_URL` (Supabase)
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY` (Supabase)
@@ -122,6 +128,7 @@ pnpm smoke:production
 - `IOT_INGEST_SECRET` (32+ random chars)
 
 ### 📱 Mobile-Specific
+
 - `EXPO_PUBLIC_API_URL` = http://192.168.1.10:3000 (LAN address)
 - `EXPO_PUBLIC_SUPABASE_URL` (Same as web)
 - `EXPO_PUBLIC_SUPABASE_ANON_KEY` (Same as web)
@@ -148,17 +155,17 @@ pnpm smoke:production
 
 ## 🎯 Feature Status
 
-| Feature | Status | Work Required |
-|---------|--------|---------------|
-| User Auth | 🟡 | Complete Supabase setup |
-| Advisory Chat | 🟡 | Finish UI + API integration |
-| Field Scouting | 🟡 | Complete form + sync |
-| Farm Mapping | 🟡 | Implement map features |
-| Dashboard Analytics | 🟡 | Implement charts |
-| Offline Sync | 🟡 | Implement SQLite sync |
-| Mobile Camera | ✅ | Expo camera configured |
-| Mobile GPS | ✅ | Expo location configured |
-| Mobile Audio | ✅ | Expo audio/speech configured |
+| Feature             | Status | Work Required                |
+| ------------------- | ------ | ---------------------------- |
+| User Auth           | 🟡     | Complete Supabase setup      |
+| Advisory Chat       | 🟡     | Finish UI + API integration  |
+| Field Scouting      | 🟡     | Complete form + sync         |
+| Farm Mapping        | 🟡     | Implement map features       |
+| Dashboard Analytics | 🟡     | Implement charts             |
+| Offline Sync        | 🟡     | Implement SQLite sync        |
+| Mobile Camera       | ✅     | Expo camera configured       |
+| Mobile GPS          | ✅     | Expo location configured     |
+| Mobile Audio        | ✅     | Expo audio/speech configured |
 
 ---
 
@@ -178,6 +185,7 @@ pnpm smoke:production
 ## 🚀 Deployment Preparation
 
 ### Before Vercel Deployment:
+
 - [ ] All environment variables configured locally
 - [ ] Database migrations applied successfully
 - [ ] API tests passing
@@ -185,6 +193,7 @@ pnpm smoke:production
 - [ ] Mobile export successful: `pnpm --filter @ccsa-zora/mobile exec expo export`
 
 ### Vercel Setup:
+
 - [ ] Create Vercel account
 - [ ] Create two projects: `ccsa-zora-web` and `ccsa-zora-api`
 - [ ] Link GitHub repository
@@ -192,6 +201,7 @@ pnpm smoke:production
 - [ ] Enable deployments
 
 ### Mobile/EAS Setup:
+
 - [ ] Create Expo account
 - [ ] Create Apple Developer account (for iOS)
 - [ ] Create Google Play Developer account (for Android)
@@ -213,18 +223,23 @@ pnpm smoke:production
 ## ⚠️ Common Issues & Solutions
 
 ### Issue: `DATABASE_URL` not found
+
 **Solution:** Copy `.env.example` to `.env.local` and add Neon connection string
 
 ### Issue: Supabase API 401 errors
+
 **Solution:** Verify API keys in environment variables match Supabase project settings
 
 ### Issue: Expo development server fails
+
 **Solution:** Ensure `EXPO_PUBLIC_API_URL` points to reachable dev server
 
 ### Issue: Database migration fails
+
 **Solution:** Verify `DATABASE_URL_UNPOOLED` is the direct (non-pooled) Neon URL
 
 ### Issue: Mobile camera not working
+
 **Solution:** Grant camera permissions in app settings, ensure `expo-camera` is installed
 
 ---

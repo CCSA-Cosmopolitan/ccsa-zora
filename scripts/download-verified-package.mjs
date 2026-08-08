@@ -5,8 +5,14 @@ import https from "node:https";
 import path from "node:path";
 import process from "node:process";
 
-const [url, destinationArg, totalBytesArg, expectedDigest, chunkSizeArg = "65536", concurrencyArg = "8"] =
-  process.argv.slice(2);
+const [
+  url,
+  destinationArg,
+  totalBytesArg,
+  expectedDigest,
+  chunkSizeArg = "65536",
+  concurrencyArg = "8",
+] = process.argv.slice(2);
 
 if (!url || !destinationArg || !totalBytesArg || !expectedDigest) {
   throw new Error(
@@ -48,7 +54,9 @@ function fetchRange(start, end) {
       (response) => {
         if (response.statusCode !== 206) {
           response.resume();
-          reject(new Error(`Expected HTTP 206 for ${start}-${end}; received ${response.statusCode}`));
+          reject(
+            new Error(`Expected HTTP 206 for ${start}-${end}; received ${response.statusCode}`),
+          );
           return;
         }
 
@@ -83,7 +91,9 @@ async function downloadPart(index) {
     try {
       const body = await fetchRange(start, end);
       if (body.length !== expectedLength) {
-        throw new Error(`Range ${start}-${end} returned ${body.length} bytes; expected ${expectedLength}`);
+        throw new Error(
+          `Range ${start}-${end} returned ${body.length} bytes; expected ${expectedLength}`,
+        );
       }
       await writeFile(partPath, body);
       return true;

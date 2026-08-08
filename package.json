@@ -19,6 +19,9 @@
     "smoke:production": "node scripts/smoke-production.mjs",
     "iot:derive-secret": "node scripts/derive-iot-secret.mjs",
     "clean": "turbo run clean",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "db:prepare": "pnpm --filter @ccsa-zora/db db:prepare",
     "db:generate": "pnpm --filter @ccsa-zora/db db:generate",
     "db:migrate": "pnpm --filter @ccsa-zora/db db:migrate",
@@ -33,6 +36,13 @@
     "db:studio": "pnpm --filter @ccsa-zora/db db:studio"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.66.0",
+    "@typescript-eslint/parser": "^8.66.0",
+    "eslint": "^10.8.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "prettier": "^3.9.6",
     "turbo": "2.10.6",
     "typescript": "6.0.3"
   }

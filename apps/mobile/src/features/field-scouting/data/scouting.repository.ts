@@ -50,16 +50,31 @@ export async function saveDraftObservation(db: SQLiteDatabase, input: DraftObser
         observed_at, longitude, latitude, accuracy_meters, device_id,
         sync_status, payload_json, created_at, updated_at
       ) VALUES (?, ?, ?, ?, 'submitted', ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?);`,
-      input.id, input.organizationId, input.fieldId, input.kind, input.title,
-      input.notes, input.severity, input.observedAt, input.longitude, input.latitude,
-      input.accuracyMeters, input.deviceId, JSON.stringify(payload), input.createdAt,
+      input.id,
+      input.organizationId,
+      input.fieldId,
+      input.kind,
+      input.title,
+      input.notes,
+      input.severity,
+      input.observedAt,
+      input.longitude,
+      input.latitude,
+      input.accuracyMeters,
+      input.deviceId,
+      JSON.stringify(payload),
+      input.createdAt,
       input.createdAt,
     );
     await transaction.runAsync(
       `INSERT INTO sync_outbox (
         id, idempotency_key, entity_type, entity_id, operation, payload_json, created_at
       ) VALUES (?, ?, 'observation', ?, 'create', ?, ?);`,
-      idempotencyKey, idempotencyKey, input.id, JSON.stringify(payload), input.createdAt,
+      idempotencyKey,
+      idempotencyKey,
+      input.id,
+      JSON.stringify(payload),
+      input.createdAt,
     );
 
     if (input.media) {
@@ -75,14 +90,23 @@ export async function saveDraftObservation(db: SQLiteDatabase, input: DraftObser
           id, observation_id, local_uri, mime_type, sha256, byte_size,
           captured_at, upload_status
         ) VALUES (?, ?, ?, ?, ?, ?, ?, 'queued');`,
-        input.media.id, input.id, input.media.localUri, input.media.mimeType,
-        input.media.sha256, input.media.byteSize, input.media.capturedAt,
+        input.media.id,
+        input.id,
+        input.media.localUri,
+        input.media.mimeType,
+        input.media.sha256,
+        input.media.byteSize,
+        input.media.capturedAt,
       );
       await transaction.runAsync(
         `INSERT INTO sync_outbox (
           id, idempotency_key, entity_type, entity_id, operation, payload_json, created_at
         ) VALUES (?, ?, 'observation_media', ?, 'create', ?, ?);`,
-        mediaKey, mediaKey, input.media.id, JSON.stringify(mediaPayload), input.createdAt,
+        mediaKey,
+        mediaKey,
+        input.media.id,
+        JSON.stringify(mediaPayload),
+        input.createdAt,
       );
     }
   });
@@ -109,15 +133,29 @@ export async function applySyncPull(
           soil_moisture_percent=excluded.soil_moisture_percent,
           condition=excluded.condition, last_evidence_at=excluded.last_evidence_at,
           synchronized_at=excluded.synchronized_at;`,
-        field.id, organizationId, field.name, field.status, field.cropCode,
-        field.areaHectares, JSON.stringify(field.boundary), field.centroid.coordinates[0],
-        field.centroid.coordinates[1], field.ndvi, field.soilMoisturePercent,
-        field.condition, field.lastEvidenceAt, response.serverTime,
+        field.id,
+        organizationId,
+        field.name,
+        field.status,
+        field.cropCode,
+        field.areaHectares,
+        JSON.stringify(field.boundary),
+        field.centroid.coordinates[0],
+        field.centroid.coordinates[1],
+        field.ndvi,
+        field.soilMoisturePercent,
+        field.condition,
+        field.lastEvidenceAt,
+        response.serverTime,
       );
     }
 
     for (const observation of response.observations) {
-      const local = await transaction.getFirstAsync<{ sync_status: string; payload_json: string; server_version: number | null }>(
+      const local = await transaction.getFirstAsync<{
+        sync_status: string;
+        payload_json: string;
+        server_version: number | null;
+      }>(
         "SELECT sync_status, payload_json, server_version FROM local_observations WHERE id = ?;",
         observation.id,
       );
@@ -126,8 +164,11 @@ export async function applySyncPull(
           `INSERT OR IGNORE INTO sync_conflicts (
             id, entity_type, entity_id, local_payload_json, server_payload_json, detected_at
           ) VALUES (?, 'observation', ?, ?, ?, ?);`,
-          Crypto.randomUUID(), observation.id, local.payload_json,
-          JSON.stringify(observation), response.serverTime,
+          Crypto.randomUUID(),
+          observation.id,
+          local.payload_json,
+          JSON.stringify(observation),
+          response.serverTime,
         );
         await transaction.runAsync(
           "UPDATE local_observations SET sync_status = 'conflict' WHERE id = ?;",
@@ -147,11 +188,23 @@ export async function applySyncPull(
           severity=excluded.severity, server_version=excluded.server_version,
           sync_status='synced', payload_json=excluded.payload_json,
           updated_at=excluded.updated_at;`,
-        observation.id, observation.organizationId, observation.fieldId,
-        observation.kind, observation.status, observation.title, observation.notes,
-        observation.severity ?? null, observation.observedAt, longitude, latitude,
-        observation.accuracyMeters, observation.deviceId, observation.version,
-        JSON.stringify(observation), observation.observedAt, observation.updatedAt,
+        observation.id,
+        observation.organizationId,
+        observation.fieldId,
+        observation.kind,
+        observation.status,
+        observation.title,
+        observation.notes,
+        observation.severity ?? null,
+        observation.observedAt,
+        longitude,
+        latitude,
+        observation.accuracyMeters,
+        observation.deviceId,
+        observation.version,
+        JSON.stringify(observation),
+        observation.observedAt,
+        observation.updatedAt,
       );
     }
     await transaction.runAsync(
@@ -159,7 +212,9 @@ export async function applySyncPull(
        VALUES (?, ?, ?)
        ON CONFLICT(organization_id) DO UPDATE SET
          pull_cursor=excluded.pull_cursor, last_pulled_at=excluded.last_pulled_at;`,
-      organizationId, response.cursor, response.serverTime,
+      organizationId,
+      response.cursor,
+      response.serverTime,
     );
   });
 }
@@ -173,25 +228,43 @@ export async function getPullCursor(db: SQLiteDatabase, organizationId: string) 
 }
 
 interface LocalFieldRow {
-  id: string; name: string; status: FieldSummary["status"]; crop_code: string | null;
-  area_hectares: number; boundary_json: string; centroid_longitude: number;
-  centroid_latitude: number; ndvi: number | null; soil_moisture_percent: number | null;
-  condition: FieldSummary["condition"]; last_evidence_at: string | null;
+  id: string;
+  name: string;
+  status: FieldSummary["status"];
+  crop_code: string | null;
+  area_hectares: number;
+  boundary_json: string;
+  centroid_longitude: number;
+  centroid_latitude: number;
+  ndvi: number | null;
+  soil_moisture_percent: number | null;
+  condition: FieldSummary["condition"];
+  last_evidence_at: string | null;
 }
 
 export async function listLocalFields(db: SQLiteDatabase): Promise<FieldSummary[]> {
   const rows = await db.getAllAsync<LocalFieldRow>("SELECT * FROM local_fields ORDER BY name;");
   return rows.map((row) => ({
-    id: row.id, name: row.name, status: row.status, cropCode: row.crop_code,
-    areaHectares: row.area_hectares, boundary: JSON.parse(row.boundary_json),
+    id: row.id,
+    name: row.name,
+    status: row.status,
+    cropCode: row.crop_code,
+    areaHectares: row.area_hectares,
+    boundary: JSON.parse(row.boundary_json),
     centroid: { type: "Point", coordinates: [row.centroid_longitude, row.centroid_latitude] },
-    ndvi: row.ndvi, soilMoisturePercent: row.soil_moisture_percent,
-    condition: row.condition, lastEvidenceAt: row.last_evidence_at,
+    ndvi: row.ndvi,
+    soilMoisturePercent: row.soil_moisture_percent,
+    condition: row.condition,
+    lastEvidenceAt: row.last_evidence_at,
   }));
 }
 
 export interface LocalObservationListItem {
-  id: string; title: string; fieldName: string; status: string; observedAt: string;
+  id: string;
+  title: string;
+  fieldName: string;
+  status: string;
+  observedAt: string;
   syncStatus: "pending" | "synced" | "conflict";
 }
 
@@ -209,5 +282,10 @@ export async function getScoutingOverview(db: SQLiteDatabase) {
        (SELECT count(*) FROM sync_outbox) as pending,
        (SELECT count(*) FROM sync_conflicts WHERE resolved_at IS NULL) as conflicts;`,
   );
-  return { observations, fields: counts?.fields ?? 0, pending: counts?.pending ?? 0, conflicts: counts?.conflicts ?? 0 };
+  return {
+    observations,
+    fields: counts?.fields ?? 0,
+    pending: counts?.pending ?? 0,
+    conflicts: counts?.conflicts ?? 0,
+  };
 }
