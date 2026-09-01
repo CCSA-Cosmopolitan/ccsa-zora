@@ -38,7 +38,7 @@ jobs:
         working-directory: apps/kgml-api
     steps:
       - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v6
+      - uses: astral-sh/setup-uv@v7
       - run: uv sync --dev --frozen
       - run: uv run --frozen ruff check .
       - run: uv run --frozen mypy app
