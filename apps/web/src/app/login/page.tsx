@@ -1,14 +1,13 @@
 "use client";
 
-import { ArrowRight, Languages, ShieldCheck, Sparkles, UserPlus } from "lucide-react";
+import { ArrowRight, ArrowUpRight, KeyRound, Languages, Lock, Mail, ShieldCheck, Sparkles, UserPlus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Button } from "@ccsa-zora/ui/components/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@ccsa-zora/ui/components/card";
-
+import { ThemeToggle } from "@/components/theme-toggle";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 
 export default function LoginPage() {
@@ -30,7 +29,7 @@ export default function LoginPage() {
       if (demoMode) {
         router.replace("/dashboard");
       } else {
-        setError("Workspace authentication is not configured. Contact your Zora administrator.");
+        setError("Workspace authentication service is currently unconfigured. Contact your administrator.");
       }
       return;
     }
@@ -48,7 +47,7 @@ export default function LoginPage() {
       setError(
         assurance.error?.message ??
           factors.error?.message ??
-          "Unable to verify the session assurance level.",
+          "Unable to verify session assurance level.",
       );
       return;
     }
@@ -100,194 +99,177 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="grid min-h-screen bg-background lg:grid-cols-[1.1fr_0.9fr]">
-      <section className="zora-grid relative hidden overflow-hidden bg-zora-deep p-10 text-white lg:flex lg:flex-col lg:justify-between">
-        <div className="absolute -right-28 top-10 size-96 rounded-full bg-zora-sun/15 blur-3xl" />
-        <div className="relative w-fit rounded-2xl bg-white px-4 py-3 shadow-2xl">
-          <Image
-            alt="Zora - Your AI farming companion"
-            className="h-auto w-[380px]"
-            height={432}
-            priority
-            src="/brand/zora-wordmark.jpeg"
-            width={1080}
-          />
-        </div>
-        <div className="relative max-w-xl">
-          <div className="flex items-center gap-2 text-zora-sun">
-            <Sparkles className="size-5" />
-            <span className="text-xs font-bold uppercase tracking-[0.2em]">
-              Agricultural Super Intelligence
-            </span>
-          </div>
-          <h1 className="mt-4 text-5xl font-semibold leading-[1.04] tracking-[-0.04em]">
-            Expert farm knowledge, in every farmer&apos;s language.
-          </h1>
-          <p className="mt-5 max-w-lg text-base leading-7 text-emerald-50/65">
-            CCSA Zora connects farmers, extension teams, researchers, climate intelligence, GIS, and
-            KGML-Ag in one trusted companion.
-          </p>
-          <div className="mt-8 grid grid-cols-2 gap-3">
-            <LoginFeature icon={Languages} text="Five Nigerian language experiences" />
-            <LoginFeature icon={ShieldCheck} text="Institution-grade data integrity" />
-          </div>
-        </div>
-        <p className="relative text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-50/40">
-          Centre for Climate-Smart Agriculture · Cosmopolitan University Abuja
-        </p>
-      </section>
-
-      <section className="flex items-center justify-center p-5 md:p-10">
-        <Card className="w-full max-w-md border-zora-forest/15 shadow-2xl shadow-zora-deep/10">
-          <CardHeader>
+    <main className="min-h-screen bg-white text-neutral-900 dark:bg-[#0a0b0d] dark:text-stone-100 font-mono transition-colors duration-200 flex flex-col justify-between p-6 lg:p-12">
+      {/* Top Header */}
+      <header className="flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-3">
+          <div className="relative h-10 w-40 overflow-hidden rounded border border-neutral-200 dark:border-neutral-800 bg-white p-1 shadow-sm">
             <Image
-              alt="Zora"
-              className="mb-3 h-auto w-16 rounded-xl lg:hidden"
-              height={806}
-              src="/brand/zora-square.jpeg"
-              width={827}
+              src="/brand/zora-wordmark.jpeg"
+              alt="CCSA Zora Logo"
+              fill
+              className="object-contain"
+              priority
             />
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-zora-forest">
-              CCSA Zora Intelligence
-            </p>
-            <CardTitle className="text-2xl">
+          </div>
+        </Link>
+
+        <div className="flex items-center gap-4">
+          <ThemeToggle />
+          <Link href="/">
+            <Button variant="outline" className="border-neutral-300 dark:border-neutral-800 bg-transparent text-xs uppercase tracking-wider font-mono">
+              Back to Home
+            </Button>
+          </Link>
+        </div>
+      </header>
+
+      {/* Main Authentication Card */}
+      <section className="mx-auto w-full max-w-md my-12">
+        <div className="border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-[#0d0e10] p-8 shadow-lg space-y-6">
+          <div className="border-b border-neutral-200 dark:border-neutral-800 pb-4 space-y-2">
+            <div className="text-[10px] uppercase tracking-widest text-neutral-500 font-bold flex items-center gap-2">
+              <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
+              AUTHENTICATION MATRIX
+            </div>
+            <h1 className="text-2xl font-extrabold text-neutral-900 dark:text-white tracking-tight">
+              {factorId ? "MFA Security Verification" : "Sign In to Zora Workspace"}
+            </h1>
+            <p className="text-xs text-neutral-600 dark:text-neutral-400 font-sans leading-relaxed">
               {factorId
-                ? "Secure verification"
-                : demoMode
-                  ? "Explore the Zora workspace"
-                  : "Welcome back"}
-            </CardTitle>
-            <p className="text-sm leading-6 text-muted-foreground">
-              {enrollmentQrCode
-                ? "Scan this QR code in your authenticator app, then enter the six-digit code."
-                : factorId
-                  ? "Enter your authenticator code to access protected model and verification actions."
-                  : demoMode
-                    ? "The local demonstration workspace is open without credentials. Production workspaces require an approved organization account."
-                    : "Sign in to your approved organization workspace."}
+                ? "Enter your authenticator 6-digit code to complete login."
+                : "Access your organization's spatial fields, soil carbon models, and telemetry streams."}
             </p>
-          </CardHeader>
-          <CardContent>
-            {demoMode && !factorId ? (
-              <div className="rounded-2xl border border-zora-forest/15 bg-zora-mist/65 p-5">
-                <div className="flex items-start gap-3">
-                  <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-zora-deep text-zora-sun">
-                    <Sparkles className="size-4" />
-                  </span>
-                  <div>
-                    <p className="font-semibold text-zora-deep">Demonstration access</p>
-                    <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                      Explore representative field, advisory, sensor, and digital MRV workflows. No
-                      email or password is required.
-                    </p>
-                  </div>
-                </div>
-                <Button asChild className="mt-5 h-11 w-full rounded-xl">
-                  <Link href="/dashboard">
-                    Open demo workspace <ArrowRight />
-                  </Link>
-                </Button>
-              </div>
-            ) : (
-              <form className="space-y-4" onSubmit={factorId ? verifyMfa : signIn}>
-                {factorId ? (
-                  <>
-                    {enrollmentQrCode ? (
-                      <div className="rounded-xl border border-zora-forest/15 bg-white p-3 text-center">
-                        {/* Supabase returns a self-contained data URI for this user-specific TOTP QR code. */}
-                        <img
-                          alt="Authenticator enrollment QR code"
-                          className="mx-auto size-44"
-                          src={enrollmentQrCode}
-                        />
-                        <p className="mt-2 text-xs text-muted-foreground">Manual setup key</p>
-                        <code className="mt-1 block break-all text-xs font-semibold text-zora-deep">
-                          {enrollmentSecret}
-                        </code>
-                      </div>
-                    ) : null}
-                    <label className="block text-sm font-semibold">
-                      Authenticator code
-                      <input
-                        autoComplete="one-time-code"
-                        className="mt-1.5 h-11 w-full rounded-xl border border-input bg-card px-3 font-mono font-normal tracking-[0.3em] outline-none focus:ring-2 focus:ring-ring"
-                        inputMode="numeric"
-                        maxLength={6}
-                        onChange={(event) =>
-                          setVerificationCode(event.target.value.replace(/\D/g, ""))
-                        }
-                        required
-                        value={verificationCode}
-                      />
-                    </label>
-                  </>
-                ) : (
-                  <>
-                    <label className="block text-sm font-semibold">
-                      Email
-                      <input
-                        autoComplete="email"
-                        className="mt-1.5 h-11 w-full rounded-xl border border-input bg-card px-3 font-normal outline-none focus:ring-2 focus:ring-ring"
-                        onChange={(event) => setEmail(event.target.value)}
-                        required
-                        type="email"
-                        value={email}
-                      />
-                    </label>
-                    <label className="block text-sm font-semibold">
-                      Password
-                      <input
-                        autoComplete="current-password"
-                        className="mt-1.5 h-11 w-full rounded-xl border border-input bg-card px-3 font-normal outline-none focus:ring-2 focus:ring-ring"
-                        minLength={8}
-                        onChange={(event) => setPassword(event.target.value)}
-                        required
-                        type="password"
-                        value={password}
-                      />
-                    </label>
-                  </>
-                )}
-                {error ? (
-                  <p className="rounded-xl bg-destructive/10 p-3 text-sm text-destructive">
-                    {error}
+          </div>
+
+          {demoMode && !factorId ? (
+            <div className="border border-emerald-500/30 bg-emerald-950/10 p-5 space-y-4 font-sans">
+              <div className="flex items-start gap-3">
+                <Sparkles className="h-5 w-5 text-emerald-500 flex-shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <p className="text-xs font-bold text-neutral-900 dark:text-white uppercase font-mono">Local Demo Workspace Active</p>
+                  <p className="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+                    Local demonstration mode is enabled. You can open the full Command Centre without credentials.
                   </p>
+                </div>
+              </div>
+              <Button
+                onClick={() => router.push("/dashboard")}
+                className="w-full border border-neutral-700 bg-black text-white hover:bg-neutral-800 dark:bg-white dark:text-black dark:hover:bg-neutral-200 font-mono text-xs uppercase tracking-wider font-bold h-11 rounded-none"
+              >
+                Open Demo Workspace <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
+          ) : null}
+
+          {/* Login Form */}
+          <form className="space-y-4" onSubmit={factorId ? verifyMfa : signIn}>
+            {factorId ? (
+              <>
+                {enrollmentQrCode ? (
+                  <div className="border border-neutral-200 dark:border-neutral-800 bg-white p-4 text-center space-y-2">
+                    <img
+                      alt="Authenticator QR code"
+                      className="mx-auto h-40 w-40"
+                      src={enrollmentQrCode}
+                    />
+                    <p className="text-[10px] uppercase tracking-wider text-neutral-500">Manual Setup Secret:</p>
+                    <code className="text-xs font-bold text-black break-all">{enrollmentSecret}</code>
+                  </div>
                 ) : null}
-                <Button className="h-11 w-full rounded-xl" disabled={submitting} type="submit">
-                  {submitting
-                    ? "Verifying…"
-                    : factorId
-                      ? "Verify and continue"
-                      : "Enter Zora workspace"}
-                </Button>
-              </form>
+
+                <div className="space-y-1.5">
+                  <label className="text-[10px] uppercase tracking-wider text-neutral-600 dark:text-neutral-400 block font-bold">
+                    AUTHENTICATOR CODE (6-DIGIT):
+                  </label>
+                  <input
+                    autoComplete="one-time-code"
+                    className="w-full border border-neutral-300 dark:border-neutral-800 bg-white dark:bg-neutral-950 p-3 text-sm text-neutral-900 dark:text-white font-mono tracking-widest focus:border-emerald-500 focus:outline-none"
+                    inputMode="numeric"
+                    maxLength={6}
+                    onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, ""))}
+                    required
+                    value={verificationCode}
+                  />
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] uppercase tracking-wider text-neutral-600 dark:text-neutral-400 block font-bold">
+                    ORGANIZATION EMAIL:
+                  </label>
+                  <input
+                    autoComplete="email"
+                    className="w-full border border-neutral-300 dark:border-neutral-800 bg-white dark:bg-neutral-950 p-3 text-xs text-neutral-900 dark:text-white font-mono focus:border-emerald-500 focus:outline-none"
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="user@cooperative.org"
+                    required
+                    type="email"
+                    value={email}
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <div className="flex justify-between items-center">
+                    <label className="text-[10px] uppercase tracking-wider text-neutral-600 dark:text-neutral-400 font-bold">
+                      PASSWORD:
+                    </label>
+                    <Link
+                      href="/forgot-password"
+                      className="text-[10px] uppercase tracking-wider text-emerald-600 dark:text-emerald-400 hover:underline"
+                    >
+                      Forgot password?
+                    </Link>
+                  </div>
+                  <input
+                    autoComplete="current-password"
+                    className="w-full border border-neutral-300 dark:border-neutral-800 bg-white dark:bg-neutral-950 p-3 text-xs text-neutral-900 dark:text-white font-mono focus:border-emerald-500 focus:outline-none"
+                    minLength={8}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    type="password"
+                    value={password}
+                  />
+                </div>
+              </>
             )}
 
-            {!factorId ? (
-              <div className="mt-5 border-t border-zora-forest/10 pt-5 text-center">
-                <p className="text-xs text-muted-foreground">Need an organization account?</p>
-                <Link
-                  className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-zora-forest underline-offset-4 hover:underline"
-                  href="/request-access"
-                >
-                  <UserPlus className="size-4" /> Request workspace access
-                </Link>
+            {error ? (
+              <div className="border border-red-500/40 bg-red-950/10 p-3 text-xs text-red-600 dark:text-red-400 font-sans">
+                {error}
               </div>
             ) : null}
-          </CardContent>
-        </Card>
-      </section>
-    </main>
-  );
-}
 
-function LoginFeature({ icon: Icon, text }: { icon: typeof Languages; text: string }) {
-  return (
-    <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/7 p-3.5">
-      <span className="flex size-9 items-center justify-center rounded-xl bg-white/10 text-zora-sun">
-        <Icon className="size-4" />
-      </span>
-      <span className="text-xs leading-5 text-emerald-50/75">{text}</span>
-    </div>
+            <Button
+              className="w-full border border-neutral-700 bg-black text-white hover:bg-neutral-800 dark:bg-white dark:text-black dark:hover:bg-neutral-200 font-mono text-xs uppercase tracking-wider font-bold h-11 rounded-none"
+              disabled={submitting}
+              type="submit"
+            >
+              {submitting ? "Verifying Credentials…" : factorId ? "Verify Code" : "Sign In to Workspace"}
+            </Button>
+          </form>
+
+          {/* Quick Links */}
+          <div className="border-t border-neutral-200 dark:border-neutral-800 pt-4 flex flex-col items-center gap-2 text-xs font-sans text-neutral-600 dark:text-neutral-400">
+            <p>Don't have an organization account?</p>
+            <div className="flex gap-4 font-mono text-[11px] uppercase tracking-wider">
+              <Link href="/signup" className="text-emerald-600 dark:text-emerald-400 font-bold hover:underline">
+                Create Account
+              </Link>
+              <span>•</span>
+              <Link href="/request-access" className="text-neutral-600 dark:text-neutral-400 hover:underline">
+                Request Access
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="text-center text-[10px] text-neutral-500 uppercase tracking-widest">
+        © 2026 CCSA Zora Platform • Cosmopolitan University Abuja
+      </footer>
+    </main>
   );
 }
