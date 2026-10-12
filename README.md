@@ -257,8 +257,7 @@ SELECT ST_SRID(boundary) FROM fields; -- Should return 4326
 
 ---
 
-_For operations guides, deployment checklists, and product concept blueprints, refer to the files in the [`docs/`](file:///c:/projects/ccsa-aiv2/docs) folder._
-
+_For operations guides, deployment checklists, and product concept blueprints, refer to the files in the [`docs/`](file:///c:/projects/ccsa-aiv2/docs) folder.
 ---
 
 **Abdulrahman Dauda Gaya**  

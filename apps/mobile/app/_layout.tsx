@@ -39,6 +39,7 @@ export default function RootLayout() {
         >
           <Stack.Screen name="index" options={{ headerShown: false }} />
           <Stack.Screen name="assistant" options={{ title: "Ask Zora" }} />
+          <Stack.Screen name="subscribe" options={{ title: "Zora Pro Farmer" }} />
           <Stack.Screen name="scouting/new" options={{ title: "New scouting log" }} />
           <Stack.Screen name="login" options={{ title: "Sign in" }} />
         </Stack>

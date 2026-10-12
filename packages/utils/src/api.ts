@@ -159,7 +159,7 @@ export interface KgmlInferenceResult {
   generatedAt: string;
 }
 
-export const ZORA_LANGUAGES = ["en", "ha", "yo", "ig", "ff"] as const;
+export const ZORA_LANGUAGES = ["en", "ha", "yo", "ig", "ff", "pcm"] as const;
 
 export type ZoraLanguage = (typeof ZORA_LANGUAGES)[number];
 
@@ -182,6 +182,12 @@ export interface ZoraAdvisoryResult {
   actions: string[];
   knowledgeBasis: string[];
   followUp: string;
+  rootCauses?: string[];
+  immediateActions?: string[];
+  organicAlternative?: string;
+  weatherSafety?: string;
+  preventionProtocol?: string;
+  audioUrl?: string;
   model: {
     name: string;
     version: string;
@@ -189,3 +195,22 @@ export interface ZoraAdvisoryResult {
   };
   generatedAt: string;
 }
+
+export interface ZoraWeatherForecast {
+  latitude: number;
+  longitude: number;
+  temperatureCelsius: number;
+  relativeHumidityPercent: number;
+  precipitationMm: number;
+  rainProbabilityPercent: number;
+  windSpeedKmh: number;
+  condition: string;
+  advisories: {
+    spraying: string;
+    fertilizer: string;
+    heatStress: string;
+  };
+  isLiveData: boolean;
+  observedAt: string;
+}
+

@@ -9,6 +9,7 @@ import type {
   SyncPullResponse,
   ZoraAdvisoryInput,
   ZoraAdvisoryResult,
+  ZoraWeatherForecast,
 } from "@ccsa-zora/utils/api";
 import type { OutboxEnvelope, PushResult } from "@ccsa-zora/utils/sync";
 
@@ -120,6 +121,13 @@ export function createZoraClient(options: ZoraClientOptions = {}) {
         headers: { "x-zora-organization": input.organizationId },
         body: JSON.stringify(input),
       });
+    },
+    weather(params?: { latitude?: number; longitude?: number }) {
+      const query = new URLSearchParams();
+      if (params?.latitude !== undefined) query.set("latitude", String(params.latitude));
+      if (params?.longitude !== undefined) query.set("longitude", String(params.longitude));
+      const queryString = query.toString();
+      return request<ZoraWeatherForecast>(`/api/weather${queryString ? `?${queryString}` : ""}`);
     },
   };
 }

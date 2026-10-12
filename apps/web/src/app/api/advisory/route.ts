@@ -6,7 +6,7 @@ import { authenticateRequest, requestedOrganization } from "@/server/auth";
 import { assertOrganizationAccess, getRepository } from "@/server/repository";
 import { apiError } from "@/server/responses";
 import { zoraAdvisorySchema } from "@/server/validation";
-import { createReferenceAdvisory } from "@/server/zora-advisory";
+import { generateZoraAdvisory } from "@/server/zora-ai-engine";
 
 export const runtime = "nodejs";
 
@@ -21,37 +21,48 @@ export async function POST(request: NextRequest) {
     const repository = getRepository();
     await assertOrganizationAccess(repository, organizationId, principal.userId);
 
-    if (process.env.ZORA_DEMO_MODE === "true") {
-      const result = createReferenceAdvisory(input);
+    // If OPENAI_API_KEY is set or a native African language is requested, use Zora AI Engine directly
+    const hasOpenAiKey = Boolean(process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY.trim().length > 10);
+    const isAfricanLanguage = ["ha", "yo", "ig", "pcm", "ff"].includes(input.language);
+
+    if (hasOpenAiKey || isAfricanLanguage) {
+      const result = await generateZoraAdvisory(input);
       await repository.recordAdvisory(organizationId, principal.userId, input, result);
       return NextResponse.json(result);
     }
 
-    const apiUrl = process.env.KGML_API_URL ?? "http://127.0.0.1:8000";
-    const response = await fetch(`${apiUrl}/v1/advisories`, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "x-zora-service-key": process.env.KGML_SERVICE_KEY ?? "demo-service-key",
-      },
-      body: JSON.stringify({
-        organization_id: input.organizationId,
-        field_id: input.fieldId ?? null,
-        language: input.language,
-        message: input.message,
-        channel: input.channel,
-        context: input.context ?? {},
-      }),
-      cache: "no-store",
-    });
-    const body = (await response.json()) as ZoraAdvisoryResult | { detail: unknown };
-    if (!response.ok) {
-      return NextResponse.json(
-        { error: "Zora intelligence service rejected the request", details: body },
-        { status: response.status },
-      );
+    const apiUrl = process.env.KGML_API_URL ?? "http://127.0.0.1:8100";
+    const serviceKey = process.env.KGML_SERVICE_KEY || "demo-service-key";
+
+    try {
+      const response = await fetch(`${apiUrl}/v1/advisories`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "x-zora-service-key": serviceKey,
+        },
+        body: JSON.stringify({
+          organization_id: input.organizationId,
+          field_id: input.fieldId ?? null,
+          language: input.language,
+          message: input.message,
+          channel: input.channel,
+          context: input.context ?? {},
+        }),
+        cache: "no-store",
+      });
+
+      if (response.ok) {
+        const result = (await response.json()) as ZoraAdvisoryResult;
+        await repository.recordAdvisory(organizationId, principal.userId, input, result);
+        return NextResponse.json(result);
+      }
+    } catch (apiErr) {
+      console.warn("[Zora Web Advisory] Live kgml-api error, falling back to AI engine:", apiErr);
     }
-    const result = body as ZoraAdvisoryResult;
+
+    // Fallback to Zora AI Engine
+    const result = await generateZoraAdvisory(input);
     await repository.recordAdvisory(organizationId, principal.userId, input, result);
     return NextResponse.json(result);
   } catch (error) {

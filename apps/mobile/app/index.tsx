@@ -8,17 +8,34 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { getScoutingOverview } from "@/features/field-scouting/data/scouting.repository";
 import { useSyncStore } from "@/features/field-scouting/state/sync-store";
 import { runFieldSync } from "@/features/field-scouting/sync/sync-coordinator";
+import { createZoraClient } from "@ccsa-zora/api-client";
+import { getMobileAccessToken } from "@/auth/supabase";
+import { useSubscriptionStore } from "@/features/subscription/subscription-store";
+
+const api = createZoraClient({
+  baseUrl: process.env.EXPO_PUBLIC_API_URL ?? "http://127.0.0.1:3000",
+  getAccessToken: getMobileAccessToken,
+});
 
 export default function ZoraCompanionHome() {
   const db = useSQLiteContext();
   const queryClient = useQueryClient();
   const network = Network.useNetworkState();
   const sync = useSyncStore();
+  const { currentTier, weeklyQueriesUsed, maxWeeklyFreeQueries } = useSubscriptionStore();
+
   const overview = useQuery({
     queryKey: ["scouting", "overview"],
     queryFn: () => getScoutingOverview(db),
   });
   const data = overview.data ?? { observations: [], fields: 0, pending: 0, conflicts: 0 };
+
+  const weatherQuery = useQuery({
+    queryKey: ["weather", "live"],
+    queryFn: () => api.weather(),
+    staleTime: 5 * 60 * 1000,
+  });
+  const weather = weatherQuery.data;
 
   async function synchronize() {
     try {
@@ -34,16 +51,27 @@ export default function ZoraCompanionHome() {
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.header}>
           <Image source={require("../assets/brand/zora-wordmark.jpeg")} style={styles.wordmark} />
-          <View style={styles.connectionBadge}>
-            <View
-              style={[
-                styles.connectionDot,
-                network.isInternetReachable === false && styles.connectionDotOffline,
-              ]}
-            />
-            <Text style={styles.connectionText}>
-              {network.isInternetReachable === false ? "Offline" : "Online"}
-            </Text>
+          <View style={styles.headerRight}>
+            <Link href="/subscribe" asChild>
+              <Pressable style={styles.planBadge}>
+                <Text style={styles.planBadgeText}>
+                  {currentTier === "FREE"
+                    ? `Free: ${Math.max(0, maxWeeklyFreeQueries - weeklyQueriesUsed)} left`
+                    : "Zora Pro ✓"}
+                </Text>
+              </Pressable>
+            </Link>
+            <View style={styles.connectionBadge}>
+              <View
+                style={[
+                  styles.connectionDot,
+                  network.isInternetReachable === false && styles.connectionDotOffline,
+                ]}
+              />
+              <Text style={styles.connectionText}>
+                {network.isInternetReachable === false ? "Offline" : "Online"}
+              </Text>
+            </View>
           </View>
         </View>
 
@@ -69,13 +97,19 @@ export default function ZoraCompanionHome() {
 
         <View style={styles.climateAlert}>
           <View style={styles.alertIcon}>
-            <Text style={styles.alertIconText}>24h</Text>
+            <Text style={styles.alertIconText}>
+              {weather ? `${Math.round(weather.temperatureCelsius)}°C` : "24h"}
+            </Text>
           </View>
           <View style={styles.alertCopy}>
-            <Text style={styles.alertLabel}>ZORA CLIMATE WATCH</Text>
-            <Text style={styles.alertTitle}>Rainfall likely. Review fertilizer timing.</Text>
+            <Text style={styles.alertLabel}>
+              ZORA CLIMATE WATCH · {weather ? `${Math.round(weather.rainProbabilityPercent)}% RAIN RISK` : "ABUJA PILOT"}
+            </Text>
+            <Text style={styles.alertTitle}>
+              {weather?.advisories.spraying ?? "Rainfall likely. Review fertilizer timing."}
+            </Text>
             <Text style={styles.alertText}>
-              High runoff risk is expected in parts of the Abuja pilot area.
+              {weather?.advisories.fertilizer ?? "High runoff risk is expected in parts of the Abuja pilot area."}
             </Text>
           </View>
         </View>
@@ -84,24 +118,22 @@ export default function ZoraCompanionHome() {
         <View style={styles.actionGrid}>
           <ActionCard href="/assistant" label="Ask a question" mark="AI" detail="5 languages" />
           <ActionCard
-            href="/scouting/new"
+            href="/assistant"
             label="Diagnose a crop"
             mark="CV"
-            detail="Camera evidence"
-            disabled={!data.fields}
+            detail="Camera pest scan"
+          />
+          <ActionCard
+            href="/subscribe"
+            label="Zora Pro Farmer"
+            mark="PRO"
+            detail="₦750/mo Unlimited"
           />
           <ActionCard
             href="/scouting/new"
-            label="Map a field issue"
+            label="Map field issue"
             mark="GIS"
             detail="GPS + boundary"
-            disabled={!data.fields}
-          />
-          <ActionCard
-            href="/scouting/new"
-            label="Record field work"
-            mark="LOG"
-            detail="Works offline"
             disabled={!data.fields}
           />
         </View>
@@ -198,7 +230,7 @@ function ActionCard({
   detail,
   disabled = false,
 }: {
-  href: "/assistant" | "/scouting/new";
+  href: "/assistant" | "/scouting/new" | "/subscribe";
   label: string;
   mark: string;
   detail: string;
@@ -243,6 +275,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 16,
+  },
+  headerRight: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  planBadge: {
+    backgroundColor: "#196f3d",
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+    borderRadius: 999,
+  },
+  planBadgeText: {
+    color: "#ffffff",
+    fontSize: 10,
+    fontWeight: "800",
   },
   wordmark: { width: 144, height: 62, resizeMode: "contain" },
   connectionBadge: {
