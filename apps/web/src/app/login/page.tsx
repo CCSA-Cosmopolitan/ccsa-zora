@@ -107,9 +107,9 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FBFDFB] dark:bg-[#071711] flex flex-col justify-between text-slate-800 dark:text-slate-100 antialiased transition-colors">
+    <div className="min-h-screen bg-stone-50 dark:bg-stone-950 flex flex-col justify-between text-slate-800 dark:text-stone-100 antialiased transition-colors">
       {/* Top Brand Bar */}
-      <header className="border-b border-slate-100 dark:border-slate-800/80 bg-white dark:bg-[#0A1F17]">
+      <header className="border-b border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900/80 backdrop-blur-md">
         <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
             <Image
@@ -120,7 +120,7 @@ export default function LoginPage() {
               className="h-8 w-auto"
               priority
             />
-            <span className="h-5 w-px bg-slate-200 dark:bg-slate-700" />
+            <span className="h-5 w-px bg-stone-200 dark:bg-stone-700" />
             <span className="text-lg font-bold tracking-tight text-emerald-800 dark:text-emerald-400">
               Zora
             </span>
@@ -140,7 +140,7 @@ export default function LoginPage() {
 
       {/* Main Centered Content */}
       <main className="flex-1 flex items-center justify-center px-4 py-12 sm:px-6">
-        <div className="w-full max-w-[420px] bg-white dark:bg-[#0B2118] border border-slate-200/90 dark:border-emerald-950/80 rounded-2xl p-7 sm:p-9 shadow-[0_4px_24px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.2)]">
+        <div className="w-full max-w-[420px] bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-7 sm:p-9 shadow-sm">
           {/* Header */}
           <div className="text-center mb-7">
             <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
@@ -234,7 +234,7 @@ export default function LoginPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@organization.com"
-                    className="w-full h-10 pl-9 pr-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#071711] text-slate-900 dark:text-white text-sm outline-none placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:border-emerald-600 dark:focus:border-emerald-500 focus:ring-2 focus:ring-emerald-600/15 transition"
+                    className="w-full h-10 pl-9 pr-3 rounded-lg border border-slate-200 dark:border-stone-800 bg-white dark:bg-stone-950 text-slate-900 dark:text-white text-sm outline-none placeholder:text-slate-400 dark:placeholder:text-stone-500 focus:border-emerald-600 dark:focus:border-emerald-500 focus:ring-2 focus:ring-emerald-600/15 transition"
                   />
                 </div>
               </div>
@@ -259,7 +259,7 @@ export default function LoginPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Enter your password"
-                    className="w-full h-10 pl-9 pr-10 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#071711] text-slate-900 dark:text-white text-sm outline-none placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:border-emerald-600 dark:focus:border-emerald-500 focus:ring-2 focus:ring-emerald-600/15 transition"
+                    className="w-full h-10 pl-9 pr-10 rounded-lg border border-slate-200 dark:border-stone-800 bg-white dark:bg-stone-950 text-slate-900 dark:text-white text-sm outline-none placeholder:text-slate-400 dark:placeholder:text-stone-500 focus:border-emerald-600 dark:focus:border-emerald-500 focus:ring-2 focus:ring-emerald-600/15 transition"
                   />
                   <button
                     type="button"
@@ -289,10 +289,10 @@ export default function LoginPage() {
 
               <div className="relative my-4">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-slate-200 dark:border-slate-800" />
+                  <div className="w-full border-t border-slate-200 dark:border-stone-800" />
                 </div>
                 <div className="relative flex justify-center text-xs">
-                  <span className="bg-white dark:bg-[#0B2118] px-2 text-slate-400 dark:text-slate-500">
+                  <span className="bg-white dark:bg-stone-900 px-2 text-slate-400 dark:text-stone-400">
                     or
                   </span>
                 </div>
@@ -302,7 +302,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={handleDemoAccess}
-                className="w-full h-10 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold text-xs transition flex items-center justify-center gap-1.5 cursor-pointer"
+                className="w-full h-10 rounded-lg border border-slate-200 dark:border-stone-800 bg-white dark:bg-stone-950 hover:bg-slate-50 dark:hover:bg-stone-800 text-slate-700 dark:text-stone-200 font-semibold text-xs transition flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <span>Open Guest Demo Workspace</span>
                 <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
@@ -311,7 +311,7 @@ export default function LoginPage() {
           )}
 
           {/* Request access link */}
-          <div className="mt-6 text-center text-xs text-slate-500 dark:text-slate-400">
+          <div className="mt-6 text-center text-xs text-slate-500 dark:text-stone-400">
             Need an organization account?{" "}
             <Link
               href="/signup"
@@ -324,10 +324,10 @@ export default function LoginPage() {
       </main>
 
       {/* Minimal Footer */}
-      <footer className="py-6 border-t border-slate-100 dark:border-slate-800/80 bg-white dark:bg-[#0A1F17] text-center text-xs text-slate-400 dark:text-slate-500">
+      <footer className="py-6 border-t border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900/80 text-center text-xs text-slate-400 dark:text-stone-500">
         <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p>© {new Date().getFullYear()} Centre for Climate-Smart Agriculture · Cosmopolitan University Abuja</p>
-          <div className="flex items-center gap-4 text-slate-400 dark:text-slate-500">
+          <div className="flex items-center gap-4 text-slate-400 dark:text-stone-500">
             <Link href="/" className="hover:text-emerald-800 dark:hover:text-emerald-400 transition">About Zora</Link>
             <Link href="/docs" className="hover:text-emerald-800 dark:hover:text-emerald-400 transition">Docs</Link>
           </div>

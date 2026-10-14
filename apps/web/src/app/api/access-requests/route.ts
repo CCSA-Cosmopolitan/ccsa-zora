@@ -28,6 +28,7 @@ async function sendNotificationEmail(params: {
   role: string;
   phone?: string;
   useCase: string;
+}) {
   const resendApiKey = process.env.RESEND_API_KEY;
   if (!resendApiKey) {
     console.warn("RESEND_API_KEY not configured; skipping email notification");

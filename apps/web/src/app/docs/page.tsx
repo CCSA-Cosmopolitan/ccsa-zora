@@ -1,5 +1,8 @@
 import Link from "next/link";
 
+import { PublicHeader } from "@/components/public-header";
+import { PublicFooter } from "@/components/public-footer";
+
 export const metadata = {
   title: "Documentation | CCSA Zora",
   description:
@@ -10,7 +13,7 @@ const GITHUB_URL = "https://github.com/CCSA-Cosmopolitan/ccsa-zora";
 
 function H2({ id, children }: { id: string; children: React.ReactNode }) {
   return (
-    <h2 id={id} className="mt-14 scroll-mt-24 text-2xl font-bold tracking-tight text-slate-900">
+    <h2 id={id} className="mt-14 scroll-mt-24 text-2xl font-bold tracking-tight text-stone-900 dark:text-white">
       {children}
     </h2>
   );
@@ -18,7 +21,7 @@ function H2({ id, children }: { id: string; children: React.ReactNode }) {
 
 function Code({ children }: { children: React.ReactNode }) {
   return (
-    <pre className="mt-4 overflow-x-auto rounded-xl bg-slate-900 p-4 text-sm leading-relaxed text-slate-100">
+    <pre className="mt-4 overflow-x-auto rounded-xl bg-stone-900 dark:bg-black p-4 text-sm leading-relaxed text-stone-100 border border-stone-800">
       <code>{children}</code>
     </pre>
   );
@@ -26,19 +29,10 @@ function Code({ children }: { children: React.ReactNode }) {
 
 export default function DocsPage() {
   return (
-    <div className="min-h-screen bg-white text-slate-700">
-      <header className="sticky top-0 z-40 border-b border-slate-100 bg-white/90 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-5">
-          <Link href="/" className="text-lg font-bold text-emerald-800">
-            ← Zora
-          </Link>
-          <a href={GITHUB_URL} target="_blank" rel="noreferrer" className="text-sm font-semibold hover:text-emerald-800">
-            GitHub repository
-          </a>
-        </div>
-      </header>
+    <div className="min-h-screen bg-white dark:bg-stone-950 text-stone-700 dark:text-stone-300 antialiased transition-colors flex flex-col justify-between">
+      <PublicHeader />
 
-      <main className="mx-auto grid max-w-5xl gap-12 px-5 py-14 lg:grid-cols-[200px_1fr]">
+      <main className="mx-auto grid max-w-5xl gap-12 px-5 py-14 lg:grid-cols-[200px_1fr] flex-1">
         <aside className="hidden lg:block">
           <nav className="sticky top-24 space-y-2 text-sm">
             {[
@@ -50,7 +44,11 @@ export default function DocsPage() {
               ["run", "Run locally"],
               ["config", "Configuration"],
             ].map(([id, label]) => (
-              <a key={id} href={`#${id}`} className="block text-slate-500 hover:text-emerald-800">
+              <a
+                key={id}
+                href={`#${id}`}
+                className="block text-stone-500 dark:text-stone-400 hover:text-emerald-700 dark:hover:text-emerald-400 transition"
+              >
                 {label}
               </a>
             ))}
@@ -58,8 +56,8 @@ export default function DocsPage() {
         </aside>
 
         <article>
-          <h1 className="text-4xl font-extrabold tracking-tight text-slate-900">Documentation</h1>
-          <p className="mt-4 text-lg leading-relaxed">
+          <h1 className="text-4xl font-extrabold tracking-tight text-stone-900 dark:text-white">Documentation</h1>
+          <p className="mt-4 text-lg leading-relaxed text-stone-600 dark:text-stone-400">
             This page holds the technical detail that the farmer never needs to see. The product itself is one
             button.
           </p>
@@ -100,11 +98,11 @@ export default function DocsPage() {
           <H2 id="voice">Voice and languages</H2>
           <ul className="mt-4 list-disc space-y-2 pl-6 leading-relaxed">
             <li>
-              Speech to text: <code>whisper-1</code> (Hausa, Yorùbá, English) with browser SpeechRecognition fallback.
+              Speech to text: <code className="rounded bg-stone-100 dark:bg-stone-900 px-1 py-0.5 text-xs text-emerald-800 dark:text-emerald-400">whisper-1</code> (Hausa, Yorùbá, English) with browser SpeechRecognition fallback.
             </li>
             <li>
-              Text to speech: <code>gpt-4o-mini-tts</code> with accent and tone instructions, falling back to{" "}
-              <code>tts-1</code>, then the device voice.
+              Text to speech: <code className="rounded bg-stone-100 dark:bg-stone-900 px-1 py-0.5 text-xs text-emerald-800 dark:text-emerald-400">gpt-4o-mini-tts</code> with accent and tone instructions, falling back to{" "}
+              <code className="rounded bg-stone-100 dark:bg-stone-900 px-1 py-0.5 text-xs text-emerald-800 dark:text-emerald-400">tts-1</code>, then the device voice.
             </li>
             <li>Languages: English, Hausa, Yorùbá, Igbo, Nigerian Pidgin (Fulfulde supported in the API).</li>
           </ul>
@@ -134,13 +132,13 @@ export default function DocsPage() {
           <p className="mt-4">Supporting endpoints:</p>
           <ul className="mt-2 list-disc space-y-1 pl-6">
             <li>
-              <code>POST /api/assistant/transcribe</code>: multipart audio to text
+              <code className="rounded bg-stone-100 dark:bg-stone-900 px-1 py-0.5 text-xs text-emerald-800 dark:text-emerald-400">POST /api/assistant/transcribe</code>: multipart audio to text
             </li>
             <li>
-              <code>POST /api/audio/speech</code>: text to natural speech (mp3)
+              <code className="rounded bg-stone-100 dark:bg-stone-900 px-1 py-0.5 text-xs text-emerald-800 dark:text-emerald-400">POST /api/audio/speech</code>: text to natural speech (mp3)
             </li>
             <li>
-              <code>POST /api/advisory</code>: authenticated advisory with audit logging (dashboard)
+              <code className="rounded bg-stone-100 dark:bg-stone-900 px-1 py-0.5 text-xs text-emerald-800 dark:text-emerald-400">POST /api/advisory</code>: authenticated advisory with audit logging (dashboard)
             </li>
           </ul>
 
@@ -148,7 +146,7 @@ export default function DocsPage() {
           <p className="mt-3 leading-relaxed">
             Behind the assistant, the staff dashboard offers a command centre, field registry, IoT sensors,
             digital MRV for carbon credits and model management.{" "}
-            <Link href="/login" className="font-semibold text-emerald-800 underline underline-offset-4">
+            <Link href="/login" className="font-semibold text-emerald-800 dark:text-emerald-400 underline underline-offset-4">
               Staff sign in
             </Link>
             .
@@ -177,19 +175,21 @@ OPENAI_MODEL=gpt-4o-mini     # or gpt-4o for higher quality
 KGML_API_URL=http://127.0.0.1:8100
 KGML_SERVICE_KEY=...`}</Code>
 
-          <div className="mt-16 rounded-2xl bg-emerald-50 p-6">
-            <p className="font-semibold text-emerald-900">Source code</p>
+          <div className="mt-16 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 p-6 border border-emerald-100 dark:border-emerald-900/50">
+            <p className="font-semibold text-emerald-900 dark:text-emerald-300">Source code</p>
             <a
               href={GITHUB_URL}
               target="_blank"
               rel="noreferrer"
-              className="mt-1 inline-block text-emerald-800 underline underline-offset-4"
+              className="mt-1 inline-block text-emerald-800 dark:text-emerald-400 underline underline-offset-4"
             >
               {GITHUB_URL}
             </a>
           </div>
         </article>
       </main>
+
+      <PublicFooter />
     </div>
   );
 }

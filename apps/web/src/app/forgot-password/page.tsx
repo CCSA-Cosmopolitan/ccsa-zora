@@ -57,9 +57,9 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FBFDFB] dark:bg-[#071711] flex flex-col justify-between text-slate-800 dark:text-slate-100 antialiased transition-colors">
+    <div className="min-h-screen bg-stone-50 dark:bg-stone-950 flex flex-col justify-between text-slate-800 dark:text-stone-100 antialiased transition-colors">
       {/* Top Brand Bar */}
-      <header className="border-b border-slate-100 dark:border-slate-800/80 bg-white dark:bg-[#0A1F17]">
+      <header className="border-b border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900/80 backdrop-blur-md">
         <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
             <Image
@@ -70,7 +70,7 @@ export default function ForgotPasswordPage() {
               className="h-8 w-auto"
               priority
             />
-            <span className="h-5 w-px bg-slate-200 dark:bg-slate-700" />
+            <span className="h-5 w-px bg-stone-200 dark:bg-stone-700" />
             <span className="text-lg font-bold tracking-tight text-emerald-800 dark:text-emerald-400">
               Zora
             </span>
@@ -91,7 +91,7 @@ export default function ForgotPasswordPage() {
 
       {/* Main Centered Content */}
       <main className="flex-1 flex items-center justify-center px-4 py-12 sm:px-6">
-        <div className="w-full max-w-[420px] bg-white dark:bg-[#0B2118] border border-slate-200/90 dark:border-emerald-950/80 rounded-2xl p-7 sm:p-9 shadow-[0_4px_24px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.2)]">
+        <div className="w-full max-w-[420px] bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-7 sm:p-9 shadow-sm">
           {sentSuccess ? (
             /* Success State */
             <div className="text-center py-4 space-y-5">
@@ -157,7 +157,7 @@ export default function ForgotPasswordPage() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="you@organization.com"
-                      className="w-full h-10 pl-9 pr-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#071711] text-slate-900 dark:text-white text-sm outline-none placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:border-emerald-600 dark:focus:border-emerald-500 focus:ring-2 focus:ring-emerald-600/15 transition"
+                      className="w-full h-10 pl-9 pr-3 rounded-lg border border-slate-200 dark:border-stone-800 bg-white dark:bg-stone-950 text-slate-900 dark:text-white text-sm outline-none placeholder:text-slate-400 dark:placeholder:text-stone-500 focus:border-emerald-600 dark:focus:border-emerald-500 focus:ring-2 focus:ring-emerald-600/15 transition"
                     />
                   </div>
                 </div>
@@ -178,7 +178,7 @@ export default function ForgotPasswordPage() {
                 </button>
               </form>
 
-              <div className="mt-6 text-center text-xs text-slate-500 dark:text-slate-400">
+              <div className="mt-6 text-center text-xs text-slate-500 dark:text-stone-400">
                 Remember your password?{" "}
                 <Link
                   href="/login"
@@ -193,10 +193,10 @@ export default function ForgotPasswordPage() {
       </main>
 
       {/* Minimal Footer */}
-      <footer className="py-6 border-t border-slate-100 dark:border-slate-800/80 bg-white dark:bg-[#0A1F17] text-center text-xs text-slate-400 dark:text-slate-500">
+      <footer className="py-6 border-t border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900/80 text-center text-xs text-slate-400 dark:text-stone-500">
         <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p>© {new Date().getFullYear()} Centre for Climate-Smart Agriculture · Cosmopolitan University Abuja</p>
-          <div className="flex items-center gap-4 text-slate-400 dark:text-slate-500">
+          <div className="flex items-center gap-4 text-slate-400 dark:text-stone-500">
             <Link href="/" className="hover:text-emerald-800 dark:hover:text-emerald-400 transition">About Zora</Link>
             <Link href="/docs" className="hover:text-emerald-800 dark:hover:text-emerald-400 transition">Docs</Link>
           </div>

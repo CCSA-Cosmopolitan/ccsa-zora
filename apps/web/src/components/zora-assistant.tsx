@@ -56,10 +56,10 @@ const COPY: Record<Lang, { tap: string; listening: string; thinking: string; spe
 };
 
 const SEVERITY_STYLE: Record<Reply["severity"], string> = {
-  high: "bg-red-50 text-red-700 ring-red-200",
-  medium: "bg-amber-50 text-amber-800 ring-amber-200",
-  low: "bg-emerald-50 text-emerald-700 ring-emerald-200",
-  information: "bg-slate-100 text-slate-700 ring-slate-200",
+  high: "bg-red-50 dark:bg-red-950/70 text-red-700 dark:text-red-300 ring-red-200 dark:ring-red-900/60",
+  medium: "bg-amber-50 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 ring-amber-200 dark:ring-amber-900/60",
+  low: "bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 ring-emerald-200 dark:ring-emerald-900/60",
+  information: "bg-slate-100 dark:bg-stone-800 text-slate-700 dark:text-stone-300 ring-slate-200 dark:ring-stone-700",
 };
 
 const SEVERITY_LABEL: Record<Reply["severity"], string> = {
@@ -269,8 +269,8 @@ export function ZoraAssistant() {
             onClick={() => setLanguage(l.code)}
             className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
               language === l.code
-                ? "bg-emerald-700 text-white shadow-sm"
-                : "bg-white text-slate-700 ring-1 ring-slate-200 hover:ring-emerald-300"
+                ? "bg-emerald-700 dark:bg-emerald-600 text-white shadow-sm"
+                : "bg-white dark:bg-stone-900 text-slate-700 dark:text-stone-300 ring-1 ring-slate-200 dark:ring-stone-800 hover:ring-emerald-300 dark:hover:ring-emerald-600"
             }`}
           >
             {l.native}
@@ -295,7 +295,7 @@ export function ZoraAssistant() {
                 ? "bg-red-600 hover:bg-red-700"
                 : phase === "thinking"
                   ? "cursor-wait bg-emerald-600/70"
-                  : "bg-emerald-700 hover:bg-emerald-800"
+                  : "bg-emerald-700 hover:bg-emerald-800 dark:bg-emerald-600 dark:hover:bg-emerald-500"
             }`}
           >
             {phase === "thinking" ? (
@@ -312,10 +312,10 @@ export function ZoraAssistant() {
             )}
           </button>
         </div>
-        <p className="mt-4 text-base font-medium text-slate-700" aria-live="polite">
+        <p className="mt-4 text-base font-medium text-slate-700 dark:text-stone-300" aria-live="polite">
           {label}
         </p>
-        {micError && <p className="mt-2 max-w-md text-center text-sm text-red-600">{micError}</p>}
+        {micError && <p className="mt-2 max-w-md text-center text-sm text-red-600 dark:text-red-400">{micError}</p>}
       </div>
 
       {/* Quick examples + typing */}
@@ -326,7 +326,7 @@ export function ZoraAssistant() {
             type="button"
             disabled={phase !== "idle"}
             onClick={() => void ask(q)}
-            className="rounded-full bg-white px-3.5 py-1.5 text-sm text-slate-600 ring-1 ring-slate-200 transition hover:text-emerald-800 hover:ring-emerald-300 disabled:opacity-50"
+            className="rounded-full bg-white dark:bg-stone-900 px-3.5 py-1.5 text-sm text-slate-600 dark:text-stone-300 ring-1 ring-slate-200 dark:ring-stone-800 transition hover:text-emerald-800 dark:hover:text-emerald-400 hover:ring-emerald-300 dark:hover:ring-emerald-600 disabled:opacity-50"
           >
             {q}
           </button>
@@ -346,12 +346,12 @@ export function ZoraAssistant() {
           value={typed}
           onChange={(e) => setTyped(e.target.value)}
           placeholder="Or type your question here"
-          className="min-w-0 flex-1 rounded-lg bg-white px-4 py-2.5 text-sm text-slate-900 ring-1 ring-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-600"
+          className="min-w-0 flex-1 rounded-lg bg-white dark:bg-stone-900 px-4 py-2.5 text-sm text-slate-900 dark:text-stone-100 ring-1 ring-slate-200 dark:ring-stone-800 placeholder:text-slate-400 dark:placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-emerald-600"
         />
         <button
           type="submit"
           disabled={phase !== "idle" || typed.trim().length < 2}
-          className="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700 disabled:opacity-40"
+          className="rounded-lg bg-slate-900 dark:bg-stone-800 hover:bg-slate-700 dark:hover:bg-stone-700 px-5 py-2.5 text-sm font-semibold text-white transition disabled:opacity-40"
         >
           Ask
         </button>
@@ -385,11 +385,11 @@ export function ZoraAssistant() {
 
 function ReplyCard({ reply, onReplay }: { reply: Reply; onReplay: () => void }) {
   return (
-    <div className="rounded-2xl bg-white p-6 text-left shadow-sm ring-1 ring-slate-200 sm:p-8">
+    <div className="rounded-2xl bg-white dark:bg-stone-900/90 p-6 text-left shadow-sm ring-1 ring-slate-200 dark:ring-stone-800 sm:p-8">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">What Zora found</p>
-          <h3 className="mt-1 text-xl font-bold text-slate-900">{reply.diagnosis}</h3>
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-stone-400">What Zora found</p>
+          <h3 className="mt-1 text-xl font-bold text-slate-900 dark:text-white">{reply.diagnosis}</h3>
         </div>
         <div className="flex items-center gap-2">
           <span className={`rounded-full px-3 py-1 text-xs font-semibold ring-1 ${SEVERITY_STYLE[reply.severity]}`}>
@@ -398,24 +398,24 @@ function ReplyCard({ reply, onReplay }: { reply: Reply; onReplay: () => void }) 
           <button
             type="button"
             onClick={onReplay}
-            className="rounded-full px-3 py-1 text-xs font-semibold text-emerald-800 ring-1 ring-emerald-200 transition hover:bg-emerald-50"
+            className="rounded-full px-3 py-1 text-xs font-semibold text-emerald-800 dark:text-emerald-400 ring-1 ring-emerald-200 dark:ring-emerald-800 transition hover:bg-emerald-50 dark:hover:bg-emerald-950"
           >
             Listen again
           </button>
         </div>
       </div>
 
-      <p className="mt-4 leading-relaxed text-slate-700">{reply.explanation}</p>
+      <p className="mt-4 leading-relaxed text-slate-700 dark:text-stone-300">{reply.explanation}</p>
 
       {reply.steps.length > 0 && (
         <Section title="What to do">
           <ol className="space-y-3">
             {reply.steps.map((step, i) => (
               <li key={i} className="flex gap-3">
-                <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-bold text-emerald-800">
+                <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-950 text-xs font-bold text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
                   {i + 1}
                 </span>
-                <span className="text-slate-700">{step}</span>
+                <span className="text-slate-700 dark:text-stone-300">{step}</span>
               </li>
             ))}
           </ol>
@@ -426,11 +426,11 @@ function ReplyCard({ reply, onReplay }: { reply: Reply; onReplay: () => void }) 
         <Section title="Helpful tips and how to use them">
           <ul className="space-y-4">
             {reply.tips.map((t, i) => (
-              <li key={i} className="rounded-xl bg-emerald-50/60 p-4">
-                <p className="font-semibold text-slate-900">{t.tip}</p>
+              <li key={i} className="rounded-xl bg-emerald-50/60 dark:bg-stone-950 p-4 border border-emerald-100/60 dark:border-stone-800">
+                <p className="font-semibold text-slate-900 dark:text-white">{t.tip}</p>
                 {t.howToApply && (
-                  <p className="mt-1.5 text-sm leading-relaxed text-slate-600">
-                    <span className="font-semibold text-emerald-800">How to do it: </span>
+                  <p className="mt-1.5 text-sm leading-relaxed text-slate-600 dark:text-stone-400">
+                    <span className="font-semibold text-emerald-800 dark:text-emerald-400">How to do it: </span>
                     {t.howToApply}
                   </p>
                 )}
@@ -442,23 +442,23 @@ function ReplyCard({ reply, onReplay }: { reply: Reply; onReplay: () => void }) 
 
       {reply.organicAlternative && (
         <Section title="Low-cost option">
-          <p className="text-slate-700">{reply.organicAlternative}</p>
+          <p className="text-slate-700 dark:text-stone-300">{reply.organicAlternative}</p>
         </Section>
       )}
 
       {reply.safety && (
         <Section title="Stay safe">
-          <p className="text-slate-700">{reply.safety}</p>
+          <p className="text-slate-700 dark:text-stone-300">{reply.safety}</p>
         </Section>
       )}
 
       {reply.followUp && (
         <Section title="Check again">
-          <p className="text-slate-700">{reply.followUp}</p>
+          <p className="text-slate-700 dark:text-stone-300">{reply.followUp}</p>
         </Section>
       )}
 
-      <p className="mt-6 border-t border-slate-100 pt-4 text-xs text-slate-400">
+      <p className="mt-6 border-t border-slate-100 dark:border-stone-800 pt-4 text-xs text-slate-400 dark:text-stone-500">
         Answer built from {reply.engine.kgml ? "CCSA KGML-Ag crop science" : "CCSA crop knowledge"}
         {reply.engine.gpt ? " and OpenAI GPT" : ""}. {reply.sources.slice(0, 3).join(" · ")}
       </p>
@@ -469,7 +469,7 @@ function ReplyCard({ reply, onReplay }: { reply: Reply; onReplay: () => void }) 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="mt-6">
-      <h4 className="mb-3 text-sm font-bold uppercase tracking-wide text-emerald-800">{title}</h4>
+      <h4 className="mb-3 text-sm font-bold uppercase tracking-wide text-emerald-800 dark:text-emerald-400">{title}</h4>
       {children}
     </div>
   );
