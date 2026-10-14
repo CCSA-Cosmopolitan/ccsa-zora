@@ -5,13 +5,13 @@ import "@ccsa-zora/ui/globals.css";
 import { Providers } from "./providers";
 
 export const metadata: Metadata = {
-  title: "CCSA Zora | Agricultural Super Intelligence",
+  title: "CCSA Zora — Sovereign Agricultural Intelligence | Cosmopolitan University Abuja",
   description:
-    "A multilingual, voice-enabled agricultural companion for climate-smart farming, field intelligence, and trusted extension services.",
+    "Centre for Climate-Smart Agriculture (CCSA) at Cosmopolitan University Abuja. Sovereign agricultural AI, multilingual extension in Hausa, Yorùbá, Igbo, and Pidgin, and verified digital MRV.",
   applicationName: "CCSA Zora",
   icons: {
-    icon: "/brand/zora-square.jpeg",
-    apple: "/brand/zora-square.jpeg",
+    icon: "/ccsa-logo.png",
+    apple: "/ccsa-logo.png",
   },
 };
 
@@ -21,8 +21,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>
+    <html lang="en" suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <Providers>{children}</Providers>
       </body>
     </html>

@@ -58,21 +58,44 @@ export async function POST(request: NextRequest) {
     // ─────────────────────────────────────────────────────────────────────────
     if (openAiKey && openAiKey.trim().length > 10) {
       const openai = new OpenAI({ apiKey: openAiKey.trim() });
-      const validVoices = ["alloy", "echo", "fable", "onyx", "nova", "shimmer"] as const;
+      const validVoices = ["alloy", "echo", "fable", "onyx", "nova", "shimmer", "coral", "sage"] as const;
       type Voice = (typeof validVoices)[number];
 
       const voiceToUse: Voice = validVoices.includes(requestedVoice as Voice)
         ? (requestedVoice as Voice)
-        : language === "ha" || language === "yo" || language === "pcm"
-          ? "nova"
-          : "onyx";
+        : "coral";
 
-      const mp3 = await openai.audio.speech.create({
-        model: "tts-1",
-        voice: voiceToUse,
-        input: text.slice(0, 4000),
-        speed: 0.95, // Slightly measured cadence for clear rural agricultural comprehension
-      });
+      const languageLabel: Record<string, string> = {
+        ha: "Hausa",
+        yo: "Yoruba",
+        ig: "Igbo",
+        pcm: "Nigerian Pidgin",
+        ff: "Fulfulde",
+        en: "English",
+      };
+      const instructions = `Speak as a warm, calm, friendly native Nigerian ${languageLabel[language] ?? "English"} speaker, like a trusted older neighbour who is an experienced farm extension officer. Use a natural Nigerian accent and rhythm, a slow, clear pace, short natural pauses between steps, and a reassuring tone. Never sound robotic.`;
+
+      let mp3;
+      try {
+        mp3 = await openai.audio.speech.create({
+          model: "gpt-4o-mini-tts",
+          voice: voiceToUse,
+          input: text.slice(0, 4000),
+          instructions,
+        } as Parameters<typeof openai.audio.speech.create>[0]);
+      } catch (ttsError) {
+        console.warn("[Zora Speech] gpt-4o-mini-tts unavailable, using tts-1:", ttsError);
+        mp3 = await openai.audio.speech.create({
+          model: "tts-1",
+          voice: (["alloy", "echo", "fable", "onyx", "nova", "shimmer"] as const).includes(
+            voiceToUse as "alloy",
+          )
+            ? (voiceToUse as "alloy")
+            : "nova",
+          input: text.slice(0, 4000),
+          speed: 0.95,
+        });
+      }
 
       const buffer = Buffer.from(await mp3.arrayBuffer());
       return new Response(buffer, {

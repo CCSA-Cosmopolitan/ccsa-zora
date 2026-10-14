@@ -17,10 +17,11 @@ export const accessRequestInputSchema = z
     fullName: z.string().trim().min(2).max(120),
     email: z.string().trim().toLowerCase().email().max(254),
     organizationName: z.string().trim().min(2).max(180),
-    requestedRole: z.enum(ACCESS_REQUEST_ROLES),
+    requestedRole: z.string().trim().min(2).max(100),
     country: z.string().trim().max(100).optional().default(""),
-    useCase: z.string().trim().min(20).max(1_200),
-    consent: z.literal(true),
+    phone: z.string().trim().max(50).optional().default(""),
+    useCase: z.string().trim().min(5).max(1_200),
+    consent: z.boolean().optional().default(true),
     website: z.string().max(0).optional().default(""),
   })
   .strict();

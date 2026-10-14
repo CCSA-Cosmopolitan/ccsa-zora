@@ -4,6 +4,14 @@ const nextConfig: NextConfig = {
   distDir: process.env.NEXT_BUILD_DIR ?? ".next",
   reactStrictMode: true,
   poweredByHeader: false,
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+    ],
+  },
   async headers() {
     return [
       {

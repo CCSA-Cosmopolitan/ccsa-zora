@@ -1,9 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   Sparkles,
   Terminal,
@@ -19,6 +19,7 @@ import {
   ShieldCheck,
   Building2,
 } from 'lucide-react';
+import { getSupabaseBrowserClient } from '@/lib/supabase';
 
 const navigationItems = [
   {
@@ -71,6 +72,58 @@ const navigationItems = [
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const [userName, setUserName] = useState<string>("Extension Lead");
+  const [userOrg, setUserOrg] = useState<string>("Cosmopolitan Abuja");
+
+  useEffect(() => {
+    const supabase = getSupabaseBrowserClient();
+    if (!supabase) return;
+
+    supabase.auth.getUser().then(({ data }) => {
+      if (data?.user) {
+        const metadata = data.user.user_metadata || {};
+        if (metadata.full_name) {
+          setUserName(metadata.full_name);
+        } else if (data.user.email) {
+          setUserName(data.user.email.split("@")[0] || "User");
+        }
+        if (metadata.organization) {
+          setUserOrg(metadata.organization);
+        }
+      }
+    });
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        const metadata = session.user.user_metadata || {};
+        if (metadata.full_name) {
+          setUserName(metadata.full_name);
+        } else if (session.user.email) {
+          setUserName(session.user.email.split("@")[0] || "User");
+        }
+        if (metadata.organization) {
+          setUserOrg(metadata.organization);
+        }
+      }
+    });
+
+    return () => {
+      authListener?.subscription?.unsubscribe();
+    };
+  }, []);
+
+  async function handleSignOut() {
+    const supabase = getSupabaseBrowserClient();
+    if (supabase) {
+      try {
+        await supabase.auth.signOut();
+      } catch (e) {
+        // ignore network error on signout
+      }
+    }
+    router.replace('/login');
+  }
 
   return (
     <div className="min-h-screen bg-[#07131D] text-slate-100 flex overflow-hidden font-sans antialiased">
@@ -154,21 +207,22 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {/* User Card */}
           <div className="flex items-center justify-between p-2 rounded-xl bg-slate-900/40 border border-slate-800/60">
             <div className="flex items-center gap-2 min-w-0">
-              <div className="size-7 rounded-full bg-emerald-950 border border-emerald-800 flex items-center justify-center text-xs font-bold text-emerald-300 shrink-0">
-                Z
+              <div className="size-7 rounded-full bg-emerald-950 border border-emerald-800 flex items-center justify-center text-xs font-bold text-emerald-300 shrink-0 uppercase">
+                {userName.charAt(0) || 'Z'}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-xs font-medium text-slate-200 truncate">Extension Lead</p>
-                <p className="text-[10px] text-slate-500 truncate">Cosmopolitan Abuja</p>
+                <p className="text-xs font-medium text-slate-200 truncate">{userName}</p>
+                <p className="text-[10px] text-slate-500 truncate">{userOrg}</p>
               </div>
             </div>
-            <Link
-              href="/login"
+            <button
+              type="button"
+              onClick={handleSignOut}
               title="Sign Out"
-              className="p-1.5 text-slate-400 hover:text-red-400 hover:bg-slate-800/60 rounded-lg transition-colors shrink-0"
+              className="p-1.5 text-slate-400 hover:text-red-400 hover:bg-slate-800/60 rounded-lg transition-colors shrink-0 cursor-pointer"
             >
               <LogOut className="size-3.5" />
-            </Link>
+            </button>
           </div>
         </div>
       </aside>
