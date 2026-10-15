@@ -77,6 +77,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [userOrg, setUserOrg] = useState<string>("Cosmopolitan Abuja");
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("zora_user");
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          if (parsed.full_name) setUserName(parsed.full_name);
+          if (parsed.organization) setUserOrg(parsed.organization);
+        } catch {}
+      }
+    }
+
     const supabase = getSupabaseBrowserClient();
     if (!supabase) return;
 
