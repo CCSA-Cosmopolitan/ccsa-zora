@@ -379,19 +379,27 @@ export function DashboardShell() {
 function Brand() {
   return (
     <div className="border-b border-white/10 px-4 py-3.5">
-      <div className="flex h-12 items-center rounded-xl bg-white px-3">
+      <div className="flex items-center gap-2.5">
         <Image
-          alt="Zora - Your AI farming companion"
-          className="h-auto w-[190px]"
-          height={432}
+          src="/ccsa-logo.png"
+          alt="CCSA - Cosmopolitan University"
+          width={84}
+          height={28}
+          className="h-7 w-auto object-contain"
           priority
-          src="/brand/zora-wordmark.jpeg"
-          width={1080}
         />
+        <span className="h-4 w-px bg-white/20" />
+        <div className="relative h-7 w-[76px] overflow-hidden rounded-md bg-white px-1 py-0.5 flex items-center justify-center">
+          <Image
+            src="/brand/zora-wordmark.jpeg"
+            alt="Zora"
+            width={100}
+            height={40}
+            className="h-full w-auto object-contain"
+            priority
+          />
+        </div>
       </div>
-      <p className="mt-2 px-1 text-[9px] font-semibold uppercase tracking-[0.2em] text-emerald-50/45">
-        Centre for Climate-Smart Agriculture
-      </p>
     </div>
   );
 }

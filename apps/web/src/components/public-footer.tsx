@@ -25,26 +25,22 @@ export function PublicFooter() {
           {/* Column 1 & 2: Brand, Identity & Mission */}
           <div className="lg:col-span-2 space-y-4">
             <Link href="/" className="flex items-center gap-3">
-              <div className="relative size-10 overflow-hidden rounded-xl border border-stone-200 dark:border-stone-800 bg-emerald-950 p-0.5 shadow-xs">
+              <Image
+                src="/ccsa-logo.png"
+                alt="CCSA - Cosmopolitan University"
+                width={100}
+                height={34}
+                className="h-8 w-auto object-contain"
+              />
+              <span className="h-5 w-px bg-stone-300 dark:bg-stone-700" />
+              <div className="relative h-8 w-[88px] overflow-hidden rounded-lg bg-white px-1.5 py-0.5 flex items-center justify-center shadow-2xs">
                 <Image
-                  src="/brand/zora-square.jpeg"
-                  alt="CCSA Zora"
-                  fill
-                  className="object-cover"
+                  src="/brand/zora-wordmark.jpeg"
+                  alt="Zora"
+                  width={120}
+                  height={48}
+                  className="h-full w-auto object-contain"
                 />
-              </div>
-              <div className="flex flex-col">
-                <div className="flex items-center gap-2">
-                  <span className="text-lg font-black tracking-tight text-emerald-900 dark:text-emerald-400">
-                    CCSA Zora
-                  </span>
-                  <span className="rounded-full bg-emerald-100 dark:bg-emerald-950 px-2 py-0.5 text-[10px] font-bold text-emerald-800 dark:text-emerald-300">
-                    Sovereign AI
-                  </span>
-                </div>
-                <span className="text-xs text-stone-500 dark:text-stone-400">
-                  Centre for Climate-Smart Agriculture
-                </span>
               </div>
             </Link>
 

@@ -125,10 +125,17 @@ function AuthCallbackContent() {
             className="h-8 w-auto"
             priority
           />
-          <span className="h-5 w-px bg-slate-200 dark:bg-slate-700" />
-          <span className="text-lg font-bold tracking-tight text-emerald-800 dark:text-emerald-400">
-            Zora
-          </span>
+          <span className="h-5 w-px bg-stone-300 dark:bg-stone-700" />
+          <div className="relative h-8 w-[88px] overflow-hidden rounded-lg bg-white px-1.5 py-0.5 flex items-center justify-center shadow-2xs">
+            <Image
+              src="/brand/zora-wordmark.jpeg"
+              alt="Zora"
+              width={120}
+              height={48}
+              className="h-full w-auto object-contain"
+              priority
+            />
+          </div>
         </div>
 
         {status === "loading" && (

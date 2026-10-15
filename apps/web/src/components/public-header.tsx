@@ -58,31 +58,26 @@ export function PublicHeader() {
     <>
       <header className="sticky top-0 z-40 border-b border-stone-200/80 dark:border-stone-800/80 bg-white/90 dark:bg-stone-950/90 backdrop-blur-md transition-colors">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-          {/* Left: Logos (Zora Square Icon + CCSA Badge + Wordmark) */}
+          {/* Left: CCSA Logo | Zora Wordmark */}
           <Link href="/" className="flex items-center gap-3 group">
-            {/* Zora Official App Icon */}
-            <div className="relative size-9 overflow-hidden rounded-xl border border-stone-200 dark:border-stone-800 bg-emerald-950 p-0.5 shadow-xs transition-transform group-hover:scale-105">
+            <Image
+              src="/ccsa-logo.png"
+              alt="CCSA - Cosmopolitan University"
+              width={96}
+              height={32}
+              className="h-8 w-auto object-contain transition-transform group-hover:scale-[1.02]"
+              priority
+            />
+            <span className="h-5 w-px bg-stone-300 dark:bg-stone-700" />
+            <div className="relative h-8 w-[88px] overflow-hidden rounded-lg bg-white px-1.5 py-0.5 flex items-center justify-center shadow-2xs transition-transform group-hover:scale-[1.02]">
               <Image
-                src="/brand/zora-square.jpeg"
+                src="/brand/zora-wordmark.jpeg"
                 alt="Zora"
-                fill
-                className="object-cover"
+                width={120}
+                height={48}
+                className="h-full w-auto object-contain"
                 priority
               />
-            </div>
-
-            <div className="flex flex-col">
-              <div className="flex items-center gap-2">
-                <span className="text-base font-extrabold tracking-tight text-emerald-800 dark:text-emerald-400">
-                  Zora
-                </span>
-                <span className="rounded-full bg-emerald-100 dark:bg-emerald-950/80 px-2 py-0.5 text-[10px] font-semibold text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
-                  CCSA
-                </span>
-              </div>
-              <span className="hidden sm:inline-block text-[10px] text-stone-500 dark:text-stone-400 font-medium leading-none">
-                Cosmopolitan University Abuja
-              </span>
             </div>
           </Link>
 
@@ -166,24 +161,29 @@ export function PublicHeader() {
           >
             {/* Modal Header */}
             <div className="flex items-center justify-between border-b border-stone-100 dark:border-stone-800/80 pb-4">
-              <div className="flex items-center gap-2.5">
-                <div className="relative size-8 overflow-hidden rounded-lg border border-stone-200 dark:border-stone-800 bg-emerald-950">
+              <Link
+                href="/"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-2.5"
+              >
+                <Image
+                  src="/ccsa-logo.png"
+                  alt="CCSA - Cosmopolitan University"
+                  width={84}
+                  height={28}
+                  className="h-7 w-auto object-contain"
+                />
+                <span className="h-4 w-px bg-stone-300 dark:bg-stone-700" />
+                <div className="relative h-7 w-[76px] overflow-hidden rounded-md bg-white px-1 py-0.5 flex items-center justify-center shadow-2xs">
                   <Image
-                    src="/brand/zora-square.jpeg"
+                    src="/brand/zora-wordmark.jpeg"
                     alt="Zora"
-                    fill
-                    className="object-cover"
+                    width={100}
+                    height={40}
+                    className="h-full w-auto object-contain"
                   />
                 </div>
-                <div>
-                  <span className="font-extrabold text-sm text-emerald-800 dark:text-emerald-400">
-                    CCSA Zora
-                  </span>
-                  <p className="text-[10px] text-stone-500 dark:text-stone-400">
-                    Cosmopolitan University Abuja
-                  </p>
-                </div>
-              </div>
+              </Link>
 
               <div className="flex items-center gap-1.5">
                 <ThemeToggle />

@@ -132,24 +132,23 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="flex flex-col">
           {/* Brand Header */}
           <div className="p-4 border-b border-emerald-950/80">
-            <Link href="/dashboard" className="flex items-center gap-3 group">
-              <div className="relative size-9 rounded-xl overflow-hidden bg-emerald-900/40 border border-emerald-500/30 flex items-center justify-center shrink-0">
+            <Link href="/dashboard" className="flex items-center gap-2.5 group">
+              <Image
+                src="/ccsa-logo.png"
+                alt="CCSA - Cosmopolitan University"
+                width={84}
+                height={28}
+                className="h-7 w-auto object-contain transition-transform group-hover:scale-[1.02]"
+              />
+              <span className="h-4 w-px bg-slate-700" />
+              <div className="relative h-7 w-[76px] overflow-hidden rounded-md bg-white px-1 py-0.5 flex items-center justify-center shadow-2xs transition-transform group-hover:scale-[1.02]">
                 <Image
-                  src="/brand/zora-square.jpeg"
-                  alt="CCSA Zora"
-                  fill
-                  className="object-cover"
-                  sizes="36px"
+                  src="/brand/zora-wordmark.jpeg"
+                  alt="Zora"
+                  width={100}
+                  height={40}
+                  className="h-full w-auto object-contain"
                 />
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-sm font-black text-white tracking-tight">CCSA Zora</span>
-                  <span className="text-[9px] font-bold uppercase px-1.5 py-0.2 rounded bg-emerald-900/60 text-emerald-400 border border-emerald-700/60">
-                    AIaaS
-                  </span>
-                </div>
-                <p className="text-[10px] text-slate-400 truncate">Agricultural Super Intelligence</p>
               </div>
             </Link>
           </div>
