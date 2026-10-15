@@ -1,261 +1,385 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Link from 'next/link';
+import React, { useState } from "react";
+import Link from "next/link";
 import {
   Sparkles,
-  Terminal,
-  Activity,
-  ShieldCheck,
-  MapPinned,
-  RadioTower,
   ArrowRight,
   TrendingUp,
   CloudRain,
-  Cpu,
   CheckCircle2,
-  Clock,
-  Layers,
-  ChevronRight,
-} from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@ccsa-zora/ui/components/card';
-import { Badge } from '@ccsa-zora/ui/components/badge';
-import { Button } from '@ccsa-zora/ui/components/button';
-import { FarmPulseChart } from '@/features/dashboard/farm-pulse-chart';
+  AlertTriangle,
+  History,
+  Sprout,
+  Users2,
+  Coins,
+  KeyRound,
+  ShieldCheck,
+  Send,
+  Volume2,
+  Mic,
+  Plus,
+  Building2,
+  User,
+  Zap,
+} from "lucide-react";
 
-const recentInferences = [
-  {
-    id: 'inf-901',
-    crop: 'Maize',
-    location: 'Zaria Cluster, Kaduna',
-    symptoms: 'Yellowing leaf margins, nitrogen deficit',
-    language: 'Hausa (ha)',
-    confidence: '94.2%',
-    status: 'Verified',
-    time: '4 mins ago',
-  },
-  {
-    id: 'inf-902',
-    crop: 'Rice',
-    location: 'Makurdi Riverine, Benue',
-    symptoms: 'Bacterial leaf blight, high humidity',
-    language: 'English (en)',
-    confidence: '91.8%',
-    status: 'Verified',
-    time: '18 mins ago',
-  },
-  {
-    id: 'inf-903',
-    crop: 'Cassava',
-    location: 'Iseyin Basin, Oyo',
-    symptoms: 'Cassava Mosaic Virus early spotting',
-    language: 'Yorùbá (yo)',
-    confidence: '88.5%',
-    status: 'Verified',
-    time: '42 mins ago',
-  },
-  {
-    id: 'inf-904',
-    crop: 'Sorghum',
-    location: 'Bichi LGA, Kano',
-    symptoms: 'Stem borer infestation risk',
-    language: 'Hausa (ha)',
-    confidence: '95.0%',
-    status: 'Verified',
-    time: '1 hr ago',
-  },
-];
+import { useWorkspace } from "@/context/workspace-context";
+import { ZoraAssistant } from "@/components/zora-assistant";
 
-export default function DashboardOverviewPage() {
+export default function DashboardMainPage() {
+  const {
+    mode,
+    enterpriseName,
+    members,
+    tokensUsed,
+    totalTokens,
+    consultations,
+    selectedCrops,
+    selectedState,
+    personalWeeklyQuota,
+    personalQueriesUsed,
+  } = useWorkspace();
+
+  if (mode === "personal") {
+    return <PersonalAssistantDashboard />;
+  }
+
+  return <EnterpriseOverviewDashboard />;
+}
+
+// ==========================================
+// 1. PERSONAL DASHBOARD: THE CLEAN ZORA ASSISTANT
+// ==========================================
+function PersonalAssistantDashboard() {
+  const {
+    selectedCrops,
+    selectedState,
+    consultations,
+    personalWeeklyQuota,
+    personalQueriesUsed,
+  } = useWorkspace();
+
   return (
-    <div className="space-y-6">
-      {/* Header Banner */}
-      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 pb-2 border-b border-emerald-950/60">
+    <div className="space-y-8">
+      {/* Welcome Banner with Crops & Savanna Location context */}
+      <div className="rounded-3xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900/60 p-6 sm:p-8 shadow-xs">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-2 rounded-full bg-emerald-100 dark:bg-emerald-950/80 px-3 py-1 text-xs font-bold text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
+              <Sparkles className="size-3.5" />
+              <span>Personal Agronomic Assistant</span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-black text-stone-900 dark:text-white tracking-tight">
+              Ask Zora about your farm
+            </h1>
+            <p className="text-sm text-stone-600 dark:text-stone-400 max-w-xl">
+              Voice-first, native language diagnosis for crop pests, plant disease, soil health, and weather advice.
+            </p>
+          </div>
+
+          {/* Quick Context Card */}
+          <div className="flex flex-wrap sm:flex-nowrap items-center gap-4 bg-stone-50 dark:bg-stone-950 p-4 rounded-2xl border border-stone-200 dark:border-stone-800">
+            <div className="space-y-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400">
+                Your Saved Crops
+              </span>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {selectedCrops.map((c) => (
+                  <span
+                    key={c}
+                    className="px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/60 text-[11px] font-semibold text-emerald-800 dark:text-emerald-300"
+                  >
+                    {c}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="h-8 w-px bg-stone-200 dark:bg-stone-800 hidden sm:block" />
+
+            <div className="space-y-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400">
+                Savanna Weather Window
+              </span>
+              <p className="text-xs font-semibold text-stone-800 dark:text-stone-200 flex items-center gap-1.5">
+                <CloudRain className="size-3.5 text-blue-500" />
+                <span>Optimal morning spray</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Interactive Assistant */}
+      <div className="rounded-3xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900/60 p-6 sm:p-10 shadow-xs">
+        <ZoraAssistant />
+      </div>
+
+      {/* Recent Farm Inquiries & Quick Review */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-bold text-stone-900 dark:text-white">
+              Recent Consultations
+            </h3>
+            <p className="text-xs text-stone-500 dark:text-stone-400">
+              Your saved diagnoses and treatment steps
+            </p>
+          </div>
+          <Link
+            href="/dashboard/history"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-400 hover:underline"
+          >
+            <span>View All Saved Advice</span>
+            <ArrowRight className="size-3.5" />
+          </Link>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {consultations.slice(0, 3).map((item) => (
+            <div
+              key={item.id}
+              className="rounded-2xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900/80 p-5 space-y-3 shadow-xs hover:border-emerald-600/40 transition"
+            >
+              <div className="flex items-center justify-between">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
+                  {item.crop}
+                </span>
+                <span className="text-[10px] text-stone-400">{item.date}</span>
+              </div>
+              <p className="text-xs font-bold text-stone-900 dark:text-white line-clamp-1">
+                {item.diagnosis}
+              </p>
+              <p className="text-[11px] text-stone-600 dark:text-stone-400 leading-relaxed line-clamp-2">
+                {item.treatment}
+              </p>
+              <div className="pt-2 border-t border-stone-100 dark:border-stone-800/80 flex items-center justify-between text-[11px]">
+                <span className="text-stone-400">{item.language}</span>
+                <Link
+                  href="/dashboard/history"
+                  className="font-semibold text-emerald-700 dark:text-emerald-400 hover:underline"
+                >
+                  Read steps →
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ==========================================
+// 2. ENTERPRISE DASHBOARD: COOPERATIVE MANAGEMENT
+// ==========================================
+function EnterpriseOverviewDashboard() {
+  const { enterpriseName, members, tokensUsed, totalTokens } = useWorkspace();
+
+  const totalMembersCount = 1840;
+  const activeAgentsCount = 24;
+  const monthlyInquiries = 4392;
+  const tokensRemaining = totalTokens - tokensUsed;
+
+  const topDiseases = [
+    { name: "Fall Armyworm (Spodoptera frugiperda)", crop: "Maize", percentage: 38, count: 1668 },
+    { name: "Cassava Mosaic Geminivirus (CMD)", crop: "Cassava", percentage: 26, count: 1141 },
+    { name: "Rice Blast (Magnaporthe oryzae)", crop: "Rice", percentage: 18, count: 790 },
+    { name: "Tomato Fruit Borer (Tuta absoluta)", crop: "Tomato", percentage: 11, count: 483 },
+    { name: "Nitrogen / Zinc Soil Deficit", crop: "General", percentage: 7, count: 310 },
+  ];
+
+  return (
+    <div className="space-y-8">
+      {/* Enterprise Title Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-white tracking-tight sm:text-3xl">
-            Command Centre Overview
+          <div className="inline-flex items-center gap-2 rounded-full bg-blue-100 dark:bg-blue-950/80 px-3 py-1 text-xs font-bold text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800/60 mb-2">
+            <Building2 className="size-3.5" />
+            <span>Cooperative Organization Portal</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-black text-stone-900 dark:text-white tracking-tight">
+            {enterpriseName}
           </h1>
-          <p className="text-xs text-slate-400 mt-1">
-            Real-time inference telemetry, climate risk monitoring, and institutional agricultural intelligence.
+          <p className="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-1">
+            Aggregate smallholder monitoring, shared token bank, and field agent performance.
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Button asChild className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs h-9 rounded-xl shadow-xs">
-            <Link href="/dashboard/playground">
-              <Terminal className="size-3.5 mr-1.5" />
-              Open AI Playground
-            </Link>
-          </Button>
-          <Button asChild variant="outline" className="text-xs h-9 border-slate-800 bg-slate-900 text-slate-300 hover:text-white rounded-xl">
-            <Link href="/dashboard/fields">
-              <MapPinned className="size-3.5 mr-1.5" />
-              Explore Fields
-            </Link>
-          </Button>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/dashboard/members"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-xs font-bold shadow-xs transition"
+          >
+            <Plus className="size-3.5" />
+            <span>Add Member / Agent</span>
+          </Link>
+          <Link
+            href="/dashboard/tokens"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800 px-4 py-2 text-xs font-bold shadow-xs transition"
+          >
+            <Coins className="size-3.5 text-blue-500" />
+            <span>Refill Tokens</span>
+          </Link>
         </div>
       </div>
 
-      {/* 4 Top Executive AIaaS KPI Cards */}
+      {/* 4 Macro KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* KPI 1 */}
-        <div className="p-5 rounded-2xl bg-[#0A1624] border border-emerald-950/80 space-y-2 shadow-xs">
-          <div className="flex justify-between items-start">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">24h Inferences</span>
-            <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
+        <div className="p-5 rounded-2xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900/60 shadow-xs space-y-2">
+          <div className="flex items-center justify-between text-xs text-stone-500 dark:text-stone-400">
+            <span className="font-semibold uppercase tracking-wider text-[10px]">Registered Farmers</span>
+            <Users2 className="size-4 text-emerald-600 dark:text-emerald-400" />
           </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-black text-white">14,820</span>
-            <span className="text-xs font-semibold text-emerald-400">+18.4%</span>
-          </div>
-          <p className="text-[11px] text-slate-500">₦444,600 metered quota value</p>
+          <p className="text-2xl font-black text-stone-900 dark:text-white">
+            {totalMembersCount.toLocaleString()}
+          </p>
+          <p className="text-[11px] text-emerald-700 dark:text-emerald-400 font-medium">
+            Across 14 village clusters in Kano
+          </p>
         </div>
 
-        {/* KPI 2 */}
-        <div className="p-5 rounded-2xl bg-[#0A1624] border border-emerald-950/80 space-y-2 shadow-xs">
-          <div className="flex justify-between items-start">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Monitored Acreage</span>
-            <MapPinned className="size-4 text-emerald-400" />
+        <div className="p-5 rounded-2xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900/60 shadow-xs space-y-2">
+          <div className="flex items-center justify-between text-xs text-stone-500 dark:text-stone-400">
+            <span className="font-semibold uppercase tracking-wider text-[10px]">Field Extension Agents</span>
+            <User className="size-4 text-blue-600 dark:text-blue-400" />
           </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-black text-white">1,840.6</span>
-            <span className="text-xs font-medium text-slate-400">Hectares</span>
-          </div>
-          <p className="text-[11px] text-slate-500">Across 36 demarcated LGA clusters</p>
+          <p className="text-2xl font-black text-stone-900 dark:text-white">{activeAgentsCount}</p>
+          <p className="text-[11px] text-stone-500 dark:text-stone-400">Equipped with Zora mobile scout</p>
         </div>
 
-        {/* KPI 3 */}
-        <div className="p-5 rounded-2xl bg-[#0A1624] border border-emerald-950/80 space-y-2 shadow-xs">
-          <div className="flex justify-between items-start">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Agro-Climate Risk</span>
-            <CloudRain className="size-4 text-blue-400" />
+        <div className="p-5 rounded-2xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900/60 shadow-xs space-y-2">
+          <div className="flex items-center justify-between text-xs text-stone-500 dark:text-stone-400">
+            <span className="font-semibold uppercase tracking-wider text-[10px]">Queries Handled (30d)</span>
+            <Sparkles className="size-4 text-amber-500" />
           </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-xl font-black text-emerald-400">Optimal Window</span>
-          </div>
-          <p className="text-[11px] text-slate-500">Open-Meteo live: 29.4°C • 62% RH</p>
+          <p className="text-2xl font-black text-stone-900 dark:text-white">
+            {monthlyInquiries.toLocaleString()}
+          </p>
+          <p className="text-[11px] text-emerald-700 dark:text-emerald-400 font-medium flex items-center gap-1">
+            <TrendingUp className="size-3" />
+            <span>+24.6% vs last month</span>
+          </p>
         </div>
 
-        {/* KPI 4 */}
-        <div className="p-5 rounded-2xl bg-[#0A1624] border border-emerald-950/80 space-y-2 shadow-xs">
-          <div className="flex justify-between items-start">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">MRV Assurance</span>
-            <ShieldCheck className="size-4 text-emerald-400" />
+        <div className="p-5 rounded-2xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900/60 shadow-xs space-y-2">
+          <div className="flex items-center justify-between text-xs text-stone-500 dark:text-stone-400">
+            <span className="font-semibold uppercase tracking-wider text-[10px]">Token Bank Balance</span>
+            <Coins className="size-4 text-blue-500" />
           </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-black text-white">100%</span>
-            <span className="text-xs font-semibold text-emerald-400">Tamper-Proof</span>
+          <p className="text-2xl font-black text-stone-900 dark:text-white">
+            {tokensRemaining.toLocaleString()}
+          </p>
+          <div className="w-full bg-stone-100 dark:bg-stone-800 h-1.5 rounded-full overflow-hidden">
+            <div
+              className="bg-blue-600 h-full rounded-full"
+              style={{ width: `${(tokensRemaining / totalTokens) * 100}%` }}
+            />
           </div>
-          <p className="text-[11px] text-slate-500">SHA-256 Merkle root verification active</p>
         </div>
       </div>
 
-      {/* Main Grid: Telemetry Chart & System Health */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Farm Pulse Telemetry Graph */}
-        <div className="lg:col-span-2 p-5 rounded-2xl bg-[#0A1624] border border-emerald-950/80 space-y-4 shadow-xs">
+      {/* Two Column Grid: Top Disease Trends & Live Cooperative Inquiries */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Left: Disease Trends in Cooperative (5 cols) */}
+        <div className="lg:col-span-5 rounded-3xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900/60 p-6 space-y-5 shadow-xs">
+          <div>
+            <h3 className="text-base font-bold text-stone-900 dark:text-white">
+              Disease & Pest Hotspots
+            </h3>
+            <p className="text-xs text-stone-500 dark:text-stone-400">
+              Aggregated from member farmer voice questions this month
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            {topDiseases.map((d) => (
+              <div key={d.name} className="space-y-1.5">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="font-semibold text-stone-800 dark:text-stone-200 truncate max-w-[240px]">
+                    {d.name}
+                  </span>
+                  <span className="text-[11px] font-bold text-stone-600 dark:text-stone-400">
+                    {d.count} inquiries ({d.percentage}%)
+                  </span>
+                </div>
+                <div className="w-full bg-stone-100 dark:bg-stone-800 h-2 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-emerald-600 rounded-full transition-all duration-500"
+                    style={{ width: `${d.percentage}%` }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="rounded-2xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/60 dark:bg-emerald-950/20 p-4 text-xs text-emerald-900 dark:text-emerald-300">
+            <p className="font-bold flex items-center gap-1.5">
+              <AlertTriangle className="size-3.5 text-amber-500" />
+              <span>Fall Armyworm Advisory Alert</span>
+            </p>
+            <p className="text-[11px] text-stone-600 dark:text-stone-400 mt-1 leading-relaxed">
+              High density reported in Bichi & Gwarzo clusters. Consider dispatching communal neem extract spray teams.
+            </p>
+          </div>
+        </div>
+
+        {/* Right: Member Field Team Roster Snippet (7 cols) */}
+        <div className="lg:col-span-7 rounded-3xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900/60 p-6 space-y-5 shadow-xs">
           <div className="flex justify-between items-center">
             <div>
-              <h3 className="text-sm font-bold text-white">Farm Pulse Telemetry & Soil Moisture</h3>
-              <p className="text-[11px] text-slate-400">Volumetric Water Content vs. Vegetation Health (NDVI)</p>
+              <h3 className="text-base font-bold text-stone-900 dark:text-white">
+                Cooperative Extension Team
+              </h3>
+              <p className="text-xs text-stone-500 dark:text-stone-400">
+                Active extension officers and farmer leaders
+              </p>
             </div>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800">
-              Real-time Feed
-            </span>
-          </div>
-          <div className="h-64 w-full">
-            <FarmPulseChart />
-          </div>
-        </div>
-
-        {/* AI & Infrastructure Health */}
-        <div className="p-5 rounded-2xl bg-[#0A1624] border border-emerald-950/80 space-y-4 shadow-xs">
-          <h3 className="text-sm font-bold text-white">Intelligence Service Infrastructure</h3>
-          <div className="space-y-3">
-            <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 space-y-1">
-              <div className="flex justify-between items-center text-xs">
-                <span className="font-semibold text-slate-200">KGML-Ag Inference Engine</span>
-                <span className="text-[10px] font-bold text-emerald-400 uppercase">Port 8100 Online</span>
-              </div>
-              <p className="text-[10px] text-slate-400">FastAPI microservice • 11/11 tests passing • 118ms latency</p>
-            </div>
-
-            <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 space-y-1">
-              <div className="flex justify-between items-center text-xs">
-                <span className="font-semibold text-slate-200">Open-Meteo Agro-Climate</span>
-                <span className="text-[10px] font-bold text-emerald-400 uppercase">Live Connected</span>
-              </div>
-              <p className="text-[10px] text-slate-400">Direct spatial satellite telemetry without API key limits</p>
-            </div>
-
-            <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 space-y-1">
-              <div className="flex justify-between items-center text-xs">
-                <span className="font-semibold text-slate-200">PostGIS Geospatial Engine</span>
-                <span className="text-[10px] font-bold text-emerald-400 uppercase">Active</span>
-              </div>
-              <p className="text-[10px] text-slate-400">Polygon boundaries demarcated across 36 Nigerian states</p>
-            </div>
-
-            <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 space-y-1">
-              <div className="flex justify-between items-center text-xs">
-                <span className="font-semibold text-slate-200">5 Localized Languages</span>
-                <span className="text-[10px] font-bold text-emerald-400 uppercase">Ready</span>
-              </div>
-              <p className="text-[10px] text-slate-400">English, Hausa, Yorùbá, Igbo, Nigerian Pidgin</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Recent Diagnostic Inferences Table */}
-      <div className="p-5 rounded-2xl bg-[#0A1624] border border-emerald-950/80 space-y-4 shadow-xs">
-        <div className="flex justify-between items-center">
-          <div>
-            <h3 className="text-sm font-bold text-white">Live Diagnostic Inferences</h3>
-            <p className="text-[11px] text-slate-400">Real-time agronomic query processing from web & mobile agents</p>
-          </div>
-          <Button asChild size="sm" variant="ghost" className="text-xs text-emerald-400 hover:text-emerald-300">
-            <Link href="/dashboard/playground">
-              Run New Query <ArrowRight className="size-3.5 ml-1" />
+            <Link
+              href="/dashboard/members"
+              className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              Manage All Members →
             </Link>
-          </Button>
-        </div>
+          </div>
 
-        <div className="overflow-x-auto rounded-xl border border-slate-800 bg-[#070F18]">
-          <table className="w-full text-left text-xs">
-            <thead>
-              <tr className="border-b border-slate-800 text-slate-400 font-semibold uppercase tracking-wider">
-                <th className="p-3">Query ID</th>
-                <th className="p-3">Crop</th>
-                <th className="p-3">Location</th>
-                <th className="p-3">Symptoms / Diagnosis</th>
-                <th className="p-3">Language</th>
-                <th className="p-3">Confidence</th>
-                <th className="p-3">Time</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-800">
-              {recentInferences.map((inf) => (
-                <tr key={inf.id} className="hover:bg-slate-900/40 transition-colors">
-                  <td className="p-3 font-mono font-medium text-emerald-400">{inf.id}</td>
-                  <td className="p-3 font-bold text-white">{inf.crop}</td>
-                  <td className="p-3 text-slate-300">{inf.location}</td>
-                  <td className="p-3 text-slate-400">{inf.symptoms}</td>
-                  <td className="p-3">
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-800 text-slate-200">
-                      {inf.language}
-                    </span>
-                  </td>
-                  <td className="p-3">
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-950 text-emerald-400 border border-emerald-800">
-                      {inf.confidence}
-                    </span>
-                  </td>
-                  <td className="p-3 text-slate-500 font-mono text-[11px]">{inf.time}</td>
+          <div className="overflow-x-auto rounded-2xl border border-stone-200 dark:border-stone-800">
+            <table className="w-full text-left text-xs">
+              <thead className="bg-stone-50 dark:bg-stone-950 border-b border-stone-200 dark:border-stone-800 text-stone-400 font-semibold uppercase tracking-wider text-[10px]">
+                <tr>
+                  <th className="py-3 px-4">Member Name</th>
+                  <th className="py-3 px-4">Role</th>
+                  <th className="py-3 px-4">Cluster</th>
+                  <th className="py-3 px-4">Queries (30d)</th>
+                  <th className="py-3 px-4">Status</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-stone-100 dark:divide-stone-800/80">
+                {members.slice(0, 5).map((m) => (
+                  <tr key={m.id} className="hover:bg-stone-50/50 dark:hover:bg-stone-800/40 transition">
+                    <td className="py-3 px-4 font-semibold text-stone-900 dark:text-white">
+                      {m.fullName}
+                      <span className="block text-[10px] text-stone-400 font-normal">{m.phone}</span>
+                    </td>
+                    <td className="py-3 px-4">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-900/60">
+                        {m.role}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4 text-stone-600 dark:text-stone-400">{m.cluster}</td>
+                    <td className="py-3 px-4 font-mono font-medium">{m.queriesUsed}</td>
+                    <td className="py-3 px-4">
+                      <span className="inline-flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400 font-semibold">
+                        <span className="size-1.5 rounded-full bg-emerald-500" />
+                        <span>{m.status}</span>
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
