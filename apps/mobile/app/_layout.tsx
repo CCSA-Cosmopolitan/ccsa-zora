@@ -31,17 +31,19 @@ export default function RootLayout() {
         <StatusBar style="dark" />
         <Stack
           screenOptions={{
-            contentStyle: { backgroundColor: "#f3f7f2" },
-            headerStyle: { backgroundColor: "#063d2a" },
-            headerTintColor: "#ffffff",
-            headerTitleStyle: { fontWeight: "700" },
+            headerShown: false,
+            animation: "fade",
           }}
         >
           <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="assistant" options={{ title: "Ask Zora" }} />
-          <Stack.Screen name="subscribe" options={{ title: "Zora Pro Farmer" }} />
-          <Stack.Screen name="scouting/new" options={{ title: "New scouting log" }} />
-          <Stack.Screen name="login" options={{ title: "Sign in" }} />
+          <Stack.Screen name="assistant" options={{ headerShown: false }} />
+          <Stack.Screen name="plants" options={{ headerShown: false }} />
+          <Stack.Screen name="farm" options={{ headerShown: false }} />
+          <Stack.Screen name="language" options={{ headerShown: false }} />
+          <Stack.Screen name="live" options={{ headerShown: false }} />
+          <Stack.Screen name="subscribe" options={{ headerShown: false }} />
+          <Stack.Screen name="scouting/new" options={{ headerShown: false }} />
+          <Stack.Screen name="login" options={{ headerShown: false }} />
         </Stack>
       </QueryClientProvider>
     </SQLiteProvider>
