@@ -1,5 +1,5 @@
 import * as Network from "expo-network";
-import { Link } from "expo-router";
+import { router } from "expo-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSQLiteContext } from "expo-sqlite";
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
@@ -52,15 +52,16 @@ export default function ZoraCompanionHome() {
         <View style={styles.header}>
           <Image source={require("../assets/brand/zora-wordmark.jpeg")} style={styles.wordmark} />
           <View style={styles.headerRight}>
-            <Link href="/subscribe" asChild>
-              <Pressable style={styles.planBadge}>
-                <Text style={styles.planBadgeText}>
-                  {currentTier === "FREE"
-                    ? `Free: ${Math.max(0, maxWeeklyFreeQueries - weeklyQueriesUsed)} left`
-                    : "Zora Pro ✓"}
-                </Text>
-              </Pressable>
-            </Link>
+            <Pressable
+              onPress={() => router.push("/subscribe")}
+              style={styles.planBadge}
+            >
+              <Text style={styles.planBadgeText}>
+                {currentTier === "FREE"
+                  ? `Free: ${Math.max(0, maxWeeklyFreeQueries - weeklyQueriesUsed)} left`
+                  : "Zora Pro ✓"}
+              </Text>
+            </Pressable>
             <View style={styles.connectionBadge}>
               <View
                 style={[
@@ -81,18 +82,19 @@ export default function ZoraCompanionHome() {
           <Text style={styles.welcomeText}>
             Speak in your language, show Zora a problem, or continue your offline field work.
           </Text>
-          <Link href="/assistant" asChild>
-            <Pressable style={styles.askButton}>
-              <View style={styles.voiceOrb}>
-                <Text style={styles.voiceOrbText}>●</Text>
-              </View>
-              <View style={styles.askCopy}>
-                <Text style={styles.askTitle}>Ask Zora</Text>
-                <Text style={styles.askSubtitle}>Voice + field context + KGML-Ag</Text>
-              </View>
-              <Text style={styles.askArrow}>›</Text>
-            </Pressable>
-          </Link>
+          <Pressable
+            onPress={() => router.push("/assistant")}
+            style={styles.askButton}
+          >
+            <View style={styles.voiceOrb}>
+              <Text style={styles.voiceOrbText}>●</Text>
+            </View>
+            <View style={styles.askCopy}>
+              <Text style={styles.askTitle}>Ask Zora</Text>
+              <Text style={styles.askSubtitle}>Voice + field context + KGML-Ag</Text>
+            </View>
+            <Text style={styles.askArrow}>›</Text>
+          </Pressable>
         </View>
 
         <View style={styles.climateAlert}>
@@ -237,15 +239,17 @@ function ActionCard({
   disabled?: boolean;
 }) {
   return (
-    <Link href={href} asChild>
-      <Pressable disabled={disabled} style={[styles.actionCard, disabled && styles.disabled]}>
-        <View style={styles.actionMark}>
-          <Text style={styles.actionMarkText}>{mark}</Text>
-        </View>
-        <Text style={styles.actionLabel}>{label}</Text>
-        <Text style={styles.actionDetail}>{detail}</Text>
-      </Pressable>
-    </Link>
+    <Pressable
+      disabled={disabled}
+      onPress={() => !disabled && router.push(href)}
+      style={StyleSheet.flatten([styles.actionCard, disabled ? styles.disabled : null])}
+    >
+      <View style={styles.actionMark}>
+        <Text style={styles.actionMarkText}>{mark}</Text>
+      </View>
+      <Text style={styles.actionLabel}>{label}</Text>
+      <Text style={styles.actionDetail}>{detail}</Text>
+    </Pressable>
   );
 }
 
