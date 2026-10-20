@@ -551,7 +551,7 @@ let repository: ZoraRepository | undefined;
 export function getRepository(): ZoraRepository {
   assertProductionConfiguration();
   repository ??=
-    process.env.ZORA_DEMO_MODE === "true" ? new DemoRepository() : new PostgresRepository();
+    new PostgresRepository();
   return repository;
 }
 
@@ -572,7 +572,7 @@ export async function checkDatabaseReadiness(): Promise<{
   latencyMs: number;
   code: string;
 }> {
-  if (process.env.ZORA_DEMO_MODE === "true") return { ok: true, latencyMs: 0, code: "demo" };
+
   const startedAt = Date.now();
   try {
     const { client } = getDatabase();

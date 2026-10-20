@@ -19,7 +19,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import type { ObservationKind } from "@ccsa-zora/utils/api";
 
-import { getDeviceId } from "@/auth/supabase";
+import { getDeviceId } from "@/auth/session";
 import { FieldBoundaryMap } from "@/features/field-scouting/components/field-boundary-map";
 import {
   listLocalFields,

@@ -31,3 +31,9 @@ apps/kgml-api/.venv/
 apps/mobile/.expo/
 apps/mobile/android/
 apps/mobile/ios/
+
+# Isolated verification build outputs
+.next-*/
+
+.vercel
+.env*

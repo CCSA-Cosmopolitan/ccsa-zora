@@ -1,13 +1,21 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Stack } from "expo-router";
+import { Stack, router, usePathname } from "expo-router";
 import { SQLiteProvider } from "expo-sqlite";
 import { StatusBar } from "expo-status-bar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { initializeLocalDatabase } from "@/features/field-scouting/data/migrations";
-import { FieldSyncCoordinator } from "@/features/field-scouting/sync/sync-coordinator";
+
+
+import { getMobileAccessToken } from "@/auth/session";
+import * as SecureStore from "expo-secure-store";
+import { useVoiceStore } from "@/features/voice/voice-store";
+import { LANGUAGES } from "@/features/i18n/languages";
 
 export default function RootLayout() {
+  const pathname=usePathname();
+  useEffect(()=>{let active=true;getMobileAccessToken().then(token=>{if(active&&!token&&pathname!=="/login")router.replace("/login");});return()=>{active=false;};},[pathname]);
+  useEffect(()=>{SecureStore.getItemAsync("zora.language").then(lang=>{const found=LANGUAGES.find(l=>l.code===lang);if(found)useVoiceStore.getState().setLanguage(found.code);});},[]);
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -27,7 +35,7 @@ export default function RootLayout() {
   return (
     <SQLiteProvider databaseName="zora-field.db" onInit={initializeLocalDatabase}>
       <QueryClientProvider client={queryClient}>
-        <FieldSyncCoordinator />
+
         <StatusBar style="dark" />
         <Stack
           screenOptions={{

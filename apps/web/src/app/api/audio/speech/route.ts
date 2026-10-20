@@ -1,122 +1,29 @@
-import { type NextRequest, NextResponse } from "next/server";
-import OpenAI from "openai";
-
-export const runtime = "nodejs";
-
+import { readJsonBody, RequestBodyError } from '@/server/request-body';
+import { NextRequest, NextResponse } from 'next/server';
+import OpenAI from 'openai';
+import { authenticateAssistant, assistantAuthError } from '@/server/assistant-auth';
+import { consumeRateLimit } from '@/server/session';
+export const runtime = 'nodejs';
+const languages: Record<string, string> = {
+  en: 'Standard English with a clear, professional West African/Nigerian accent. Do not use Pidgin pronunciation.',
+  ha: 'Northern Nigerian Hausa',
+  yo: 'Yorùbá with natural tonal rhythm',
+  ig: 'Igbo with natural tonal rhythm',
+  pcm: 'authentic Nigerian Pidgin with a warm, natural flow',
+  ff: 'Fulfulde'
+};
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json().catch(() => ({}));
-    const text = String(body.text || "").trim();
-    const language = String(body.language || "en");
-    const requestedVoice = String(body.voice || "nova");
-
-    if (!text || text.length < 2) {
-      return NextResponse.json({ error: "Missing or empty text for audio speech generation" }, { status: 400 });
-    }
-
-    const openAiKey = process.env.OPENAI_API_KEY;
-    const elevenLabsKey = process.env.ELEVENLABS_API_KEY;
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // 1. ElevenLabs African Voice Integration (if configured)
-    // ─────────────────────────────────────────────────────────────────────────
-    if (elevenLabsKey && elevenLabsKey.trim().length > 10) {
-      const voiceId = process.env.ELEVENLABS_VOICE_ID || "21m00Tcm4TlvDq8ikWAM"; // Default or Nigerian cloned voice ID
-      try {
-        const elevenRes = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "xi-api-key": elevenLabsKey.trim(),
-          },
-          body: JSON.stringify({
-            text: text.slice(0, 4000),
-            model_id: "eleven_multilingual_v2",
-            voice_settings: {
-              stability: 0.5,
-              similarity_boost: 0.75,
-            },
-          }),
-        });
-
-        if (elevenRes.ok) {
-          const audioBuffer = await elevenRes.arrayBuffer();
-          return new Response(audioBuffer, {
-            headers: {
-              "Content-Type": "audio/mpeg",
-              "Cache-Control": "public, max-age=86400",
-            },
-          });
-        }
-      } catch (e) {
-        console.warn("[Zora Speech] ElevenLabs call failed, falling back to OpenAI TTS:", e);
-      }
-    }
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // 2. OpenAI Audio API (tts-1 with fluid multi-lingual phonemes)
-    // ─────────────────────────────────────────────────────────────────────────
-    if (openAiKey && openAiKey.trim().length > 10) {
-      const openai = new OpenAI({ apiKey: openAiKey.trim() });
-      const validVoices = ["alloy", "echo", "fable", "onyx", "nova", "shimmer", "coral", "sage"] as const;
-      type Voice = (typeof validVoices)[number];
-
-      const voiceToUse: Voice = validVoices.includes(requestedVoice as Voice)
-        ? (requestedVoice as Voice)
-        : "coral";
-
-      const languageLabel: Record<string, string> = {
-        ha: "Hausa",
-        yo: "Yoruba",
-        ig: "Igbo",
-        pcm: "Nigerian Pidgin",
-        ff: "Fulfulde",
-        en: "English",
-      };
-      const instructions = `Speak as a warm, calm, friendly native Nigerian ${languageLabel[language] ?? "English"} speaker, like a trusted older neighbour who is an experienced farm extension officer. Use a natural Nigerian accent and rhythm, a slow, clear pace, short natural pauses between steps, and a reassuring tone. Never sound robotic.`;
-
-      let mp3;
-      try {
-        mp3 = await openai.audio.speech.create({
-          model: "gpt-4o-mini-tts",
-          voice: voiceToUse,
-          input: text.slice(0, 4000),
-          instructions,
-        } as Parameters<typeof openai.audio.speech.create>[0]);
-      } catch (ttsError) {
-        console.warn("[Zora Speech] gpt-4o-mini-tts unavailable, using tts-1:", ttsError);
-        mp3 = await openai.audio.speech.create({
-          model: "tts-1",
-          voice: (["alloy", "echo", "fable", "onyx", "nova", "shimmer"] as const).includes(
-            voiceToUse as "alloy",
-          )
-            ? (voiceToUse as "alloy")
-            : "nova",
-          input: text.slice(0, 4000),
-          speed: 0.95,
-        });
-      }
-
-      const buffer = Buffer.from(await mp3.arrayBuffer());
-      return new Response(buffer, {
-        headers: {
-          "Content-Type": "audio/mpeg",
-          "Content-Length": buffer.length.toString(),
-          "Cache-Control": "public, max-age=86400",
-        },
-      });
-    }
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // 3. Fallback Status when no external key is configured yet
-    // ─────────────────────────────────────────────────────────────────────────
-    return NextResponse.json({
-      available: false,
-      message: "To activate high-fidelity neural Nigerian speech streaming, configure OPENAI_API_KEY or ELEVENLABS_API_KEY in apps/web/.env.local.",
-      suggestion: "Using local client-side speech synthesis.",
-    }, { status: 422 });
-  } catch (error: any) {
-    console.error("[Zora Speech API] Error generating audio:", error);
-    return NextResponse.json({ error: error?.message || "Internal audio synthesis failure" }, { status: 500 });
-  }
+    const account = await authenticateAssistant(request);
+    if (!(await consumeRateLimit('speech:' + account.userId, 30, 60))) return NextResponse.json({ error: 'Please wait a moment.' }, { status: 429 });
+    const body = await readJsonBody(request, 20000);
+    if (typeof body?.text !== 'string' || !body.text.trim() || body.text.length > 4000 || !languages[body.language]) return NextResponse.json({ error: 'Invalid speech request' }, { status: 400 });
+    if (!process.env.OPENAI_API_KEY) return NextResponse.json({ error: 'Voice playback is unavailable' }, { status: 503 });
+    const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, timeout: 45000, maxRetries: 0 });
+    const audio = await client.audio.speech.create({
+      model: process.env.OPENAI_TTS_MODEL || 'gpt-4o-mini-tts', voice: 'coral',
+      input: body.text, instructions: 'Speak naturally in ' + languages[body.language] + '. Use a warm Nigerian accent, clear pronunciation, and short pauses between steps. Read the text faithfully.',
+    });
+    return new Response(await audio.arrayBuffer(), { headers: { 'Content-Type': 'audio/mpeg', 'Cache-Control': 'private, no-store' } });
+  } catch(error) { if(error instanceof RequestBodyError)return NextResponse.json({error:error.message},{status:error.status}); return assistantAuthError(error) ?? NextResponse.json({ error: 'Voice playback is temporarily unavailable' }, { status: 503 }); }
 }

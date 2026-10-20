@@ -1,5 +1,6 @@
 import { create } from "zustand";
-import * as Speech from "expo-speech";
+import { speakZora,stopAudio } from "@/services/assistant";
+import * as SecureStore from "expo-secure-store";
 import { SupportedLanguage, TRANSLATIONS, TranslationStrings, LANGUAGES } from "../i18n/languages";
 import { lightTheme, darkTheme, ThemeColors } from "../../theme/colors";
 
@@ -29,6 +30,7 @@ export const useVoiceStore = create<VoiceStoreState>((set, get) => ({
   isProcessing: false,
 
   setLanguage: (lang: SupportedLanguage) => {
+    void SecureStore.setItemAsync("zora.language",lang);
     set({
       language: lang,
       t: TRANSLATIONS[lang] ?? TRANSLATIONS.en,
@@ -43,48 +45,8 @@ export const useVoiceStore = create<VoiceStoreState>((set, get) => ({
     });
   },
 
-  speakText: async (text: string, customLang?: SupportedLanguage) => {
-    try {
-      const activeLang = customLang ?? get().language;
-      const isCurrentlySpeaking = await Speech.isSpeakingAsync();
-      if (isCurrentlySpeaking) {
-        await Speech.stop();
-      }
-
-      set({ isSpeaking: true });
-
-      // Language mappings for native voices
-      const voiceLang =
-        activeLang === "ha"
-          ? "ha-NG"
-          : activeLang === "yo"
-            ? "yo-NG"
-            : activeLang === "ig"
-              ? "ig-NG"
-              : activeLang === "pcm"
-                ? "en-NG"
-                : "en-US";
-
-      Speech.speak(text, {
-        language: voiceLang,
-        pitch: 1.0,
-        rate: 0.9,
-        onDone: () => set({ isSpeaking: false }),
-        onStopped: () => set({ isSpeaking: false }),
-        onError: () => set({ isSpeaking: false }),
-      });
-    } catch {
-      set({ isSpeaking: false });
-    }
-  },
-
-  stopSpeaking: async () => {
-    try {
-      await Speech.stop();
-    } finally {
-      set({ isSpeaking: false });
-    }
-  },
+  speakText: async (text,customLang) => {set({isSpeaking:true});try{await speakZora(text,customLang??get().language);}finally{set({isSpeaking:false});}},
+  stopSpeaking: async () => {stopAudio();set({isSpeaking:false});},
 
   startRecording: () => {
     set({ isRecording: true, isProcessing: false });

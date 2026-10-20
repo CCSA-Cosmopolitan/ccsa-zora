@@ -5,9 +5,9 @@ import "@ccsa-zora/ui/globals.css";
 import { Providers } from "./providers";
 
 export const metadata: Metadata = {
-  title: "CCSA Zora — Sovereign Agricultural Intelligence | Cosmopolitan University Abuja",
+  title: "Zora — Your farming companion",
   description:
-    "Centre for Climate-Smart Agriculture (CCSA) at Cosmopolitan University Abuja. Sovereign agricultural AI, multilingual extension in Hausa, Yorùbá, Igbo, and Pidgin, and verified digital MRV.",
+    "Ask about your farm in Hausa, Yorùbá, Igbo, Pidgin or English. Voice-first farming guidance from Zora, developed by CCSA.",
   applicationName: "CCSA Zora",
   icons: {
     icon: "/ccsa-logo.png",

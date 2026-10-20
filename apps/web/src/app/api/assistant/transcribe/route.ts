@@ -1,45 +1,29 @@
-import { NextResponse, type NextRequest } from "next/server";
-import OpenAI from "openai";
-
-export const runtime = "nodejs";
+import { NextRequest, NextResponse } from 'next/server';
+import OpenAI from 'openai';
+import { authenticateAssistant, assistantAuthError } from '@/server/assistant-auth';
+import { consumeRateLimit } from '@/server/session';
+export const runtime = 'nodejs';
 export const maxDuration = 60;
-
-// Whisper does not officially support Igbo or Fulfulde; those are auto-detected.
-const WHISPER_LANGUAGE: Record<string, string | undefined> = {
-  en: "en",
-  pcm: "en",
-  ha: "ha",
-  yo: "yo",
-  ig: undefined,
-  ff: undefined,
+const languages: Record<string, string> = {
+  en: 'Standard English (Nigerian accent)',
+  ha: 'Hausa',
+  yo: 'Yorùbá',
+  ig: 'Igbo',
+  pcm: 'Nigerian Pidgin',
+  ff: 'Fulfulde'
 };
-
 export async function POST(request: NextRequest) {
-  const apiKey = process.env.OPENAI_API_KEY?.trim();
-  if (!apiKey || apiKey.length <= 10) {
-    return NextResponse.json({ available: false }, { status: 422 });
-  }
-
   try {
+    const account = await authenticateAssistant(request);
+    if (!(await consumeRateLimit('transcribe:' + account.userId, 20, 60))) return NextResponse.json({ error: 'Please wait a moment.' }, { status: 429 });
+    if (!process.env.OPENAI_API_KEY) return NextResponse.json({ error: 'Voice recognition is unavailable' }, { status: 503 });
+    if (Number(request.headers.get('content-length')) > 12_000_000) return NextResponse.json({ error: 'Recording too large' }, { status: 413 });
     const form = await request.formData();
-    const audio = form.get("audio");
-    const language = String(form.get("language") ?? "en");
-    if (!(audio instanceof File) || audio.size < 800) {
-      return NextResponse.json({ error: "No audio received." }, { status: 400 });
-    }
-
-    const openai = new OpenAI({ apiKey });
-    const lang = WHISPER_LANGUAGE[language];
-    const result = await openai.audio.transcriptions.create({
-      file: audio,
-      model: "whisper-1",
-      prompt: "A farmer asks about crops, pests, maize, cassava, rice, yam, fertilizer, spraying, rain, soil.",
-      ...(lang ? { language: lang } : {}),
-    });
-
-    return NextResponse.json({ text: result.text });
-  } catch (error) {
-    console.error("[Zora Transcribe] failed:", error);
-    return NextResponse.json({ error: "Could not understand the audio." }, { status: 500 });
-  }
+    const audio = form.get('audio');
+    const language = String(form.get('language') ?? 'en');
+    if (!(audio instanceof File) || audio.size < 800 || audio.size > 10_000_000 || !languages[language] || !/^(audio\/(webm|mp4|mpeg|wav|x-wav|m4a|x-m4a|ogg)|video\/webm)(;.*)?$/.test(audio.type)) return NextResponse.json({ error: 'Invalid or oversized recording' }, { status: 400 });
+    const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, timeout: 45000, maxRetries: 0 });
+    const result = await client.audio.transcriptions.create({ file: audio, model: process.env.OPENAI_TRANSCRIBE_MODEL || 'gpt-4o-transcribe', prompt: 'Transcribe the farmer faithfully in ' + languages[language] + '. Do not translate, answer, or invent words during silence.' });
+    return NextResponse.json({ text: result.text }, { headers: { 'Cache-Control': 'no-store' } });
+  } catch(error) { return assistantAuthError(error) ?? NextResponse.json({ error: 'Could not understand the recording. Please try again.' }, { status: 503 }); }
 }

@@ -18,7 +18,6 @@
     "@ccsa-zora/utils": "workspace:*",
     "@deck.gl/core": "9.1.14",
     "@deck.gl/layers": "9.1.14",
-    "@supabase/supabase-js": "2.99.0",
     "@tanstack/react-query": "5.101.4",
     "drizzle-orm": "0.45.2",
     "lucide-react": "1.25.0",

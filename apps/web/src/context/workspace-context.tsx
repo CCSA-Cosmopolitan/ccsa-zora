@@ -214,7 +214,7 @@ const DEFAULT_API_KEYS: ApiKeyItem[] = [
 
 const WorkspaceContext = createContext<WorkspaceContextType | undefined>(undefined);
 
-export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
+export function WorkspaceProvider({ children, loadLegacyData = false }: { children: React.ReactNode; loadLegacyData?: boolean }) {
   const [mode, setModeState] = useState<WorkspaceMode>("personal");
 
   // Personal state
@@ -245,6 +245,8 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
       }
     }
 
+    // The current FIMS release does not expose the retired organization dashboard.
+    if (!loadLegacyData) return;
     // Fetch live database records from Neon PostgreSQL
     fetch("/api/workspace/data")
       .then((res) => (res.ok ? res.json() : null))
@@ -322,7 +324,7 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
       .catch((err) => {
         console.warn("[WorkspaceContext] Using offline / cached state:", err);
       });
-  }, []);
+  }, [loadLegacyData]);
 
   function setMode(newMode: WorkspaceMode) {
     setModeState(newMode);

@@ -103,7 +103,7 @@ def test_multilingual_advisory_is_grounded_and_auditable(client: TestClient) -> 
     assert 0 <= result["confidence"] <= 1
 
 
-def test_commercial_api_key_auth_and_metering(client: TestClient) -> None:
+def test_unregistered_commercial_api_key_rejected(client: TestClient) -> None:
     response = client.post(
         "/v1/advisories",
         headers={"x-api-key": "zora_live_948204928492048204829482"},
@@ -115,12 +115,8 @@ def test_commercial_api_key_auth_and_metering(client: TestClient) -> None:
             "channel": "web",
         },
     )
-    assert response.status_code == 201
-    assert response.headers.get("x-ratelimit-limit") == "10000"
-    assert response.headers.get("x-quota-price-ngn") == "30"
-    result = response.json()
-    assert "Fall Armyworm" in result["diagnosis"]
-    assert result["severity"] == "high"
+    assert response.status_code == 401
+    assert response.headers.get("x-ratelimit-limit") is None
 
 
 def test_malformed_commercial_api_key_rejected(client: TestClient) -> None:

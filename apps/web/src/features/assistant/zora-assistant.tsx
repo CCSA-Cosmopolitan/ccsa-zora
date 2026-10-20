@@ -19,7 +19,7 @@ import { Badge } from "@ccsa-zora/ui/components/badge";
 import { Button } from "@ccsa-zora/ui/components/button";
 
 import { activeOrganizationId } from "@/hooks/use-dashboard";
-import { getAccessToken } from "@/lib/supabase";
+import { getAccessToken } from "@/lib/session";
 
 interface SpeechRecognitionResultEvent {
   results: ArrayLike<{ 0: { transcript: string } }>;

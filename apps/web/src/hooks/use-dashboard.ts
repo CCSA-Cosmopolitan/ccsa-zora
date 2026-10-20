@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { createZoraClient } from "@ccsa-zora/api-client";
 
-import { getAccessToken } from "@/lib/supabase";
+import { getAccessToken } from "@/lib/session";
 
 export const activeOrganizationId =
   process.env.NEXT_PUBLIC_ZORA_ORGANIZATION_ID ?? "00000000-0000-4000-8000-000000000001";

@@ -5,6 +5,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import type { ObservationMediaPayload } from "@ccsa-zora/utils/api";
 import type { OutboxEnvelope } from "@ccsa-zora/utils/sync";
 
+import { getDatabase } from "@/server/database";
 import { authenticateRequest } from "@/server/auth";
 import { assertOrganizationAccess, getRepository } from "@/server/repository";
 import { apiError } from "@/server/responses";
@@ -19,38 +20,12 @@ function extensionFor(mimeType: string) {
   return "jpg";
 }
 
-async function uploadToSupabase(file: File, storageKey: string, expectedHash: string) {
-  if (process.env.ZORA_DEMO_MODE === "true") return;
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  const bucket = process.env.SUPABASE_EVIDENCE_BUCKET ?? "mrv-evidence";
-  if (!url || !serviceKey) throw new Error("Supabase evidence storage is not configured");
-  const response = await fetch(`${url}/storage/v1/object/${bucket}/${storageKey}`, {
-    method: "POST",
-    headers: {
-      apikey: serviceKey,
-      authorization: `Bearer ${serviceKey}`,
-      "content-type": file.type,
-      "x-upsert": "false",
-    },
-    body: file,
-  });
-  if (response.ok) return;
-
-  const uploadError = await response.text();
-  if (response.status === 400 || response.status === 409) {
-    const existing = await fetch(`${url}/storage/v1/object/${bucket}/${storageKey}`, {
-      headers: { apikey: serviceKey, authorization: `Bearer ${serviceKey}` },
-      cache: "no-store",
-    });
-    if (existing.ok) {
-      const existingHash = createHash("sha256")
-        .update(Buffer.from(await existing.arrayBuffer()))
-        .digest("hex");
-      if (existingHash === expectedHash) return;
-    }
-  }
-  throw new Error(`Evidence upload failed (${response.status}): ${uploadError}`);
+async function uploadToNeon(file: File, storageKey: string, expectedHash: string, accountId: string) {
+ const { client } = getDatabase();
+ const rows = await client`INSERT INTO zora_runtime.media(storage_key,account_id,sha256,mime_type,content) VALUES (${storageKey},${accountId},${expectedHash},${file.type},${Buffer.from(await file.arrayBuffer())}) ON CONFLICT(storage_key) DO NOTHING RETURNING storage_key`;
+ if(rows.length)return;
+ const existing=await client`SELECT sha256 FROM zora_runtime.media WHERE storage_key=${storageKey} AND account_id=${accountId}`;
+ if(existing[0]?.sha256!==expectedHash)throw new Error('Evidence conflicts with an existing upload');
 }
 
 export async function POST(request: NextRequest) {
@@ -91,7 +66,7 @@ export async function POST(request: NextRequest) {
     const repository = getRepository();
     await assertOrganizationAccess(repository, envelope.payload.organizationId, principal.userId);
     const storageKey = `${envelope.payload.organizationId}/${envelope.payload.fieldId}/${envelope.payload.observationId}/${envelope.payload.id}.${extensionFor(file.type)}`;
-    await uploadToSupabase(file, storageKey, hash);
+    await uploadToNeon(file, storageKey, hash, principal.userId);
     const receipt = await repository.recordObservationMedia(
       envelope.payload.organizationId,
       principal.userId,

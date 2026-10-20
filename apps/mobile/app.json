@@ -9,12 +9,19 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "org.ccsa.zora"
+      "bundleIdentifier": "org.ccsa.zora",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Allow CCSA Zora to capture crop, livestock, and field evidence photos.",
+        "NSMicrophoneUsageDescription": "Allow CCSA Zora to listen to your farming question.",
+        "NSLocationWhenInUseUsageDescription": "Allow CCSA Zora to attach a precise field location to scouting evidence.",
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "package": "org.ccsa.zora",
       "permissions": [
         "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION"
       ]

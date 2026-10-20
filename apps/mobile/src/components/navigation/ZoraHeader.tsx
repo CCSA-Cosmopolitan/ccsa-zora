@@ -1,6 +1,8 @@
 import React from "react";
 import { View, Text, Pressable, StyleSheet, Image } from "react-native";
-import { ArrowLeft, Languages, Moon, Sun } from "lucide-react-native";
+import { ArrowLeft, Languages, Moon, Sun, LogOut } from "lucide-react-native";
+import { clearMobileAccessToken } from '@/auth/session';
+import { api, stopAudio } from '@/services/assistant';
 import { router } from "expo-router";
 import { useVoiceStore } from "../../features/voice/voice-store";
 import { LANGUAGES } from "../../features/i18n/languages";
@@ -15,6 +17,7 @@ export function ZoraHeader({ mode = "home", title, onBack }: ZoraHeaderProps) {
   const { language, t, colors, themeMode, toggleTheme } = useVoiceStore();
   const currentLang = LANGUAGES.find((l) => l.code === language) || LANGUAGES[4]!;
 
+  async function signOut(){stopAudio();try{await api('/api/auth/session',{method:'DELETE'});}catch{}finally{await clearMobileAccessToken();router.replace('/login');}}
   function handleBack() {
     if (onBack) {
       onBack();
@@ -47,7 +50,7 @@ export function ZoraHeader({ mode = "home", title, onBack }: ZoraHeaderProps) {
         </Text>
       ) : null}
 
-      <View style={styles.actionsRow}>
+      <View style={styles.actionsRow}><Pressable accessibilityLabel="Sign out" onPress={signOut} style={styles.iconButton}><LogOut size={18} color={colors.textSecondary}/></Pressable>
         <Pressable onPress={toggleTheme} style={[styles.iconButton, { borderColor: colors.cardBorder }]}>
           {themeMode === "light" ? (
             <Moon size={16} color={colors.textSecondary} />

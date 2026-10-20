@@ -20,8 +20,8 @@ export const accessRequestInputSchema = z
     requestedRole: z.string().trim().min(2).max(100),
     country: z.string().trim().max(100).optional().default(""),
     phone: z.string().trim().max(50).optional().default(""),
-    useCase: z.string().trim().min(5).max(1_200),
-    consent: z.boolean().optional().default(true),
+    useCase: z.string().trim().min(20).max(1_200),
+    consent: z.literal(true),
     website: z.string().max(0).optional().default(""),
   })
   .strict();

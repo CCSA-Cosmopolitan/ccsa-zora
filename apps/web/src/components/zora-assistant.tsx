@@ -77,7 +77,7 @@ export function ZoraAssistant() {
   const [phase, setPhase] = useState<Phase>("idle");
   const [turns, setTurns] = useState<Turn[]>([]);
   const [typed, setTyped] = useState("");
-  const [useWhisper, setUseWhisper] = useState(false);
+  const useWhisper = true;
   const [micError, setMicError] = useState<string | null>(null);
 
   const recorderRef = useRef<MediaRecorder | null>(null);
@@ -86,28 +86,32 @@ export function ZoraAssistant() {
   const recognitionRef = useRef<AnyWindow>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const turnId = useRef(0);
+  const conversationId=useRef<string|undefined>(undefined);
+  const inflight=useRef(false);const active=useRef(true);const audioGeneration=useRef(0);const micPending=useRef(false);
+  const [photo,setPhoto]=useState<string|undefined>(undefined);
+  const audioUrl=useRef<string|undefined>(undefined);
+  const recordingTimer=useRef<ReturnType<typeof setTimeout>|undefined>(undefined);
+  useEffect(()=>{active.current=true;const saved=localStorage.getItem("zora.language");if(LANGUAGES.some(l=>l.code===saved))setLanguage(saved as Lang);return()=>{active.current=false;audioGeneration.current++;recognitionRef.current?.abort?.();window.speechSynthesis?.cancel();clearTimeout(recordingTimer.current);if(recorderRef.current){recorderRef.current.onstop=null;if(recorderRef.current.state!=="inactive")recorderRef.current.stop();}streamRef.current?.getTracks().forEach(t=>t.stop());audioRef.current?.pause();if(audioUrl.current)URL.revokeObjectURL(audioUrl.current);};},[]);
   const endRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    fetch("/api/assistant")
-      .then((r) => r.json())
-      .then((d: { openai?: boolean }) => setUseWhisper(Boolean(d.openai)))
-      .catch(() => setUseWhisper(false));
-  }, []);
+
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }, [turns]);
 
   const stopSpeaking = useCallback(() => {
+    audioGeneration.current++;
     audioRef.current?.pause();
     audioRef.current = null;
+    if(audioUrl.current){URL.revokeObjectURL(audioUrl.current);audioUrl.current=undefined;}
     if (typeof window !== "undefined") window.speechSynthesis?.cancel();
     setPhase("idle");
   }, []);
 
   const speak = useCallback(
     async (text: string, lang: Lang) => {
+      if(!active.current)return;const generation=++audioGeneration.current;audioRef.current?.pause();
       setPhase("speaking");
       try {
         const res = await fetch("/api/audio/speech", {
@@ -116,7 +120,9 @@ export function ZoraAssistant() {
           body: JSON.stringify({ text, language: lang }),
         });
         if (res.ok && res.headers.get("content-type")?.includes("audio")) {
-          const url = URL.createObjectURL(await res.blob());
+          const blob=await res.blob();if(!active.current||generation!==audioGeneration.current)return;
+          const url = URL.createObjectURL(blob);
+          audioUrl.current=url;
           const audio = new Audio(url);
           audioRef.current = audio;
           audio.onended = () => setPhase("idle");
@@ -127,9 +133,13 @@ export function ZoraAssistant() {
       } catch {
         /* fall through to the browser voice */
       }
+      if(!active.current||generation!==audioGeneration.current)return;
       if (typeof window !== "undefined" && window.speechSynthesis) {
         const utter = new SpeechSynthesisUtterance(text);
-        utter.lang = lang === "en" || lang === "pcm" ? "en-NG" : "en-NG";
+        utter.lang = LANGUAGES.find(l=>l.code===lang)?.recognition ?? "en-NG";
+        const voice=window.speechSynthesis.getVoices().find(v=>v.lang.toLowerCase().startsWith(utter.lang.split("-")[0]!.toLowerCase()));
+        if(!voice){setMicError("Voice playback is unavailable for this language. Please retry.");setPhase("idle");return;}
+        utter.voice=voice;
         utter.rate = 0.92;
         utter.onend = () => setPhase("idle");
         utter.onerror = () => setPhase("idle");
@@ -148,6 +158,7 @@ export function ZoraAssistant() {
         setPhase("idle");
         return;
       }
+      if(!active.current||inflight.current)return;inflight.current=true;
       const id = ++turnId.current;
       const history = turns
         .filter((t) => t.reply)
@@ -163,19 +174,21 @@ export function ZoraAssistant() {
         const res = await fetch("/api/assistant", {
           method: "POST",
           headers: { "content-type": "application/json" },
-          body: JSON.stringify({ message: text, language, history }),
+          body: JSON.stringify({ message: text, language, conversationId:conversationId.current, image:photo }),
         });
-        const data = (await res.json()) as Reply & { error?: string };
+        const data = (await res.json()) as Reply & { error?: string; conversationId?: string };
         if (!res.ok) throw new Error(data.error ?? "Zora could not answer.");
+        if(!active.current)return;
+        conversationId.current=data.conversationId;setPhoto(undefined);
         setTurns((prev) => prev.map((t) => (t.id === id ? { ...t, reply: data } : t)));
         void speak(data.spoken, language);
       } catch (error) {
         const message = error instanceof Error ? error.message : "Something went wrong.";
         setTurns((prev) => prev.map((t) => (t.id === id ? { ...t, error: message } : t)));
         setPhase("idle");
-      }
+      } finally {inflight.current=false;}
     },
-    [language, speak, turns],
+    [language, speak, turns, photo],
   );
 
   const transcribe = useCallback(
@@ -202,22 +215,26 @@ export function ZoraAssistant() {
     stopSpeaking();
 
     if (useWhisper) {
+      if(micPending.current)return;micPending.current=true;
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        if(!active.current){stream.getTracks().forEach(t=>t.stop());return;}
         streamRef.current = stream;
         chunksRef.current = [];
         const recorder = new MediaRecorder(stream);
         recorder.ondataavailable = (e) => e.data.size > 0 && chunksRef.current.push(e.data);
         recorder.onstop = () => {
+          clearTimeout(recordingTimer.current);
           stream.getTracks().forEach((t) => t.stop());
           void transcribe(new Blob(chunksRef.current, { type: recorder.mimeType }));
         };
         recorderRef.current = recorder;
         recorder.start();
+        recordingTimer.current=setTimeout(()=>{if(recorder.state!=="inactive")recorder.stop();},60000);
         setPhase("listening");
       } catch {
         setMicError("Please allow the microphone, or type your question below.");
-      }
+      } finally {micPending.current=false;}
       return;
     }
 
@@ -266,7 +283,8 @@ export function ZoraAssistant() {
           <button
             key={l.code}
             type="button"
-            onClick={() => setLanguage(l.code)}
+            disabled={phase!=="idle"}
+            onClick={() => {setLanguage(l.code);localStorage.setItem("zora.language",l.code);}}
             className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
               language === l.code
                 ? "bg-emerald-700 dark:bg-emerald-600 text-white shadow-sm"
@@ -278,6 +296,7 @@ export function ZoraAssistant() {
         ))}
       </div>
 
+      <div className="mt-5 flex justify-center gap-4"><label className="cursor-pointer text-emerald-700">📷 Add a photo<input type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" disabled={phase!=="idle"} onChange={event=>{const file=event.target.files?.[0];if(!file)return;if(file.size>2500000){setMicError("Please choose a smaller photo (under 2.5 MB).");return;}const reader=new FileReader();reader.onload=()=>setPhoto(String(reader.result));reader.readAsDataURL(file);}}/></label>{photo&&<button onClick={()=>setPhoto(undefined)}>Remove photo</button>}<button onClick={()=>{stopSpeaking();conversationId.current=undefined;setTurns([]);setPhoto(undefined);}} disabled={phase==="thinking"||phase==="listening"}>New conversation</button></div>{photo&&<img src={photo} alt="Attached farm photo" className="mx-auto mt-4 h-32 rounded-xl"/>}
       {/* Big mic button */}
       <div className="mt-10 flex flex-col items-center">
         <div className="relative">

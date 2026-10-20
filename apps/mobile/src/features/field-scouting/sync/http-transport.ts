@@ -1,11 +1,12 @@
+import { apiBase } from "@/services/assistant";
 import { createZoraClient } from "@ccsa-zora/api-client";
 import type { ObservationMediaPayload, ObservationPayload } from "@ccsa-zora/utils/api";
 import type { OutboxEnvelope } from "@ccsa-zora/utils/sync";
 
-import { getMobileAccessToken } from "@/auth/supabase";
+import { getMobileAccessToken } from "@/auth/session";
 
 const api = createZoraClient({
-  baseUrl: process.env.EXPO_PUBLIC_API_URL ?? "http://127.0.0.1:3000",
+  baseUrl: apiBase(),
   getAccessToken: getMobileAccessToken,
 });
 

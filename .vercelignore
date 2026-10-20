@@ -1,0 +1,14 @@
+.env*
+**/.env*
+**/.next*/**
+**/node_modules/**
+**/.pnpm-store/**
+**/.venv/**
+**/.expo/**
+**/.turbo/**
+**/coverage/**
+scripts/dev-local.mjs
+apps/mobile/**
+apps/kgml-api/**
+**/__pycache__/**
+**/.pytest_cache/**

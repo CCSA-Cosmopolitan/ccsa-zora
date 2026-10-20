@@ -1,39 +1,4 @@
-const webBase = normalizeUrl("ZORA_WEB_URL");
-const kgmlBase = normalizeUrl("ZORA_KGML_URL");
-
-function normalizeUrl(name) {
-  const raw = process.env[name]?.trim();
-  if (!raw) throw new Error(`${name} is required.`);
-  const url = new URL(raw);
-  if (url.protocol !== "https:") throw new Error(`${name} must use HTTPS.`);
-  return url.toString().replace(/\/$/, "");
-}
-
-async function check(label, url, expectedService) {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 15_000);
-  try {
-    const response = await fetch(url, {
-      headers: { accept: "application/json" },
-      redirect: "error",
-      signal: controller.signal,
-    });
-    const body = await response.json().catch(() => null);
-    if (!response.ok) {
-      throw new Error(`${label} returned HTTP ${response.status}: ${JSON.stringify(body)}`);
-    }
-    if (expectedService && body?.service !== expectedService) {
-      throw new Error(`${label} returned an unexpected service identifier.`);
-    }
-    console.log(`PASS ${label} (${response.status})`);
-  } finally {
-    clearTimeout(timeout);
-  }
-}
-
-await check("KGML liveness", `${kgmlBase}/health`, "ccsa-zora-intelligence-api");
-await check("KGML readiness", `${kgmlBase}/ready`);
-await check("web liveness", `${webBase}/api/health`, "ccsa-zora-web-api");
-await check("web readiness", `${webBase}/api/ready`, "ccsa-zora-web-api");
-
-console.log("CCSA Zora production smoke checks passed.");
+const raw=process.env.ZORA_WEB_URL||process.env.ZORA_PUBLIC_URL;if(!raw||new URL(raw).protocol!=='https:')throw Error('Set ZORA_WEB_URL to the HTTPS deployment origin');
+const base=new URL(raw).origin;
+for(const route of ['/api/health','/api/ready']){const response=await fetch(base+route,{redirect:'error',signal:AbortSignal.timeout(20000)});const data=await response.json();if(!response.ok||(route.endsWith('ready')&&data.status!=='ready'))throw Error(route+' failed: HTTP '+response.status);console.log('PASS '+route);}
+for(const route of ['/api/assistant','/api/audio/speech','/api/assistant/transcribe']){const response=await fetch(base+route,{method:'POST',headers:{'Content-Type':'application/json'},body:'{}',redirect:'error',signal:AbortSignal.timeout(15000)});if(response.status!==401)throw Error('Anonymous access not blocked: '+route);console.log('PASS anonymous protection '+route);}

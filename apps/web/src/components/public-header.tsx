@@ -120,7 +120,7 @@ export function PublicHeader() {
               Sign In
             </Link>
             <Link
-              href="/#talk"
+              href="/"
               className="rounded-full bg-emerald-700 hover:bg-emerald-800 dark:bg-emerald-600 dark:hover:bg-emerald-500 px-4 py-2 text-xs font-bold text-white shadow-xs transition-transform active:scale-95 inline-flex items-center gap-1.5"
             >
               <Sparkles className="size-3.5" />
@@ -258,7 +258,7 @@ export function PublicHeader() {
             {/* Action CTA Button */}
             <div className="mt-6 pt-2">
               <Link
-                href="/#talk"
+                href="/"
                 onClick={() => setMobileMenuOpen(false)}
                 className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 dark:bg-emerald-600 dark:hover:bg-emerald-500 py-3 text-sm font-bold text-white shadow-xs transition"
               >

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   Pressable,
   TextInput,
   Image,
+  AppState,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -16,13 +17,15 @@ import {
   Languages,
 } from "lucide-react-native";
 import * as ImagePicker from "expo-image-picker";
-import { useLocalSearchParams, router } from "expo-router";
+import { useLocalSearchParams, router, useFocusEffect } from "expo-router";
 
 import { useVoiceStore } from "@/features/voice/voice-store";
 import { ZoraHeader } from "@/components/navigation/ZoraHeader";
 import { TabBar } from "@/components/navigation/TabBar";
 import { FloatingVoicePill } from "@/components/voice/FloatingVoicePill";
 import { LANGUAGES } from "@/features/i18n/languages";
+
+import { askZora } from "@/services/assistant";
 
 interface Message {
   id: string;
@@ -33,124 +36,33 @@ interface Message {
 }
 
 export default function AssistantScreen() {
-  const { language, t, colors, isSpeaking, speakText, stopSpeaking } =
-    useVoiceStore();
-  const params = useLocalSearchParams<{ initialPrompt?: string }>();
-  const currentLang = LANGUAGES.find((l) => l.code === language) || LANGUAGES[4]!;
-
-  const defaultUserText =
-    language === "ha"
-      ? "Ganyen masarata suna yin rawaya. Me zan yi?"
-      : language === "yo"
-        ? "Awọn ewe agbado mi ti n yipada si ofeefee. Kini o yẹ ki n ṣe?"
-        : language === "ig"
-          ? "Akwụkwọ ọka m na-acha odo odo. Kedu ihe m kwesịrị ime?"
-          : language === "pcm"
-            ? "My maize leaf dey turn yellow. Wetin I fit do?"
-            : "The leaves on my maize crop are turning yellow. What should I do?";
-
-  const defaultZoraText =
-    language === "ha"
-      ? "Za ka iya daukar hoton ganyen da ya yi rawaya? Ka tabbatar ganyen ya fito fili a hoton."
-      : language === "yo"
-        ? "Ṣe o le ya fọto ewe ti o ti yipada si ofeefee? Rii daju pe ewe naa han gbangba ninu fọto."
-        : language === "ig"
-          ? "Ị nwere ike see foto akwụkwọ ahụ na-acha odo odo? Hụ na akwụkwọ ahụ pụtara nke ọma na foto ahụ."
-          : language === "pcm"
-            ? "You fit snap photo of the leaf wey dey turn yellow? Make sure say the leaf show well inside the photo."
-            : "Could you take a clear photo of the yellow leaf? Make sure the leaf is well-lit and in focus.";
-
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "1",
-      sender: "user",
-      text: params.initialPrompt ?? defaultUserText,
-    },
-    {
-      id: "2",
-      sender: "zora",
-      text: defaultZoraText,
-      suggestedAction: "photo",
-    },
-  ]);
-
-  const [inputVal, setInputVal] = useState("");
-
-  function handleListenResponse(text: string) {
-    if (isSpeaking) {
-      stopSpeaking();
-    } else {
-      speakText(text);
-    }
+  const { language, t, colors, isSpeaking, speakText, stopSpeaking } = useVoiceStore();
+  const params = useLocalSearchParams<{ initialPrompt?: string; image?: string }>();
+  const currentLang = LANGUAGES.find(l=>l.code===language) || LANGUAGES[4]!;
+  const [messages,setMessages]=useState<Message[]>([]);
+  const [inputVal,setInputVal]=useState('');
+  const [busy,setBusy]=useState(false);
+  const [error,setError]=useState('');
+  const conversationId=useRef<string|undefined>(undefined);
+  const active=useRef(true);
+  useFocusEffect(useCallback(()=>{active.current=true;return()=>{active.current=false;void stopSpeaking();};},[stopSpeaking]));
+  const pending=useRef(false);
+  const started=useRef(false);
+  useEffect(()=>{if(params.initialPrompt&&!started.current){started.current=true;void send(params.initialPrompt,params.image);}},[]);
+  async function handleListenResponse(text:string){if(isSpeaking)await stopSpeaking();else try{await speakText(text);}catch(e){setError(e instanceof Error?e.message:'Voice unavailable');}}
+  async function send(text:string,image?:string,imageUri?:string) {
+    if(pending.current||!text.trim())return;pending.current=true;setBusy(true);setError('');
+    setMessages(old=>[...old,{id:String(Date.now()),sender:'user',text,imageUri}]);
+    try{const reply=await askZora({message:text,language,conversationId:conversationId.current,image});
+      if(!active.current||AppState.currentState!=="active")return;
+      conversationId.current=reply.conversationId;
+      setMessages(old=>[...old,{id:String(Date.now())+'-reply',sender:'zora',text:reply.spoken}]);
+      try{await speakText(reply.spoken);}catch{setError('Voice playback is unavailable. Tap to retry listening.');}
+    }catch(e){setError(e instanceof Error?e.message:'Zora is temporarily unavailable');}
+    finally{pending.current=false;setBusy(false);}
   }
-
-  async function handleTakePhoto() {
-    try {
-      const result = await ImagePicker.launchCameraAsync({
-        allowsEditing: true,
-        quality: 0.8,
-      });
-
-      if (!result.canceled && result.assets[0]) {
-        const photoUri = result.assets[0].uri;
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: Date.now().toString(),
-            sender: "user",
-            text: language === "ha" ? "Ga hoton ganyen nan." : "Here is the photo.",
-            imageUri: photoUri,
-          },
-          {
-            id: (Date.now() + 1).toString(),
-            sender: "zora",
-            text:
-              language === "ha"
-                ? "Na gani. Wannan yana nuna rashin sinadarin nitrogen ne a ƙasa. Zuba takin nitrogen da safe zai gyara shi."
-                : "I see it clearly. This pattern indicates nitrogen deficiency along the leaf midrib. Applying balanced nitrogen fertilizer will restore leaf vigor.",
-          },
-        ]);
-        speakText(
-          language === "ha"
-            ? "Na gani. Wannan yana nuna rashin sinadarin nitrogen ne a ƙasa."
-            : "I see it clearly. This pattern indicates nitrogen deficiency.",
-        );
-      }
-    } catch {
-      // Fallback
-    }
-  }
-
-  function handleSendMessage() {
-    if (!inputVal.trim()) return;
-    const userText = inputVal.trim();
-    setInputVal("");
-
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: Date.now().toString(),
-        sender: "user",
-        text: userText,
-      },
-    ]);
-
-    setTimeout(() => {
-      const reply =
-        language === "ha"
-          ? "Zora ya fahimci maganarka. Ina nazarin wannan don ba ka cikakkiyar amsa."
-          : "Zora understands. Analyzing your farm context to provide the best recommendation.";
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: (Date.now() + 1).toString(),
-          sender: "zora",
-          text: reply,
-        },
-      ]);
-      speakText(reply);
-    }, 800);
-  }
+  async function handleTakePhoto(){try{const permission=await ImagePicker.requestCameraPermissionsAsync();if(!permission.granted)throw new Error('Please allow camera access');const result=await ImagePicker.launchCameraAsync({quality:0.5,base64:true});const asset=result.assets?.[0];if(!result.canceled&&asset?.base64)await send(inputVal.trim()||'What can you observe about this plant? Ask me if more information is needed.','data:image/jpeg;base64,'+asset.base64,asset.uri);}catch(e){setError(e instanceof Error?e.message:'Camera unavailable');}}
+  function handleSendMessage(){const text=inputVal.trim();if(!text||busy)return;setInputVal('');void send(text);}
 
   return (
     <SafeAreaView
@@ -178,6 +90,9 @@ export default function AssistantScreen() {
           </Text>
         </Pressable>
 
+        {busy && <Text style={{color:colors.textSecondary}}>…</Text>}
+        {!!error && <Text accessibilityRole="alert" style={{color:"#991b1b"}}>{error}</Text>}
+        <Pressable disabled={busy} onPress={handleTakePhoto}><Text style={{color:colors.accent,paddingVertical:12}}>📷 {t.chat.takePhoto}</Text></Pressable>
         <View style={styles.conversation}>
           {messages.map((m) => (
             <View key={m.id} style={styles.messageWrapper}>
@@ -288,27 +203,7 @@ export default function AssistantScreen() {
       </ScrollView>
 
       {/* Floating Voice Pill */}
-      <FloatingVoicePill
-        onRecordComplete={(transcript) => {
-          setMessages((prev) => [
-            ...prev,
-            {
-              id: Date.now().toString(),
-              sender: "user",
-              text: transcript,
-            },
-            {
-              id: (Date.now() + 1).toString(),
-              sender: "zora",
-              text:
-                language === "ha"
-                  ? "Na fahimci tambayarka. Za ka iya daukar hoton don na bincika sosai?"
-                  : "I heard your question. Could you take a photo so I can confirm the diagnosis?",
-              suggestedAction: "photo",
-            },
-          ]);
-        }}
-      />
+      <FloatingVoicePill disabled={busy} onRecordComplete={(text)=>{void send(text);}} />
 
       {/* Bottom Tab Bar */}
       <TabBar />

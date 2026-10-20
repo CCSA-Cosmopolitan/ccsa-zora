@@ -132,19 +132,7 @@ def require_service_or_api_key(
     if candidate_key and any(compare_digest(candidate_key, k) for k in valid_service_keys):
         return AuthContext(auth_type="internal", client_id="ccsa-internal")
 
-    # 3. Check commercial B2B API Key (zora_live_... or zora_test_...)
-    if candidate_key and (candidate_key.startswith("zora_live_") or candidate_key.startswith("zora_test_")):
-        if len(candidate_key) < 24:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail={"code": "INVALID_API_KEY", "message": "Malformed commercial API key length."},
-            )
-        
-        # Attach B2B commercial metering headers
-        response.headers["x-ratelimit-limit"] = "10000"
-        response.headers["x-ratelimit-remaining"] = "9985"
-        response.headers["x-quota-price-ngn"] = "30"
-        return AuthContext(auth_type="commercial", client_id=candidate_key[:16])
+    # Commercial keys require a validated registry; arbitrary prefixes are never credentials.
 
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,

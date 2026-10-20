@@ -1,0 +1,1 @@
+console.error('Use the reviewed additive Neon migrations 010_runtime.sql, 011_evidence.sql and 012_phone_verification.sql with the dedicated migration role. See NEON_FIMS_ROLLOUT.md. No SQL was executed.');process.exit(1);

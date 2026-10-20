@@ -7,7 +7,7 @@ export async function GET() {
     {
       status: "ok",
       service: "ccsa-zora-web-api",
-      dataSource: process.env.ZORA_DEMO_MODE === "true" ? "demo" : "database",
+      dataSource: "neon",
       commit: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 12) ?? "local",
       timestamp: new Date().toISOString(),
     },

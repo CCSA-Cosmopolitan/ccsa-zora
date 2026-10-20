@@ -14,7 +14,6 @@ function validSignature(
   signature: string,
   organizationId: string,
 ) {
-  if (process.env.ZORA_DEMO_MODE === "true") return signature === "demo";
   const masterSecret = process.env.IOT_INGEST_SECRET;
   if (!masterSecret) return false;
   const organizationSecret = createHmac("sha256", masterSecret)
