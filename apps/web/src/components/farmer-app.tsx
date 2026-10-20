@@ -1295,10 +1295,6 @@ export function FarmerApp({ initialView = 'ask' }: { initialView?: View }) {
                     <p className="zora-rep-dept">Technical Field Advisory & Diagnostic Research Bulletin</p>
                   </div>
                 </div>
-                <div className="zora-rep-title-badge">
-                  <span>OFFICIAL RESEARCH BULLETIN</span>
-                  <small>CCSA-DIAG-EXT</small>
-                </div>
               </div>
 
               {/* Research Metadata Table */}
@@ -1316,7 +1312,7 @@ export function FarmerApp({ initialView = 'ask' }: { initialView?: View }) {
                       <strong>{LANGUAGES.find(l => l.code === activeReport.language)?.name || activeReport.language} {activeReport.language === 'en' ? '(Standard English)' : ''}</strong>
                     </td>
                     <th>ISSUING AUTHORITY</th>
-                    <td><span className="zora-rep-verified">✓ CCSA Verified Agronomic Core · Cosmopolitan Univ.</span></td>
+                    <td><span className="zora-rep-verified">CCSA Verified Agronomic Core · Cosmopolitan Univ.</span></td>
                   </tr>
                 </tbody>
               </table>
