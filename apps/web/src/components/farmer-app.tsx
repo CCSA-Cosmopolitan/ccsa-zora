@@ -1285,50 +1285,51 @@ export function FarmerApp({ initialView = 'ask' }: { initialView?: View }) {
 
             {/* Official Report Document Body */}
             <div className="zora-report-sheet" id="ccsa-advisory-printable-sheet">
-              {/* Institution Header */}
+              {/* Institution Header / Masthead */}
               <div className="zora-rep-header">
                 <div className="zora-rep-logo-block">
                   <img src="/brand/zora-square.jpeg" alt="CCSA Logo" className="zora-rep-logo"/>
                   <div>
                     <h2 className="zora-rep-inst">CENTRE FOR CLIMATE-SMART AGRICULTURE (CCSA)</h2>
-                    <p className="zora-rep-subinst">Cosmopolitan University Abuja · Research & Extension Division</p>
-                    <p className="zora-rep-dept">Autonomous Agro-Ecological Field Advisory Intelligence</p>
+                    <p className="zora-rep-subinst">Cosmopolitan University Abuja · Agricultural Research & Extension Division</p>
+                    <p className="zora-rep-dept">Technical Field Advisory & Diagnostic Research Bulletin</p>
                   </div>
                 </div>
                 <div className="zora-rep-title-badge">
-                  <span>OFFICIAL ADVISORY REPORT</span>
+                  <span>OFFICIAL RESEARCH BULLETIN</span>
+                  <small>CCSA-DIAG-EXT</small>
                 </div>
               </div>
 
-              {/* Meta Grid */}
-              <div className="zora-rep-meta-grid">
-                <div>
-                  <label>REPORT REFERENCE</label>
-                  <strong>{activeReport.referenceId}</strong>
-                </div>
-                <div>
-                  <label>DATE & TIME</label>
-                  <strong>{activeReport.date}</strong>
-                </div>
-                <div>
-                  <label>ADVISORY LANGUAGE</label>
-                  <strong>{LANGUAGES.find(l => l.code === activeReport.language)?.name || activeReport.language} {activeReport.language === 'en' ? '(Standard English)' : ''}</strong>
-                </div>
-                <div>
-                  <label>AUTHENTICATION</label>
-                  <span className="zora-rep-verified">✓ CCSA Verified AI Guidance</span>
-                </div>
-              </div>
+              {/* Research Metadata Table */}
+              <table className="zora-rep-meta-table">
+                <tbody>
+                  <tr>
+                    <th>DOCUMENT REFERENCE</th>
+                    <td><strong>{activeReport.referenceId}</strong></td>
+                    <th>DATE &amp; TIME OF ISSUE</th>
+                    <td>{activeReport.date}</td>
+                  </tr>
+                  <tr>
+                    <th>ADVISORY LANGUAGE</th>
+                    <td>
+                      <strong>{LANGUAGES.find(l => l.code === activeReport.language)?.name || activeReport.language} {activeReport.language === 'en' ? '(Standard English)' : ''}</strong>
+                    </td>
+                    <th>ISSUING AUTHORITY</th>
+                    <td><span className="zora-rep-verified">✓ CCSA Verified Agronomic Core · Cosmopolitan Univ.</span></td>
+                  </tr>
+                </tbody>
+              </table>
 
-              {/* Farmer Observation */}
+              {/* Section 1: Farmer Observation & Specimen Inquiry */}
               <div className="zora-rep-section">
-                <h3 className="zora-rep-sec-title">1. FARMER OBSERVATION & INQUIRY</h3>
-                <div className="zora-rep-query-box">
-                  <p>{activeReport.farmerQuestion || 'Farmer field consultation.'}</p>
+                <h3 className="zora-rep-sec-title">1.0 FIELD OBSERVATION &amp; SPECIMEN INQUIRY</h3>
+                <div className="zora-rep-inquiry-box">
+                  <p className="zora-rep-inquiry-text">{activeReport.farmerQuestion || 'Farmer field consultation submitted for autonomous agronomic assessment.'}</p>
                   {activeReport.image && (
                     <div className="zora-rep-photo-wrap">
                       <img src={activeReport.image} alt="Submitted field crop" className="zora-rep-photo"/>
-                      <span className="zora-rep-photo-caption">Attached Field Photo (Diagnostic Evidence)</span>
+                      <span className="zora-rep-photo-caption">Figure 1.0: In-situ specimen photograph submitted from field for diagnostic evaluation.</span>
                     </div>
                   )}
                 </div>
@@ -1338,13 +1339,16 @@ export function FarmerApp({ initialView = 'ask' }: { initialView?: View }) {
               {activeReport.details ? (
                 <>
                   <div className="zora-rep-section">
-                    <h3 className="zora-rep-sec-title">2. AGRO-ECOLOGICAL ASSESSMENT & DIAGNOSIS</h3>
-                    <div className="zora-rep-diagnosis-box">
+                    <h3 className="zora-rep-sec-title">2.0 TECHNICAL AGRO-ECOLOGICAL ASSESSMENT &amp; DIAGNOSIS</h3>
+                    <div className="zora-rep-diagnosis-block">
                       <div className="zora-rep-diag-head">
-                        <h4>{activeReport.details.diagnosis || 'Field Agronomic Assessment'}</h4>
+                        <div>
+                          <span className="zora-rep-diag-label">PRIMARY AGRONOMIC DIAGNOSIS:</span>
+                          <h4 className="zora-rep-diag-title">{activeReport.details.diagnosis || 'Field Agronomic Assessment'}</h4>
+                        </div>
                         {activeReport.details.severity && (
                           <span className={`zora-severity-badge severity-${activeReport.details.severity}`}>
-                            Severity: {activeReport.details.severity.toUpperCase()}
+                            [DIAGNOSTIC STATUS: {activeReport.details.severity.toUpperCase()} SEVERITY]
                           </span>
                         )}
                       </div>
@@ -1356,35 +1360,45 @@ export function FarmerApp({ initialView = 'ask' }: { initialView?: View }) {
 
                   {activeReport.details.steps && activeReport.details.steps.length > 0 && (
                     <div className="zora-rep-section">
-                      <h3 className="zora-rep-sec-title">3. PRESCRIBED STEP-BY-STEP ACTION PROTOCOL</h3>
-                      <ol className="zora-rep-action-list">
+                      <h3 className="zora-rep-sec-title">3.0 PRESCRIBED ACTION PROTOCOL &amp; INTERVENTION SEQUENCE</h3>
+                      <div className="zora-rep-action-list">
                         {activeReport.details.steps.map((step, sIdx) => (
-                          <li key={sIdx}>
-                            <strong>Step {sIdx + 1}:</strong> {step}
-                          </li>
-                        ))}
-                      </ol>
-                    </div>
-                  )}
-
-                  {activeReport.details.tips && activeReport.details.tips.length > 0 && (
-                    <div className="zora-rep-section">
-                      <h3 className="zora-rep-sec-title">4. FIELD APPLICATION PROTOCOLS & DOSAGE GUIDELINES</h3>
-                      <div className="zora-rep-tips-table">
-                        {activeReport.details.tips.map((tp, tIdx) => (
-                          <div key={tIdx} className="zora-rep-tip-row">
-                            <span className="zora-rep-tip-title">{tp.tip}</span>
-                            <span className="zora-rep-tip-desc">{tp.howToApply}</span>
+                          <div key={sIdx} className="zora-rep-action-item">
+                            <span className="zora-rep-action-num">PROTOCOL 3.{sIdx + 1}</span>
+                            <p className="zora-rep-action-text">{step}</p>
                           </div>
                         ))}
                       </div>
                     </div>
                   )}
 
+                  {activeReport.details.tips && activeReport.details.tips.length > 0 && (
+                    <div className="zora-rep-section">
+                      <h3 className="zora-rep-sec-title">4.0 FIELD APPLICATION PROTOCOLS &amp; DOSAGE GUIDELINES</h3>
+                      <table className="zora-rep-formal-table">
+                        <thead>
+                          <tr>
+                            <th style={{ width: '32%' }}>INTERVENTION / INPUT</th>
+                            <th>APPLICATION METHODOLOGY, RATE &amp; TIMING</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {activeReport.details.tips.map((tp, tIdx) => (
+                            <tr key={tIdx}>
+                              <td><strong>{tp.tip}</strong></td>
+                              <td>{tp.howToApply}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+
                   {activeReport.details.organicAlternative && (
                     <div className="zora-rep-section">
-                      <h3 className="zora-rep-sec-title">5. LOW-COST ORGANIC / REGENERATIVE ALTERNATIVE</h3>
+                      <h3 className="zora-rep-sec-title">5.0 AGROECOLOGICAL &amp; LOW-COST REGENERATIVE ALTERNATIVE</h3>
                       <div className="zora-rep-organic-box">
+                        <span className="zora-rep-box-label">REGENERATIVE PROTOCOL:</span>
                         <p>{activeReport.details.organicAlternative}</p>
                       </div>
                     </div>
@@ -1392,8 +1406,9 @@ export function FarmerApp({ initialView = 'ask' }: { initialView?: View }) {
 
                   {activeReport.details.safety && (
                     <div className="zora-rep-section">
-                      <h3 className="zora-rep-sec-title">6. SAFETY, PPE & ENVIRONMENTAL PRECAUTIONS</h3>
+                      <h3 className="zora-rep-sec-title">6.0 CHEMICAL STEWARDSHIP, PPE &amp; ENVIRONMENTAL PRECAUTIONS</h3>
                       <div className="zora-rep-safety-box">
+                        <span className="zora-rep-safety-label">MANDATORY SAFETY COMPLIANCE:</span>
                         <p>{activeReport.details.safety}</p>
                       </div>
                     </div>
@@ -1401,14 +1416,17 @@ export function FarmerApp({ initialView = 'ask' }: { initialView?: View }) {
 
                   {activeReport.details.followUp && (
                     <div className="zora-rep-section">
-                      <h3 className="zora-rep-sec-title">7. RECOMMENDED MONITORING & FOLLOW-UP</h3>
-                      <p className="zora-rep-followup-text">{activeReport.details.followUp}</p>
+                      <h3 className="zora-rep-sec-title">7.0 RECOMMENDED FIELD MONITORING &amp; DIAGNOSTIC FOLLOW-UP</h3>
+                      <div className="zora-rep-followup-box">
+                        <span className="zora-rep-followup-label">FOLLOW-UP INQUIRIES FOR CONTINUED FIELD EVALUATION:</span>
+                        <p className="zora-rep-followup-text">{activeReport.details.followUp}</p>
+                      </div>
                     </div>
                   )}
                 </>
               ) : activeReport.conversation?.length ? (
                 <div className="zora-rep-section">
-                  <h3 className="zora-rep-sec-title">2. COMPLETE CONSULTATION TRANSCRIPT</h3>
+                  <h3 className="zora-rep-sec-title">2.0 COMPLETE CONSULTATION TRANSCRIPT</h3>
                   <div className="zora-rep-transcript">
                     {activeReport.conversation.map((cMsg, i) => (
                       <div key={i} className={`zora-rep-t-msg ${cMsg.role}`}>
@@ -1423,15 +1441,15 @@ export function FarmerApp({ initialView = 'ask' }: { initialView?: View }) {
               {/* Official Disclaimer & Seal */}
               <div className="zora-rep-footer">
                 <div className="zora-rep-seal-block">
-                  <p className="zora-rep-seal-title">OFFICIAL ADVISORY CERTIFICATION</p>
+                  <p className="zora-rep-seal-title">OFFICIAL ADVISORY CERTIFICATION &amp; METHODOLOGY</p>
                   <p className="zora-rep-seal-text">
-                    This advisory report was generated by the CCSA Zora Agro-Ecological Engine at Cosmopolitan University Abuja, grounded in verified crop protocols from IITA, NIHORT, AfricaRice, ICRISAT, and NiMet. For suspected chemical emergencies or rapid epidemic spread, consult your local LGA Agricultural Extension Officer.
+                    This technical research bulletin is issued by the Centre for Climate-Smart Agriculture (CCSA) at Cosmopolitan University Abuja. Diagnostic recommendations are standardized in alignment with crop protection protocols from IITA, NIHORT, AfricaRice, ICRISAT, and NiMet agro-meteorological advisories. For suspected acute chemical toxicities or rapid epidemic wilt, contact your LGA Agricultural Extension Officer immediately.
                   </p>
                 </div>
                 <div className="zora-rep-sign-block">
                   <div className="zora-rep-line"/>
-                  <span>CCSA Field Advisory Intelligence</span>
-                  <small>Cosmopolitan University Abuja, Nigeria</small>
+                  <span>CCSA Agricultural Extension Intelligence</span>
+                  <small>Cosmopolitan University Abuja · Federal Capital Territory, Nigeria</small>
                 </div>
               </div>
             </div>

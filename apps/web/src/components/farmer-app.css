@@ -41,8 +41,6 @@
 }
 .zora-app button {
   cursor: pointer;
-  border: none;
-  background: none;
   font: inherit;
 }
 .zora-app button:disabled {
@@ -602,18 +600,37 @@
   color: var(--z-accent);
   margin-bottom: 12px;
 }
-.zora-recent-header .zora-doc-btn {
+.zora-recent-header .zora-doc-btn,
+.zora-doc-btn {
   margin-left: auto;
   display: inline-flex;
   align-items: center;
   gap: 6px;
   font-size: 13px;
-  font-weight: 600;
-  color: var(--z-accent);
-  padding: 4px 10px;
+  font-weight: 650;
+  color: #1b6341 !important;
+  padding: 5px 12px;
   border-radius: 6px;
-  border: 1px solid var(--z-line);
-  background: var(--z-soft);
+  border: 1.5px solid #1b6341 !important;
+  background: #ffffff !important;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.dark .zora-recent-header .zora-doc-btn,
+.dark .zora-doc-btn {
+  color: #7ad89b !important;
+  background: #1a241e !important;
+  border-color: #2e7a50 !important;
+}
+.zora-recent-header .zora-doc-btn:hover,
+.zora-doc-btn:hover {
+  background: #1b6341 !important;
+  color: #ffffff !important;
+}
+.dark .zora-recent-header .zora-doc-btn:hover,
+.dark .zora-doc-btn:hover {
+  background: #257e50 !important;
+  color: #ffffff !important;
 }
 .zora-recent-diagnosis {
   font-size: 19px;
@@ -651,24 +668,43 @@
 .zora-voice-dock > * {
   pointer-events: auto;
 }
-.zora-mic {
+.zora-app .zora-mic,
+button.zora-mic {
   min-width: 270px;
-  display: flex;
+  display: inline-flex;
   gap: 14px;
   align-items: center;
   justify-content: center;
-  background: var(--z-text);
-  color: var(--z-inverse);
+  background: #1b6341 !important;
+  color: #ffffff !important;
+  border: none !important;
   padding: 18px 32px;
   border-radius: 50px;
-  font-size: 19px;
-  font-weight: 600;
-  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.16);
+  font-size: 18.5px;
+  font-weight: 650;
+  box-shadow: 0 6px 22px rgba(27, 99, 65, 0.35);
   transition: all 0.2s ease;
+  cursor: pointer;
 }
-.zora-mic.recording {
-  background: #c82333;
-  color: #fff;
+.dark .zora-app .zora-mic,
+.dark button.zora-mic {
+  background: #257e50 !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.55);
+}
+.zora-app .zora-mic:hover,
+button.zora-mic:hover {
+  background: #155034 !important;
+  transform: scale(1.02);
+}
+.dark .zora-app .zora-mic:hover,
+.dark button.zora-mic:hover {
+  background: #1d6a42 !important;
+}
+.zora-app .zora-mic.recording,
+button.zora-mic.recording {
+  background: #c82333 !important;
+  color: #ffffff !important;
 }
 .zora-voice-dock > p {
   font-size: 14px;
@@ -789,18 +825,28 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
+  padding: 6px 14px;
   border-radius: 8px;
   font-size: 13.5px;
-  font-weight: 600;
-  color: var(--z-accent);
-  background: var(--z-soft);
-  border: 1px solid var(--z-line);
-  transition: all 0.2s ease;
+  font-weight: 650;
+  color: #1b6341 !important;
+  background: #ffffff !important;
+  border: 1.5px solid #1b6341 !important;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+.dark .zora-doc-report-trigger {
+  color: #7ad89b !important;
+  background: #1a241e !important;
+  border-color: #2e7a50 !important;
 }
 .zora-doc-report-trigger:hover {
-  border-color: var(--z-accent);
-  background: var(--z-badge-bg);
+  background: #1b6341 !important;
+  color: #ffffff !important;
+}
+.dark .zora-doc-report-trigger:hover {
+  background: #257e50 !important;
+  color: #ffffff !important;
 }
 
 .zora-solution-diagnosis-heading {
@@ -935,27 +981,38 @@
   align-items: center;
   gap: 8px;
   margin-top: 10px;
-  color: var(--z-accent);
+  color: #1b6341 !important;
   font-size: 14px;
-  font-weight: 600;
-  padding: 6px 12px;
+  font-weight: 650;
+  padding: 8px 16px;
   border-radius: 6px;
-  border: 1px solid var(--z-accent);
-  background: transparent;
+  border: 1.5px solid #1b6341 !important;
+  background: #ffffff !important;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.dark .zora-quick-followup-btn {
+  color: #7ad89b !important;
+  background: #1a241e !important;
+  border-color: #2e7a50 !important;
 }
 .zora-quick-followup-btn:hover {
-  background: var(--z-accent);
-  color: #fff;
+  background: #1b6341 !important;
+  color: #ffffff !important;
+}
+.dark .zora-quick-followup-btn:hover {
+  background: #257e50 !important;
+  color: #ffffff !important;
 }
 
 /* ==========================================================================
-   DOCUMENTED REPORT MODAL (OFFICIAL CCSA REPORTING ENGINE)
+   DOCUMENTED REPORT MODAL (OFFICIAL CCSA RESEARCH ENGINE - STRAIGHT BORDERS)
    ========================================================================== */
 .zora-report-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(8px);
+  background: rgba(10, 16, 12, 0.72);
+  backdrop-filter: blur(6px);
   z-index: 100;
   display: flex;
   align-items: center;
@@ -966,31 +1023,41 @@
 .zora-report-modal {
   position: relative;
   width: 100%;
-  max-width: 860px;
+  max-width: 890px;
   max-height: 90vh;
   display: flex;
   flex-direction: column;
-  background: var(--z-bg);
-  border-radius: 20px;
+  background: #ffffff !important;
+  color: #111827 !important;
+  border-radius: 0 !important;
+  border: 1px solid #c2cdc4;
   overflow: hidden;
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 20px 70px rgba(0, 0, 0, 0.45);
 }
 .zora-report-toolbar {
-  height: 64px;
+  height: 60px;
   padding: 0 24px;
-  background: var(--z-soft);
-  border-bottom: 1px solid var(--z-line);
+  background: #f3f6f4;
+  border-bottom: 1.5px solid #d1d5db;
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-shrink: 0;
 }
+.dark .zora-report-toolbar {
+  background: #1e2621;
+  border-bottom-color: #36443a;
+}
 .zora-report-toolbar-left {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 16px;
-  color: var(--z-accent);
+  font-size: 15px;
+  font-weight: 600;
+  color: #1b6341;
+}
+.dark .zora-report-toolbar-left {
+  color: #68c78c;
 }
 .zora-report-toolbar-actions {
   display: flex;
@@ -1000,54 +1067,78 @@
 .zora-report-tool-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  border: 1px solid var(--z-line);
-  background: var(--z-bg);
-  color: var(--z-text);
+  gap: 7px;
+  padding: 7px 16px;
+  border-radius: 0 !important;
+  font-size: 13.5px;
+  font-weight: 650;
+  border: 1px solid #c2cdc4 !important;
+  background: #ffffff !important;
+  color: #191d1a !important;
   transition: all 0.15s ease;
+  cursor: pointer;
+}
+.dark .zora-report-tool-btn {
+  background: #141a16 !important;
+  border-color: #36443a !important;
+  color: #f0f4ee !important;
 }
 .zora-report-tool-btn:hover {
-  border-color: var(--z-accent);
+  border-color: #1b6341 !important;
+  color: #1b6341 !important;
 }
 .zora-report-tool-btn.primary {
-  background: var(--z-accent);
-  color: #fff;
-  border-color: var(--z-accent);
+  background: #1b6341 !important;
+  color: #ffffff !important;
+  border-color: #1b6341 !important;
+}
+.zora-report-tool-btn.primary:hover {
+  background: #155034 !important;
+  border-color: #155034 !important;
+}
+.dark .zora-report-tool-btn.primary {
+  background: #257e50 !important;
+  color: #ffffff !important;
+  border-color: #257e50 !important;
 }
 .zora-report-tool-btn.close {
   padding: 8px;
-  border: none;
-  background: transparent;
-  color: var(--z-muted);
+  border: 1px solid transparent !important;
+  background: transparent !important;
+  color: #6b7280 !important;
 }
 .zora-report-tool-btn.close:hover {
-  color: var(--z-text);
+  color: #111827 !important;
+}
+.dark .zora-report-tool-btn.close:hover {
+  color: #ffffff !important;
 }
 
-/* Printable Document Sheet */
+/* Printable Document Sheet - Professional Institutional Research Document */
 .zora-report-sheet {
-  padding: 38px 44px;
+  padding: 42px 48px;
   overflow-y: auto;
-  color: #191d1a;
-  background: #ffffff;
+  color: #111827 !important;
+  background: #ffffff !important;
+  border-radius: 0 !important;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
+  line-height: 1.55;
 }
 .dark .zora-report-sheet {
-  background: #ffffff;
-  color: #191d1a;
+  background: #ffffff !important;
+  color: #111827 !important;
 }
+
+/* Institution Header / Masthead */
 .zora-rep-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  border-bottom: 2px solid #21764e;
-  padding-bottom: 18px;
-  margin-bottom: 22px;
+  border-top: 3px solid #1b6341;
+  border-bottom: 1.5px solid #111827;
+  padding: 16px 0 14px;
+  margin-bottom: 20px;
+  gap: 20px;
 }
 .zora-rep-logo-block {
   display: flex;
@@ -1055,259 +1146,536 @@
   gap: 16px;
 }
 .zora-rep-logo {
-  width: 60px;
-  height: 60px;
-  border-radius: 8px;
+  width: 58px;
+  height: 58px;
+  border-radius: 0 !important;
+  border: 1px solid #1b6341;
   object-fit: cover;
 }
 .zora-rep-inst {
-  font-size: 18px;
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: 19px;
   font-weight: 800;
   color: #1b6341;
-  letter-spacing: -0.3px;
+  letter-spacing: -0.2px;
+  margin: 0;
+  line-height: 1.25;
 }
 .zora-rep-subinst {
-  font-size: 13.5px;
-  color: #555;
+  font-size: 13px;
+  color: #374151;
   font-weight: 600;
+  margin: 3px 0 0;
 }
 .zora-rep-dept {
   font-size: 12px;
-  color: #777;
+  color: #6b7280;
+  margin: 2px 0 0;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
 }
 .zora-rep-title-badge {
-  background: #21764e;
-  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  border: 1.5px solid #1b6341;
+  border-radius: 0 !important;
   padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 11.5px;
-  font-weight: 750;
+  background: #f3f8f5;
+  color: #1b6341;
+  text-align: right;
+  flex-shrink: 0;
+}
+.zora-rep-title-badge span {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+.zora-rep-title-badge small {
+  font-size: 10px;
+  color: #4b5563;
   letter-spacing: 0.5px;
 }
 
-.zora-rep-meta-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  background: #f7f9f7;
-  border: 1px solid #dfe6e0;
-  border-radius: 10px;
-  padding: 14px 18px;
-  margin-bottom: 26px;
+/* Formal Research Metadata Table */
+.zora-rep-meta-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #9ca3af;
+  border-radius: 0 !important;
+  margin-bottom: 24px;
+  font-size: 12px;
 }
-.zora-rep-meta-grid label {
-  display: block;
-  font-size: 11px;
-  font-weight: 700;
-  color: #667268;
+.zora-rep-meta-table th,
+.zora-rep-meta-table td {
+  border: 1px solid #9ca3af;
+  border-radius: 0 !important;
+  padding: 8px 12px;
+  text-align: left;
+  vertical-align: middle;
+}
+.zora-rep-meta-table th {
+  background: #f3f4f6;
+  font-weight: 750;
+  color: #374151;
+  font-size: 10.5px;
   letter-spacing: 0.5px;
-  margin-bottom: 3px;
+  width: 22%;
+  text-transform: uppercase;
 }
-.zora-rep-meta-grid strong {
-  font-size: 13.5px;
-  color: #191d1a;
+.zora-rep-meta-table td {
+  color: #111827;
+  font-size: 12.5px;
+  width: 28%;
 }
 .zora-rep-verified {
-  font-size: 12px;
-  font-weight: 700;
   color: #1b6341;
+  font-weight: 700;
+  font-size: 12px;
 }
 
+/* Sections */
 .zora-rep-section {
   margin-bottom: 24px;
 }
 .zora-rep-sec-title {
-  font-size: 14px;
-  font-weight: 800;
-  color: #21764e;
-  border-bottom: 1px solid #dfe6e0;
-  padding-bottom: 6px;
-  margin-bottom: 12px;
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: 14.5px;
+  font-weight: 750;
+  color: #1b6341;
+  border-bottom: 1.5px solid #1b6341;
+  padding-bottom: 4px;
+  margin: 0 0 12px 0;
   text-transform: uppercase;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.5px;
 }
-.zora-rep-query-box {
-  background: #fdfdfd;
-  border: 1px solid #e2e8e3;
-  border-radius: 8px;
-  padding: 14px 16px;
-  font-size: 15px;
-  line-height: 1.5;
+
+/* Section 1: Farmer Inquiry */
+.zora-rep-inquiry-box {
+  border-left: 3px solid #6b7280;
+  border-radius: 0 !important;
+  padding: 10px 16px;
+  background: #fbfbfb;
+  border-top: 1px solid #e5e7eb;
+  border-right: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+}
+.zora-rep-inquiry-text {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #1f2937;
+  margin: 0;
 }
 .zora-rep-photo-wrap {
-  margin-top: 12px;
+  margin-top: 14px;
 }
 .zora-rep-photo {
-  max-height: 220px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+  max-height: 240px;
+  border-radius: 0 !important;
+  border: 1px solid #9ca3af;
+  object-fit: contain;
 }
 .zora-rep-photo-caption {
   display: block;
   font-size: 11.5px;
-  color: #777;
-  margin-top: 4px;
+  color: #4b5563;
+  font-style: italic;
+  margin-top: 5px;
 }
 
-.zora-rep-diagnosis-box {
-  background: #f4f8f5;
-  border: 1px solid #cce3d2;
-  border-radius: 8px;
-  padding: 16px 18px;
+/* Section 2: Technical Diagnosis & Assessment */
+.zora-rep-diagnosis-block {
+  border: 1px solid #d1d5db;
+  border-radius: 0 !important;
+  padding: 14px 18px;
+  background: #fafafa;
 }
 .zora-rep-diag-head {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 8px;
+  align-items: flex-start;
+  gap: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
 }
-.zora-rep-diag-head h4 {
+.zora-rep-diag-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 750;
+  color: #4b5563;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.zora-rep-diag-title {
+  font-family: "Georgia", "Times New Roman", serif;
   font-size: 17px;
   font-weight: 750;
   color: #1b6341;
+  margin: 2px 0 0;
+}
+.zora-severity-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 0 !important;
+  border: 1px solid #1b6341;
+  background: #ffffff;
+  color: #1b6341;
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+.zora-severity-badge.severity-high {
+  border-color: #b91c1c;
+  color: #b91c1c;
+}
+.zora-severity-badge.severity-critical {
+  border-color: #991b1b;
+  color: #991b1b;
+  background: #fef2f2;
 }
 .zora-rep-diag-desc {
-  font-size: 14.5px;
-  line-height: 1.6;
-  color: #222;
-}
-
-.zora-rep-action-list {
-  padding-left: 18px;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: #1f2937;
   margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  font-size: 14px;
-  line-height: 1.5;
-}
-.zora-rep-action-list li strong {
-  color: #21764e;
+  text-align: justify;
 }
 
-.zora-rep-tips-table {
+/* Section 3: Prescribed Step-by-Step Action Protocol */
+.zora-rep-action-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0;
+  border: 1px solid #d1d5db;
+  border-radius: 0 !important;
 }
-.zora-rep-tip-row {
-  display: grid;
-  grid-template-columns: 200px 1fr;
+.zora-rep-action-item {
+  display: flex;
+  align-items: flex-start;
   gap: 14px;
-  background: #f9faf9;
-  border: 1px solid #e5ebe6;
-  border-radius: 6px;
   padding: 10px 14px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #ffffff;
   font-size: 13.5px;
 }
-.zora-rep-tip-title {
-  font-weight: 700;
-  color: #1b6341;
+.zora-rep-action-item:last-child {
+  border-bottom: none;
 }
-.zora-rep-tip-desc {
-  color: #333;
+.zora-rep-action-num {
+  font-size: 11px;
+  font-weight: 800;
+  color: #1b6341;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  padding-top: 1px;
+}
+.zora-rep-action-text {
+  flex: 1;
+  margin: 0;
+  line-height: 1.5;
+  color: #1f2937;
 }
 
-.zora-rep-organic-box,
-.zora-rep-safety-box {
-  border-radius: 6px;
-  padding: 12px 16px;
-  font-size: 14px;
+/* Section 4: Formal Application Protocols & Dosage Table */
+.zora-rep-formal-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #9ca3af;
+  border-radius: 0 !important;
+  font-size: 12.5px;
+  margin: 4px 0 0;
+}
+.zora-rep-formal-table th,
+.zora-rep-formal-table td {
+  border: 1px solid #9ca3af;
+  border-radius: 0 !important;
+  padding: 9px 12px;
+  text-align: left;
+  vertical-align: top;
+}
+.zora-rep-formal-table th {
+  background: #f3f4f6;
+  font-size: 11px;
+  font-weight: 750;
+  color: #1b6341;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.zora-rep-formal-table td {
+  color: #1f2937;
   line-height: 1.55;
 }
-.zora-rep-organic-box {
-  background: #f0f8f2;
-  border-left: 4px solid #21764e;
-}
-.zora-rep-safety-box {
-  background: #fdf2f2;
-  border-left: 4px solid #c82333;
-}
-.zora-rep-followup-text {
-  font-size: 14px;
-  color: #333;
+.zora-rep-formal-table td strong {
+  color: #1b6341;
 }
 
+/* Section 5: Agroecological & Regenerative Alternative */
+.zora-rep-organic-box {
+  border-left: 3px solid #1b6341;
+  border-top: 1px solid #e5e7eb;
+  border-right: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+  border-radius: 0 !important;
+  padding: 12px 16px;
+  background: #fbfdfb;
+}
+.zora-rep-box-label {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #1b6341;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.zora-rep-organic-box p {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #1f2937;
+  margin: 0;
+}
+
+/* Section 6: Chemical Stewardship & Safety Precautions */
+.zora-rep-safety-box {
+  border-left: 3px solid #b91c1c;
+  border-top: 1px solid #e5e7eb;
+  border-right: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+  border-radius: 0 !important;
+  padding: 12px 16px;
+  background: #fffcfc;
+}
+.zora-rep-safety-label {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #b91c1c;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.zora-rep-safety-box p {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #1f2937;
+  margin: 0;
+}
+
+/* Section 7: Monitoring & Follow-Up Diagnostic Box */
+.zora-rep-followup-box {
+  border-left: 3px solid #4b5563;
+  border-top: 1px solid #e5e7eb;
+  border-right: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+  border-radius: 0 !important;
+  padding: 12px 16px;
+  background: #fbfbfb;
+}
+.zora-rep-followup-label {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #374151;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.zora-rep-followup-text {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #1f2937;
+  margin: 0;
+}
+
+/* Transcript View if full consultation */
+.zora-rep-transcript {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.zora-rep-t-msg {
+  border-left: 2px solid #d1d5db;
+  border-radius: 0 !important;
+  padding: 6px 14px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.zora-rep-t-msg.user {
+  border-left-color: #6b7280;
+}
+.zora-rep-t-msg.zora {
+  border-left-color: #1b6341;
+}
+.zora-rep-t-msg strong {
+  display: block;
+  font-size: 10.5px;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+.zora-rep-t-msg.user strong {
+  color: #4b5563;
+}
+.zora-rep-t-msg.zora strong {
+  color: #1b6341;
+}
+
+/* Official Disclaimer & Seal Footer */
 .zora-rep-footer {
   margin-top: 36px;
   padding-top: 20px;
-  border-top: 1px solid #dfe6e0;
+  border-top: 1.5px solid #111827;
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  gap: 24px;
+  gap: 28px;
 }
 .zora-rep-seal-block {
   flex: 1;
 }
 .zora-rep-seal-title {
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 800;
-  color: #667268;
+  color: #374151;
   letter-spacing: 0.5px;
+  text-transform: uppercase;
   margin-bottom: 4px;
 }
 .zora-rep-seal-text {
-  font-size: 11.5px;
-  color: #666;
-  line-height: 1.5;
+  font-size: 11px;
+  color: #4b5563;
+  line-height: 1.55;
+  margin: 0;
 }
 .zora-rep-sign-block {
   text-align: right;
-  min-width: 200px;
+  min-width: 240px;
+  flex-shrink: 0;
 }
 .zora-rep-line {
-  border-bottom: 1px dashed #888;
+  border-bottom: 1.5px solid #111827;
   margin-bottom: 6px;
+  width: 220px;
+  margin-left: auto;
 }
 .zora-rep-sign-block span {
   display: block;
   font-size: 12px;
-  font-weight: 700;
-  color: #21764e;
+  font-weight: 750;
+  color: #1b6341;
 }
 .zora-rep-sign-block small {
+  display: block;
   font-size: 10.5px;
-  color: #777;
+  color: #6b7280;
+  margin-top: 2px;
 }
 
 /* ==========================================================================
-   PRINT MEDIA RULES
+   PRINT MEDIA RULES (PERFECT WHITE REPORT PRINTING & ZERO BLACK PREVIEWS)
    ========================================================================== */
 @media print {
-  body * {
-    visibility: hidden;
+  @page {
+    size: A4 portrait;
+    margin: 12mm 15mm 15mm 15mm;
   }
-  .zora-report-backdrop {
-    position: static;
-    background: transparent;
-    padding: 0;
+  
+  html,
+  html.dark,
+  body,
+  .dark body,
+  .zora-app,
+  .dark .zora-app {
+    color-scheme: light !important;
+    background: #ffffff !important;
+    background-image: none !important;
+    color: #111111 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
   }
-  .zora-report-modal {
-    box-shadow: none;
-    border-radius: 0;
-    max-width: 100%;
-    max-height: none;
-  }
-  .zora-report-toolbar,
+
+  /* Hide entire application shell and only show printable sheet */
   .zora-sidebar,
   .zora-topbar,
+  .zora-main,
   .zora-voice-dock,
-  .zora-bottom-nav {
+  .zora-bottom-nav,
+  .zora-report-toolbar,
+  .zora-modal-backdrop,
+  .zora-report-tool-btn,
+  .zora-actions,
+  .zora-quick-followup-btn {
     display: none !important;
   }
-  .zora-report-sheet,
-  .zora-report-sheet * {
-    visibility: visible;
+
+  .zora-report-backdrop {
+    position: static !important;
+    display: block !important;
+    background: #ffffff !important;
+    backdrop-filter: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
   }
+
+  .zora-report-modal {
+    position: static !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: none !important;
+    background: #ffffff !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+  }
+
   .zora-report-sheet {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    padding: 20px;
-    box-shadow: none;
+    display: block !important;
+    visibility: visible !important;
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: #ffffff !important;
+    color: #111111 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    font-size: 10.5pt !important;
+    line-height: 1.45 !important;
+    overflow: visible !important;
+  }
+
+  .zora-report-sheet * {
+    visibility: visible !important;
+    color-scheme: light !important;
+  }
+
+  .zora-rep-sec-title {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  .zora-rep-section {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .zora-rep-footer {
+    page-break-inside: avoid;
+    break-inside: avoid;
   }
 }
 
@@ -1335,27 +1703,91 @@
   width: 100%;
   object-fit: contain;
 }
-.zora-primary,
-.zora-outline {
-  display: flex;
+.zora-app .zora-primary,
+button.zora-primary,
+a.zora-primary {
+  display: inline-flex;
   justify-content: center;
   align-items: center;
   gap: 10px;
-  font-weight: 600;
-  border-radius: 13px;
-  padding: 16px 20px;
-  font-size: 17px;
-  min-height: 55px;
+  font-weight: 650;
+  border-radius: 12px;
+  padding: 16px 24px;
+  font-size: 16.5px;
+  min-height: 52px;
   text-decoration: none;
+  background: #1b6341 !important;
+  color: #ffffff !important;
+  border: 1.5px solid #1b6341 !important;
+  box-shadow: 0 4px 14px rgba(27, 99, 65, 0.32);
+  transition: all 0.15s ease;
+  cursor: pointer;
 }
-.zora-primary {
-  background: var(--z-text);
-  color: var(--z-inverse);
+.dark .zora-app .zora-primary,
+.dark button.zora-primary,
+.dark a.zora-primary {
+  background: #257e50 !important;
+  color: #ffffff !important;
+  border-color: #257e50 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
 }
-.zora-outline {
-  border: 1px solid var(--z-line);
-  background: var(--z-bg);
-  color: var(--z-text);
+.zora-app .zora-primary:hover,
+button.zora-primary:hover,
+a.zora-primary:hover {
+  background: #155034 !important;
+  border-color: #155034 !important;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+}
+.dark .zora-app .zora-primary:hover,
+.dark button.zora-primary:hover,
+.dark a.zora-primary:hover {
+  background: #1e6d44 !important;
+  border-color: #1e6d44 !important;
+  color: #ffffff !important;
+}
+
+.zora-app .zora-outline,
+button.zora-outline,
+a.zora-outline {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font-weight: 650;
+  border-radius: 12px;
+  padding: 16px 24px;
+  font-size: 16.5px;
+  min-height: 52px;
+  text-decoration: none;
+  background: #ffffff !important;
+  color: #191d1a !important;
+  border: 1.5px solid #c2cdc4 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+.dark .zora-app .zora-outline,
+.dark button.zora-outline,
+.dark a.zora-outline {
+  background: #1c231e !important;
+  color: #f0f4ee !important;
+  border: 1.5px solid #36443a !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+.zora-app .zora-outline:hover,
+button.zora-outline:hover,
+a.zora-outline:hover {
+  background: #f4f6f4 !important;
+  border-color: #1b6341 !important;
+  color: #1b6341 !important;
+}
+.dark .zora-app .zora-outline:hover,
+.dark button.zora-outline:hover,
+.dark a.zora-outline:hover {
+  background: #232e26 !important;
+  border-color: #68c78c !important;
+  color: #68c78c !important;
 }
 .zora-button-grid {
   display: grid;
