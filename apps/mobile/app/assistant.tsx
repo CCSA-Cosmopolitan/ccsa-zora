@@ -1,328 +1,240 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Pressable,
-  TextInput,
-  Image,
+  ActivityIndicator,
   AppState,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import {
-  Volume2,
-  Camera,
-  Keyboard,
-  Languages,
-} from "lucide-react-native";
+import { Camera, Keyboard, Languages, Volume2 } from "lucide-react-native";
 import * as ImagePicker from "expo-image-picker";
-import { useLocalSearchParams, router, useFocusEffect } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 
 import { useVoiceStore } from "@/features/voice/voice-store";
+import { LANGUAGES } from "@/features/i18n/languages";
+import { EXTRAS } from "@/features/i18n/extras";
+import { askZora } from "@/services/assistant";
 import { ZoraHeader } from "@/components/navigation/ZoraHeader";
 import { TabBar } from "@/components/navigation/TabBar";
 import { FloatingVoicePill } from "@/components/voice/FloatingVoicePill";
-import { LANGUAGES } from "@/features/i18n/languages";
-
-import { askZora } from "@/services/assistant";
+import { OutlineButton, SolidButton, layout } from "@/components/ui";
 
 interface Message {
   id: string;
   sender: "user" | "zora";
   text: string;
   imageUri?: string;
-  suggestedAction?: "photo" | "hear";
 }
+
+const PHOTO_PROMPT = "What can you observe about this plant? Ask me if more information is needed.";
 
 export default function AssistantScreen() {
   const { language, t, colors, isSpeaking, speakText, stopSpeaking } = useVoiceStore();
-  const params = useLocalSearchParams<{ initialPrompt?: string; image?: string }>();
-  const currentLang = LANGUAGES.find(l=>l.code===language) || LANGUAGES[4]!;
-  const [messages,setMessages]=useState<Message[]>([]);
-  const [inputVal,setInputVal]=useState('');
-  const [busy,setBusy]=useState(false);
-  const [error,setError]=useState('');
-  const conversationId=useRef<string|undefined>(undefined);
-  const active=useRef(true);
-  useFocusEffect(useCallback(()=>{active.current=true;return()=>{active.current=false;void stopSpeaking();};},[stopSpeaking]));
-  const pending=useRef(false);
-  const started=useRef(false);
-  useEffect(()=>{if(params.initialPrompt&&!started.current){started.current=true;void send(params.initialPrompt,params.image);}},[]);
-  async function handleListenResponse(text:string){if(isSpeaking)await stopSpeaking();else try{await speakText(text);}catch(e){setError(e instanceof Error?e.message:'Voice unavailable');}}
-  async function send(text:string,image?:string,imageUri?:string) {
-    if(pending.current||!text.trim())return;pending.current=true;setBusy(true);setError('');
-    setMessages(old=>[...old,{id:String(Date.now()),sender:'user',text,imageUri}]);
-    try{const reply=await askZora({message:text,language,conversationId:conversationId.current,image});
-      if(!active.current||AppState.currentState!=="active")return;
-      conversationId.current=reply.conversationId;
-      setMessages(old=>[...old,{id:String(Date.now())+'-reply',sender:'zora',text:reply.spoken}]);
-      try{await speakText(reply.spoken);}catch{setError('Voice playback is unavailable. Tap to retry listening.');}
-    }catch(e){setError(e instanceof Error?e.message:'Zora is temporarily unavailable');}
-    finally{pending.current=false;setBusy(false);}
+  const extra = EXTRAS[language];
+  const params = useLocalSearchParams<{ initialPrompt?: string }>();
+  const currentLang = LANGUAGES.find((l) => l.code === language) ?? LANGUAGES[4]!;
+
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+
+  const conversationId = useRef<string | undefined>(undefined);
+  const active = useRef(true);
+  const pending = useRef(false);
+  const started = useRef(false);
+  const scroller = useRef<ScrollView>(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      active.current = true;
+      return () => {
+        active.current = false;
+        void stopSpeaking();
+      };
+    }, [stopSpeaking]),
+  );
+
+  useEffect(() => {
+    if (params.initialPrompt && !started.current) {
+      started.current = true;
+      void send(params.initialPrompt);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function send(text: string, image?: string, imageUri?: string) {
+    const message = text.trim();
+    if (pending.current || message.length < 2) return;
+    pending.current = true;
+    setBusy(true);
+    setError("");
+    setMessages((old) => [...old, { id: `${Date.now()}`, sender: "user", text: message, imageUri }]);
+    try {
+      const reply = await askZora({ message, language, conversationId: conversationId.current, image });
+      if (!active.current || AppState.currentState !== "active") return;
+      conversationId.current = reply.conversationId;
+      setMessages((old) => [...old, { id: `${Date.now()}-reply`, sender: "zora", text: reply.spoken }]);
+      try {
+        await speakText(reply.spoken);
+      } catch {
+        setError("Voice playback is unavailable. Tap Listen to try again.");
+      }
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Zora is temporarily unavailable");
+    } finally {
+      pending.current = false;
+      setBusy(false);
+    }
   }
-  async function handleTakePhoto(){try{const permission=await ImagePicker.requestCameraPermissionsAsync();if(!permission.granted)throw new Error('Please allow camera access');const result=await ImagePicker.launchCameraAsync({quality:0.5,base64:true});const asset=result.assets?.[0];if(!result.canceled&&asset?.base64)await send(inputVal.trim()||'What can you observe about this plant? Ask me if more information is needed.','data:image/jpeg;base64,'+asset.base64,asset.uri);}catch(e){setError(e instanceof Error?e.message:'Camera unavailable');}}
-  function handleSendMessage(){const text=inputVal.trim();if(!text||busy)return;setInputVal('');void send(text);}
+
+  async function listen(text: string) {
+    if (isSpeaking) {
+      await stopSpeaking();
+      return;
+    }
+    try {
+      await speakText(text);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Voice unavailable");
+    }
+  }
+
+  async function takePhoto() {
+    if (busy) return;
+    try {
+      const permission = await ImagePicker.requestCameraPermissionsAsync();
+      if (!permission.granted) throw new Error("Please allow camera access");
+      const result = await ImagePicker.launchCameraAsync({ quality: 0.5, base64: true });
+      const asset = result.assets?.[0];
+      if (result.canceled || !asset?.base64) return;
+      await send(input.trim() || PHOTO_PROMPT, `data:image/jpeg;base64,${asset.base64}`, asset.uri);
+      setInput("");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Camera unavailable");
+    }
+  }
+
+  function submit() {
+    const text = input.trim();
+    if (!text || busy) return;
+    setInput("");
+    void send(text);
+  }
+
+  const lastId = messages[messages.length - 1]?.id;
 
   return (
-    <SafeAreaView
-      style={[styles.safeArea, { backgroundColor: colors.background }]}
-      edges={["top", "left", "right"]}
-    >
+    <SafeAreaView style={[layout.safe, { backgroundColor: colors.background }]} edges={["top", "left", "right"]}>
       <ZoraHeader mode="back" />
-
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        <Text style={[styles.screenTitle, { color: colors.text }]}>
-          {t.tabs.askZora}
-        </Text>
-
-        <Pressable
-          onPress={() => router.push("/language")}
-          style={styles.languageIndicator}
+      <KeyboardAvoidingView style={layout.flex} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+        <ScrollView
+          ref={scroller}
+          style={layout.flex}
+          contentContainerStyle={layout.content}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+          onContentSizeChange={() => scroller.current?.scrollToEnd({ animated: true })}
         >
-          <Languages size={16} color={colors.accent} />
-          <Text style={[styles.languageText, { color: colors.accent }]}>
-            {currentLang.nativeName}
-          </Text>
-        </Pressable>
+          <Text style={[styles.title, { color: colors.text }]}>{t.tabs.askZora}</Text>
+          <Pressable onPress={() => router.push("/language")} hitSlop={8} style={styles.langIndicator}>
+            <Languages size={18} color={colors.accent} />
+            <Text style={[styles.langText, { color: colors.accent }]}>{currentLang.nativeName}</Text>
+          </Pressable>
 
-        {busy && <Text style={{color:colors.textSecondary}}>…</Text>}
-        {!!error && <Text accessibilityRole="alert" style={{color:"#991b1b"}}>{error}</Text>}
-        <Pressable disabled={busy} onPress={handleTakePhoto}><Text style={{color:colors.accent,paddingVertical:12}}>📷 {t.chat.takePhoto}</Text></Pressable>
-        <View style={styles.conversation}>
-          {messages.map((m) => (
-            <View key={m.id} style={styles.messageWrapper}>
-              {m.sender === "user" ? (
-                /* User Message Bubble */
-                <View
-                  style={[
-                    styles.userBubble,
-                    {
-                      backgroundColor: colors.inputBg,
-                      borderColor: colors.cardBorder,
-                    },
-                  ]}
-                >
-                  <Text style={[styles.userLabel, { color: colors.textSecondary }]}>
-                    {t.chat.you}
-                  </Text>
-                  <Text style={[styles.userMessageText, { color: colors.text }]}>
-                    {m.text}
-                  </Text>
-                  {m.imageUri ? (
-                    <Image
-                      source={{ uri: m.imageUri }}
-                      style={styles.attachedImage}
-                    />
+          {messages.map((m) =>
+            m.sender === "user" ? (
+              <View key={m.id} style={[styles.userBubble, { backgroundColor: colors.callout }]}>
+                <Text style={[styles.userLabel, { color: colors.textSecondary }]}>{t.chat.you}</Text>
+                <Text style={[styles.userText, { color: colors.text }]}>{m.text}</Text>
+                {m.imageUri ? <Image source={{ uri: m.imageUri }} style={styles.attached} /> : null}
+              </View>
+            ) : (
+              <View key={m.id} style={styles.zora}>
+                <Text style={[styles.zoraLabel, { color: colors.accent }]}>{t.chat.zora}</Text>
+                <Text style={[styles.zoraText, { color: colors.text }]}>{m.text}</Text>
+                <View style={styles.actions}>
+                  <OutlineButton
+                    Icon={Volume2}
+                    label={isSpeaking ? extra.stopListening : t.chat.listenResponse}
+                    onPress={() => void listen(m.text)}
+                  />
+                  {m.id === lastId ? (
+                    <SolidButton Icon={Camera} label={t.chat.takePhoto} onPress={takePhoto} disabled={busy} />
                   ) : null}
                 </View>
-              ) : (
-                /* Zora Response */
-                <View style={styles.zoraBubble}>
-                  <Text style={[styles.zoraLabel, { color: colors.accent }]}>
-                    {t.chat.zora}
-                  </Text>
-                  <Text style={[styles.zoraMessageText, { color: colors.text }]}>
-                    {m.text}
-                  </Text>
+              </View>
+            ),
+          )}
 
-                  {/* Actions under Zora response */}
-                  <View style={styles.zoraActions}>
-                    <Pressable
-                      onPress={() => handleListenResponse(m.text)}
-                      style={[
-                        styles.actionButtonOutline,
-                        {
-                          backgroundColor: colors.card,
-                          borderColor: colors.cardBorder,
-                        },
-                      ]}
-                    >
-                      <Volume2 size={20} color={colors.text} />
-                      <Text
-                        style={[
-                          styles.actionButtonText,
-                          { color: colors.text },
-                        ]}
-                      >
-                        {isSpeaking ? "Dakata" : t.chat.listenResponse}
-                      </Text>
-                    </Pressable>
-
-                    {m.suggestedAction === "photo" ? (
-                      <Pressable
-                        onPress={handleTakePhoto}
-                        style={[
-                          styles.actionButtonFilled,
-                          { backgroundColor: colors.voicePillBg },
-                        ]}
-                      >
-                        <Camera size={20} color={colors.voicePillText} />
-                        <Text
-                          style={[
-                            styles.actionButtonTextFilled,
-                            { color: colors.voicePillText },
-                          ]}
-                        >
-                          {t.chat.takePhoto}
-                        </Text>
-                      </Pressable>
-                    ) : null}
-                  </View>
-                </View>
-              )}
+          {busy ? (
+            <View style={styles.busy}>
+              <ActivityIndicator color={colors.accent} />
             </View>
-          ))}
-        </View>
+          ) : null}
+          {!!error && (
+            <Text accessibilityRole="alert" style={[styles.error, { color: colors.dangerText }]}>
+              {error}
+            </Text>
+          )}
 
-        {/* Input Field */}
-        <View
-          style={[
-            styles.inputContainer,
-            {
-              backgroundColor: colors.inputBg,
-              borderColor: colors.cardBorder,
-            },
-          ]}
-        >
-          <Keyboard size={20} color={colors.textMuted} />
-          <TextInput
-            value={inputVal}
-            onChangeText={setInputVal}
-            placeholder={t.orTypeHere}
-            placeholderTextColor={colors.textMuted}
-            style={[styles.input, { color: colors.text }]}
-            onSubmitEditing={handleSendMessage}
-            returnKeyType="send"
-          />
-        </View>
-      </ScrollView>
+          {messages.length === 0 && !busy ? (
+            <SolidButton Icon={Camera} label={t.chat.takePhoto} onPress={takePhoto} style={styles.firstPhoto} />
+          ) : null}
 
-      {/* Floating Voice Pill */}
-      <FloatingVoicePill disabled={busy} onRecordComplete={(text)=>{void send(text);}} />
+          <View style={[styles.inputRow, { borderColor: colors.cardBorder, backgroundColor: colors.inputBg }]}>
+            <Keyboard size={20} color={colors.textMuted} />
+            <TextInput
+              value={input}
+              onChangeText={setInput}
+              placeholder={t.orTypeHere}
+              placeholderTextColor={colors.textMuted}
+              style={[styles.inputText, { color: colors.text }]}
+              returnKeyType="send"
+              editable={!busy}
+              onSubmitEditing={submit}
+            />
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
 
-      {/* Bottom Tab Bar */}
+      <FloatingVoicePill disabled={busy} onRecordComplete={(text) => void send(text)} />
       <TabBar />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingHorizontal: 22,
-    paddingTop: 16,
-    paddingBottom: 16,
-  },
-  screenTitle: {
-    fontSize: 32,
-    fontWeight: "800",
-    letterSpacing: -0.5,
-  },
-  languageIndicator: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    marginTop: 6,
-    marginBottom: 24,
-  },
-  languageText: {
-    fontSize: 15,
-    fontWeight: "700",
-  },
-  conversation: {
-    gap: 20,
-    marginBottom: 20,
-  },
-  messageWrapper: {
-    marginBottom: 8,
-  },
-  userBubble: {
-    borderRadius: 18,
-    borderWidth: 1,
-    padding: 16,
-    alignSelf: "stretch",
-  },
-  userLabel: {
-    fontSize: 13,
-    fontWeight: "700",
-    marginBottom: 6,
-  },
-  userMessageText: {
-    fontSize: 16,
-    lineHeight: 24,
-    fontWeight: "600",
-  },
-  attachedImage: {
-    width: "100%",
-    height: 180,
-    borderRadius: 12,
-    marginTop: 12,
-    resizeMode: "cover",
-  },
-  zoraBubble: {
-    paddingVertical: 12,
-  },
-  zoraLabel: {
-    fontSize: 15,
-    fontWeight: "800",
-    marginBottom: 8,
-  },
-  zoraMessageText: {
-    fontSize: 17,
-    lineHeight: 26,
-    marginBottom: 16,
-  },
-  zoraActions: {
-    gap: 12,
-  },
-  actionButtonOutline: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 10,
-    borderWidth: 1,
-    borderRadius: 14,
-    paddingVertical: 14,
-  },
-  actionButtonText: {
-    fontSize: 16,
-    fontWeight: "700",
-  },
-  actionButtonFilled: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 10,
-    borderRadius: 14,
-    paddingVertical: 14,
-  },
-  actionButtonTextFilled: {
-    fontSize: 16,
-    fontWeight: "700",
-  },
-  inputContainer: {
+  title: { fontSize: 32, fontWeight: "700", letterSpacing: -0.6 },
+  langIndicator: { flexDirection: "row", alignItems: "center", gap: 8, marginTop: 8, marginBottom: 26 },
+  langText: { fontSize: 17, fontWeight: "600" },
+  userBubble: { alignSelf: "stretch", borderRadius: 18, padding: 18, marginBottom: 22, gap: 4 },
+  userLabel: { fontSize: 14, fontWeight: "600" },
+  userText: { fontSize: 18, lineHeight: 26, fontWeight: "500" },
+  attached: { width: "100%", height: 180, borderRadius: 12, marginTop: 12 },
+  zora: { marginBottom: 24, gap: 10 },
+  zoraLabel: { fontSize: 17, fontWeight: "700" },
+  zoraText: { fontSize: 18, lineHeight: 28 },
+  actions: { gap: 12, marginTop: 8 },
+  busy: { alignItems: "flex-start", paddingVertical: 12 },
+  error: { fontSize: 15, marginBottom: 12 },
+  firstPhoto: { marginBottom: 16 },
+  inputRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
     borderWidth: 1,
-    borderRadius: 14,
+    borderRadius: 16,
     paddingHorizontal: 16,
-    paddingVertical: 14,
-    marginBottom: 16,
+    height: 56,
+    marginTop: 4,
   },
-  input: {
-    flex: 1,
-    fontSize: 15,
-    padding: 0,
-  },
+  inputText: { flex: 1, fontSize: 17, padding: 0 },
 });

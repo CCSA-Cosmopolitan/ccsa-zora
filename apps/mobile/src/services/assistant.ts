@@ -11,7 +11,10 @@ export async function api(path:string,options:RequestInit={},authenticate=true){
  if(!response.ok){const data=await response.json().catch(()=>({}));throw new Error(data.error||'Zora is temporarily unavailable');}return response;
  }finally{clearTimeout(timer);}
 }
-export async function askZora(input:{message:string;language:string;conversationId?:string;image?:string}){return (await api('/api/assistant',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(input)})).json();}
+export interface ZoraReply{spoken:string;diagnosis:string;severity:'information'|'low'|'medium'|'high';explanation:string;steps:string[];tips:{tip:string;howToApply:string}[];organicAlternative:string;safety:string;followUp:string;conversationId:string;}
+export async function askZora(input:{message:string;language:string;conversationId?:string;image?:string}):Promise<ZoraReply>{return (await api('/api/assistant',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(input)})).json();}
+export interface PlantResult{identified:boolean;commonName:string;scientificName:string;healthNutrition:string;edibility:string;toxicitySafety:string;origin:string;growingCare:string;spoken:string;}
+export async function identifyPlant(input:{image:string;language:string}):Promise<PlantResult>{return (await api('/api/plant',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(input)})).json();}
 export async function transcribe(uri:string,language:string){const form=new FormData();form.append('audio',{uri,name:'question.m4a',type:'audio/mp4'} as unknown as Blob);form.append('language',language);const data=await(await api('/api/assistant/transcribe',{method:'POST',body:form})).json();if(!data.text)throw new Error('Could not hear you. Please try again.');return data.text as string;}
 let audioGeneration=0;
 let stopCurrent:(()=>void)|undefined;

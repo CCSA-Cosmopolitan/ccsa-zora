@@ -1,2 +1,23 @@
-import { View,Text,Pressable } from 'react-native';import {router} from 'expo-router';
-export default function AccessScreen(){return <View style={{flex:1,justifyContent:'center',padding:30,backgroundColor:'#f7f8f2'}}><Text style={{fontSize:26,fontWeight:'bold'}}>Free access through CCSA</Text><Text style={{fontSize:18,marginVertical:20}}>When your FIMS administrator enables Zora, you can ask questions without subscription charges or a daily question quota.</Text><Pressable onPress={()=>router.replace('/assistant')}><Text style={{fontSize:18,color:'#235d3a'}}>Ask Zora</Text></Pressable></View>;}
+import { ScrollView } from "react-native";
+import { router } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+import { useVoiceStore } from "@/features/voice/voice-store";
+import { ZoraHeader } from "@/components/navigation/ZoraHeader";
+import { SolidButton, ScreenSubtitle, ScreenTitle, layout } from "@/components/ui";
+
+export default function AccessScreen() {
+  const colors = useVoiceStore((s) => s.colors);
+  return (
+    <SafeAreaView style={[layout.safe, { backgroundColor: colors.background }]} edges={["top", "left", "right", "bottom"]}>
+      <ZoraHeader mode="back" />
+      <ScrollView contentContainerStyle={layout.content}>
+        <ScreenTitle>Free access through CCSA</ScreenTitle>
+        <ScreenSubtitle>
+          When your FIMS administrator enables Zora, you can ask questions without subscription charges or a daily question quota.
+        </ScreenSubtitle>
+        <SolidButton label="Ask Zora" onPress={() => router.replace("/assistant")} />
+      </ScrollView>
+    </SafeAreaView>
+  );
+}

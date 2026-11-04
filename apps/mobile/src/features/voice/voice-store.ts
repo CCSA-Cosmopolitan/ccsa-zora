@@ -1,3 +1,4 @@
+import { Appearance } from "react-native";
 import { create } from "zustand";
 import { speakZora,stopAudio } from "@/services/assistant";
 import * as SecureStore from "expo-secure-store";
@@ -14,17 +15,20 @@ interface VoiceStoreState {
   isProcessing: boolean;
   setLanguage: (lang: SupportedLanguage) => void;
   toggleTheme: () => void;
+  setThemeMode: (mode: "light" | "dark") => void;
   speakText: (text: string, customLang?: SupportedLanguage) => Promise<void>;
   stopSpeaking: () => Promise<void>;
   startRecording: () => void;
   stopRecording: () => void;
 }
 
+const initialMode: "light" | "dark" = Appearance.getColorScheme() === "dark" ? "dark" : "light";
+
 export const useVoiceStore = create<VoiceStoreState>((set, get) => ({
   language: "en",
   t: TRANSLATIONS.en,
-  themeMode: "light",
-  colors: lightTheme,
+  themeMode: initialMode,
+  colors: initialMode === "dark" ? darkTheme : lightTheme,
   isSpeaking: false,
   isRecording: false,
   isProcessing: false,
@@ -35,6 +39,10 @@ export const useVoiceStore = create<VoiceStoreState>((set, get) => ({
       language: lang,
       t: TRANSLATIONS[lang] ?? TRANSLATIONS.en,
     });
+  },
+
+  setThemeMode: (mode) => {
+    set({ themeMode: mode, colors: mode === "light" ? lightTheme : darkTheme });
   },
 
   toggleTheme: () => {

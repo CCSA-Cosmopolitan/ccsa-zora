@@ -91,10 +91,8 @@ export default function LanguageScreen() {
                   onPress={() => handleHearSample(item.speechSample, item.code)}
                   style={styles.hearButton}
                 >
-                  <Volume2 size={20} color={colors.textSecondary} />
-                  <Text
-                    style={[styles.hearText, { color: colors.textSecondary }]}
-                  >
+                  <Volume2 size={20} color={colors.text} />
+                  <Text style={[styles.hearText, { color: colors.text }]}>
                     {t.languagePage.hear}
                   </Text>
                 </Pressable>
@@ -106,6 +104,7 @@ export default function LanguageScreen() {
         <Text style={[styles.disclaimer, { color: colors.textSecondary }]}>
           {t.languagePage.disclaimer}
         </Text>
+
       </ScrollView>
 
       {/* Floating Voice Button */}

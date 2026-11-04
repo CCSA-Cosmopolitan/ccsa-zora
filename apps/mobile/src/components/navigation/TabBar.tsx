@@ -1,130 +1,85 @@
 import React from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MessageCircle, Sprout, Tractor, Languages } from "lucide-react-native";
 import { router, usePathname } from "expo-router";
-import { useVoiceStore } from "../../features/voice/voice-store";
+
+import { useVoiceStore } from "@/features/voice/voice-store";
 
 export type TabKey = "ask" | "plants" | "farm" | "language";
 
 export function TabBar() {
   const { t, colors } = useVoiceStore();
   const pathname = usePathname();
+  const insets = useSafeAreaInsets();
 
-  const isAskActive = pathname === "/" || pathname === "/assistant" || pathname === "/live";
-  const isPlantsActive = pathname.startsWith("/plants");
-  const isFarmActive = pathname.startsWith("/farm");
-  const isLanguageActive = pathname === "/language";
+  const tabs: { key: TabKey; label: string; href: string; Icon: typeof Sprout; active: boolean }[] = [
+    {
+      key: "ask",
+      label: t.tabs.askZora,
+      href: "/",
+      Icon: MessageCircle,
+      active: pathname === "/" || pathname === "/assistant" || pathname === "/live",
+    },
+    {
+      key: "plants",
+      label: t.tabs.plants,
+      href: "/plants",
+      Icon: Sprout,
+      active: pathname.startsWith("/plant"),
+    },
+    { key: "farm", label: t.tabs.farm, href: "/farm", Icon: Tractor, active: pathname.startsWith("/farm") },
+    {
+      key: "language",
+      label: t.tabs.language,
+      href: "/language",
+      Icon: Languages,
+      active: pathname === "/language",
+    },
+  ];
 
   return (
-    <View style={[styles.tabBar, { backgroundColor: colors.background, borderTopColor: colors.cardBorder }]}>
-      <Pressable onPress={() => router.push("/")} style={styles.tabItem}>
-        <MessageCircle
-          size={24}
-          color={isAskActive ? colors.accent : colors.textMuted}
-          strokeWidth={isAskActive ? 2.4 : 1.8}
-        />
-        <Text
-          style={[
-            styles.tabLabel,
-            {
-              color: isAskActive ? colors.accent : colors.textMuted,
-              fontWeight: isAskActive ? "800" : "500",
-            },
-          ]}
+    <View
+      style={[
+        styles.bar,
+        {
+          backgroundColor: colors.background,
+          borderTopColor: colors.divider,
+          paddingBottom: Math.max(insets.bottom, 8),
+        },
+      ]}
+    >
+      {tabs.map(({ key, label, href, Icon, active }) => (
+        <Pressable
+          key={key}
+          accessibilityRole="tab"
+          accessibilityState={{ selected: active }}
+          onPress={() => {
+            if (!active) router.replace(href as never);
+          }}
+          style={styles.item}
         >
-          {t.tabs.askZora}
-        </Text>
-        {isAskActive ? <View style={[styles.activeIndicator, { backgroundColor: colors.accent }]} /> : null}
-      </Pressable>
-
-      <Pressable onPress={() => router.push("/plants")} style={styles.tabItem}>
-        <Sprout
-          size={24}
-          color={isPlantsActive ? colors.accent : colors.textMuted}
-          strokeWidth={isPlantsActive ? 2.4 : 1.8}
-        />
-        <Text
-          style={[
-            styles.tabLabel,
-            {
-              color: isPlantsActive ? colors.accent : colors.textMuted,
-              fontWeight: isPlantsActive ? "800" : "500",
-            },
-          ]}
-        >
-          {t.tabs.plants}
-        </Text>
-        {isPlantsActive ? <View style={[styles.activeIndicator, { backgroundColor: colors.accent }]} /> : null}
-      </Pressable>
-
-      <Pressable onPress={() => router.push("/farm")} style={styles.tabItem}>
-        <Tractor
-          size={24}
-          color={isFarmActive ? colors.accent : colors.textMuted}
-          strokeWidth={isFarmActive ? 2.4 : 1.8}
-        />
-        <Text
-          style={[
-            styles.tabLabel,
-            {
-              color: isFarmActive ? colors.accent : colors.textMuted,
-              fontWeight: isFarmActive ? "800" : "500",
-            },
-          ]}
-        >
-          {t.tabs.farm}
-        </Text>
-        {isFarmActive ? <View style={[styles.activeIndicator, { backgroundColor: colors.accent }]} /> : null}
-      </Pressable>
-
-      <Pressable onPress={() => router.push("/language")} style={styles.tabItem}>
-        <Languages
-          size={24}
-          color={isLanguageActive ? colors.accent : colors.textMuted}
-          strokeWidth={isLanguageActive ? 2.4 : 1.8}
-        />
-        <Text
-          style={[
-            styles.tabLabel,
-            {
-              color: isLanguageActive ? colors.accent : colors.textMuted,
-              fontWeight: isLanguageActive ? "800" : "500",
-            },
-          ]}
-        >
-          {t.tabs.language}
-        </Text>
-        {isLanguageActive ? <View style={[styles.activeIndicator, { backgroundColor: colors.accent }]} /> : null}
-      </Pressable>
+          <Icon size={24} color={active ? colors.accent : colors.textSecondary} strokeWidth={active ? 2.2 : 1.8} />
+          <Text
+            style={[
+              styles.label,
+              { color: active ? colors.accent : colors.textSecondary, fontWeight: active ? "700" : "500" },
+            ]}
+          >
+            {label}
+          </Text>
+        </Pressable>
+      ))}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  tabBar: {
-    height: 64,
+  bar: {
     flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-around",
     borderTopWidth: StyleSheet.hairlineWidth,
-    paddingBottom: 4,
+    paddingTop: 8,
   },
-  tabItem: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 6,
-    position: "relative",
-  },
-  tabLabel: {
-    fontSize: 11,
-    marginTop: 4,
-  },
-  activeIndicator: {
-    position: "absolute",
-    bottom: -4,
-    width: 24,
-    height: 3,
-    borderRadius: 2,
-  },
+  item: { flex: 1, alignItems: "center", gap: 4, paddingVertical: 4 },
+  label: { fontSize: 14 },
 });
