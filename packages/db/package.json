@@ -26,8 +26,8 @@
   },
   "dependencies": {
     "@ccsa-zora/utils": "workspace:*",
-    "drizzle-orm": "0.45.2",
-    "postgres": "^3.4.7"
+    "drizzle-orm": "0.45.4",
+    "postgres": "^4.0.0"
   },
   "devDependencies": {
     "@types/node": "catalog:",
